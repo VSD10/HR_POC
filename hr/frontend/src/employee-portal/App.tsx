@@ -222,6 +222,23 @@ export default function EmployeePortalApp() {
   const [showPayslipModal, setShowPayslipModal] = useState(false);
   const [showUpdateBankModal, setShowUpdateBankModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('hr_sidebar_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const handleToggleSidebarCollapse = () => {
+    setIsSidebarCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem('hr_sidebar_collapsed', String(next));
+      } catch {}
+      return next;
+    });
+  };
 
   // Pre-fill state for Raise Request
   const [raiseRequestTopic, setRaiseRequestTopic] = useState<{
@@ -415,7 +432,7 @@ export default function EmployeePortalApp() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-100 dark:bg-[#070b19] font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-teal-500 selection:text-white p-2.5 sm:p-3.5 md:gap-3.5 gap-0">
+    <div className="flex h-screen w-screen overflow-hidden bg-[var(--background)] font-sans text-[var(--text-primary)] antialiased selection:bg-teal-500 selection:text-white p-2 sm:p-3 md:gap-3 gap-0 transition-colors duration-200">
       {/* 1. SIDEBAR (Dedicated Left Column) */}
       <Sidebar
         activeScreen={activeScreen}
@@ -429,10 +446,12 @@ export default function EmployeePortalApp() {
         onOpenApplyLeave={() => setShowApplyLeaveModal(true)}
         onOpenPayslip={() => setShowPayslipModal(true)}
         onOpenBankUpdate={() => setShowUpdateBankModal(true)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={handleToggleSidebarCollapse}
       />
 
       {/* 2. MAIN WORKSPACE CONTAINER */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0 transition-all duration-300">
         {/* TOP HEADER */}
         <Header
           activeScreen={activeScreen}
@@ -443,7 +462,7 @@ export default function EmployeePortalApp() {
         />
 
         {/* SCROLLABLE MAIN CONTENT AREA */}
-        <main className="flex-1 overflow-y-auto px-1 sm:px-3 pb-6">
+        <main className={`flex-1 min-h-0 px-1 sm:px-2.5 ${activeScreen === 'ask-hr' ? 'overflow-hidden pb-1' : 'overflow-y-auto pb-5'}`}>
           {activeScreen === 'dashboard' && (
             <DashboardView
               requests={requests}

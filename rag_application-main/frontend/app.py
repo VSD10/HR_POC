@@ -1,9 +1,12 @@
 import os
 import requests
 import streamlit as st
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Application Configuration
-DEFAULT_BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
+DEFAULT_BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8001")
 
 # Page Layout and Metadata
 st.set_page_config(

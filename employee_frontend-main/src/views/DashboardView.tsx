@@ -207,17 +207,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         <div className="relative z-10 flex flex-col space-y-4">
           {/* Header */}
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0D9488] to-[#06B6D4] text-[#0F172A] flex items-center justify-center shadow-md shadow-teal-600/20">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0D9488] to-[#06B6D4] text-white flex items-center justify-center shadow-md shadow-teal-600/20">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-[20px] text-[#0F172A] font-bold">Ask HR Assistant</h2>
-                <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[11px] font-bold uppercase tracking-wider border border-teal-200/60 shadow-2xs">
+                <h2 className="text-[20px] text-[#0F172A] dark:text-white font-bold">Ask HR Assistant</h2>
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-50 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 text-[11px] font-bold uppercase tracking-wider border border-teal-200/60 dark:border-teal-500/30 shadow-2xs">
                   Instant AI
                 </span>
               </div>
-              <p className="text-[13px] text-[#334155]">
+              <p className="text-[13px] text-[#334155] dark:text-slate-300">
                 Get instant answers from company policies and approved HR information.
               </p>
             </div>
@@ -226,22 +226,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           {/* Interactive Search / Chat Bar */}
           <form
             onSubmit={handleAiSubmit}
-            className="flex flex-col sm:flex-row items-center gap-2 p-1.5 bg-white/90 backdrop-blur-md rounded-xl shadow-glass-sm border border-white"
+            className="search-box-container flex flex-col sm:flex-row items-center gap-2 p-1.5 backdrop-blur-md rounded-xl shadow-glass-sm"
           >
             <div className="flex items-center flex-1 w-full px-3">
-              <span className="text-[#0D9488] mr-2.5 font-bold text-[18px]">✦</span>
+              <span className="text-[#0D9488] dark:text-teal-400 mr-2.5 font-bold text-[18px]">✦</span>
               <input
                 type="text"
                 value={aiQuery}
                 onChange={(e) => setAiQuery(e.target.value)}
                 placeholder="Type your HR question here..."
-                className="w-full bg-transparent border-none outline-none text-[14px] text-[#0F172A] placeholder:text-[#64748B] py-2 font-normal"
+                className="w-full bg-transparent border-none outline-none text-[14px] text-[#0F172A] dark:text-white placeholder:text-[#64748B] dark:placeholder:text-slate-400 py-2 font-normal"
               />
             </div>
             <button
               type="submit"
               disabled={isAsking}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0F172A] text-white hover:bg-slate-800 font-medium text-[13px] transition-all shadow-sm active:scale-[0.98]"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-[#0F172A] dark:bg-teal-600 text-white hover:bg-slate-800 dark:hover:bg-teal-500 font-medium text-[13px] transition-all shadow-sm active:scale-[0.98] cursor-pointer"
             >
               <span>{isAsking ? 'Thinking...' : 'Ask Assistant'}</span>
               <Send className="w-4 h-4" />
@@ -817,28 +817,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          {/* NEED HELP? CARD (Crystal Dark Glass Variant) */}
-          <div className="p-5 crystal-glass rounded-2xl text-[#0F172A] shadow-xl space-y-3 relative overflow-hidden">
+          {/* NEED HELP? CARD */}
+          <div className="p-5 crystal-glass rounded-2xl text-[#0F172A] dark:text-white shadow-xl space-y-3 relative overflow-hidden border border-white/80 dark:border-white/10">
             <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-[#0D9488]/30 rounded-full blur-2xl pointer-events-none"></div>
             <div className="relative z-10 space-y-1">
               <div className="flex items-center gap-2">
-                <HelpCircle className="w-5 h-5 text-[#2DD4BF]" />
-                <h3 className="text-[16px] text-[#0F172A] font-semibold">Need help?</h3>
+                <HelpCircle className="w-5 h-5 text-[#0D9488] dark:text-teal-400" />
+                <h3 className="text-[16px] text-[#0F172A] dark:text-white font-semibold">Need help?</h3>
               </div>
-              <p className="text-[13px] text-[#334155]">Can't find what you're looking for?</p>
+              <p className="text-[13px] text-[#334155] dark:text-slate-300">Can't find what you're looking for?</p>
             </div>
             <div className="relative z-10 grid grid-cols-2 gap-2 pt-1">
               <button
                 onClick={() => onNavigate('ask-hr')}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/70 text-[#0F172A] text-[13px] transition-all font-medium border border-white/15 backdrop-blur-md shadow-xs active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/70 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-[#0F172A] dark:text-white text-[13px] transition-all font-medium border border-slate-200 dark:border-white/15 backdrop-blur-md shadow-xs active:scale-[0.98]"
                 type="button"
               >
-                <Bot className="w-4 h-4 text-teal-300" />
+                <Bot className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                 <span>Ask HR</span>
               </button>
               <button
                 onClick={() => onNavigate('raise-request')}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#0D9488] to-[#0F766E] text-[#0F172A] text-[13px] hover:brightness-110 transition-all font-medium shadow-md shadow-teal-900/30 active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#0D9488] to-[#0F766E] text-white text-[13px] hover:brightness-110 transition-all font-medium shadow-md shadow-teal-900/30 active:scale-[0.98]"
                 type="button"
               >
                 <PlusCircle className="w-4 h-4" />

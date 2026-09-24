@@ -460,7 +460,7 @@ function PortalRouter() {
     window.location.port === '3000'
   );
 
-  const isEmployee = user?.role === 'EMPLOYEE' || urlPortal === 'employee' || (isEmployeePort && user?.role === 'EMPLOYEE');
+  const isEmployee = (user?.role as string) === 'EMPLOYEE' || urlPortal === 'employee' || isEmployeePort;
 
   useEffect(() => {
     if (user) {
