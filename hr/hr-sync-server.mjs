@@ -1,9 +1,15 @@
 // @ts-check
 import http from 'node:http';
+import crypto from 'node:crypto';
 import { parse as parseUrl } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(String(password || '')).digest('hex');
+}
+const DEFAULT_PASSWORD_HASH = hashPassword('SecretPassword123!');
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -343,29 +349,103 @@ const defaultState = {
     }
   ],
   users: {
-    admin: {
-      id: "usr_admin_1",
+    HR001: {
+      id: "HR001",
       name: "Sarah Jenkins",
       email: "sarah.jenkins@enterprise.internal",
-      role: "HR_ADMIN",
+      role: "HR Operations Lead",
       title: "HR Operations Lead",
-      avatarUrl: "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0"
+      department: "HR Operations",
+      isHr: true,
+      avatar: "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+      avatarUrl: "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+      securityLevel: 3,
+      tenure: "5 years",
+      passwordHash: DEFAULT_PASSWORD_HASH
     },
-    specialist: {
-      id: "usr_spec_2",
-      name: "David Chen",
-      email: "david.chen@enterprise.internal",
-      role: "HR_SPECIALIST",
-      title: "Senior People Partner",
-      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+    HR002: {
+      id: "HR002",
+      name: "Marcus Vance",
+      email: "marcus.vance@enterprise.internal",
+      role: "Senior HR Benefits & Leave Specialist",
+      title: "Senior HR Benefits & Leave Specialist",
+      department: "HR Operations",
+      isHr: true,
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      securityLevel: 2,
+      tenure: "3 years",
+      passwordHash: DEFAULT_PASSWORD_HASH
     },
-    employee: {
-      id: "usr_emp_3",
+    HR003: {
+      id: "HR003",
+      name: "Elena Rostova",
+      email: "elena.rostova@enterprise.internal",
+      role: "Payroll & Compliance Admin",
+      title: "Payroll & Compliance Admin",
+      department: "HR Operations",
+      isHr: true,
+      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      securityLevel: 2,
+      tenure: "4 years",
+      passwordHash: DEFAULT_PASSWORD_HASH
+    },
+    EMP001: {
+      id: "EMP001",
+      name: "Alex Johnson",
+      email: "alex.johnson@enterprise.internal",
+      role: "Senior Staff Engineer",
+      title: "Senior Staff Engineer",
+      department: "Engineering",
+      isHr: false,
+      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      avatarUrl: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      securityLevel: 1,
+      tenure: "4 years",
+      passwordHash: DEFAULT_PASSWORD_HASH
+    },
+    EMP002: {
+      id: "EMP002",
       name: "Rupam Sharma",
       email: "rupam.sharma@enterprise.org",
-      role: "EMPLOYEE",
+      role: "Lead Full-Stack Engineer",
       title: "Lead Full-Stack Engineer",
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+      department: "Product Engineering",
+      isHr: false,
+      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      securityLevel: 1,
+      tenure: "2 years",
+      passwordHash: DEFAULT_PASSWORD_HASH
+    },
+    EMP003: {
+      id: "EMP003",
+      name: "Maya Patel",
+      email: "maya.patel@enterprise.internal",
+      role: "Product Manager",
+      title: "Product Manager",
+      department: "Design & Product",
+      isHr: false,
+      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      securityLevel: 1,
+      tenure: "3 years",
+      passwordHash: DEFAULT_PASSWORD_HASH
+    },
+    EMP004: {
+      id: "EMP004",
+      name: "David Chen",
+      email: "david.chen@enterprise.internal",
+      role: "Financial Analyst",
+      title: "Financial Analyst",
+      department: "Finance & Operations",
+      isHr: false,
+      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      securityLevel: 1,
+      tenure: "1 year",
+      passwordHash: DEFAULT_PASSWORD_HASH
     }
   }
 };
@@ -409,6 +489,60 @@ function persistState() {
   } catch (err) {
     console.error('[HR Database] Error writing to db.json:', err);
   }
+}
+
+function attachUserAliases(usersObj) {
+  if (!usersObj) return;
+  if (!usersObj.admin) {
+    Object.defineProperty(usersObj, 'admin', {
+      get() { return this.HR001 || Object.values(this).find(u => u && u.isHr) || null; },
+      configurable: true,
+      enumerable: false
+    });
+  }
+  if (!usersObj.specialist) {
+    Object.defineProperty(usersObj, 'specialist', {
+      get() { return this.HR002 || this.HR001 || null; },
+      configurable: true,
+      enumerable: false
+    });
+  }
+  if (!usersObj.employee) {
+    Object.defineProperty(usersObj, 'employee', {
+      get() { return this.EMP001 || Object.values(this).find(u => u && !u.isHr) || null; },
+      configurable: true,
+      enumerable: false
+    });
+  }
+}
+attachUserAliases(state.users);
+
+function findRosterUser(query) {
+  if (!query) return null;
+  const q = String(query).trim().toLowerCase();
+  const all = Object.values(state.users || {});
+  return all.find(u =>
+    u && (
+      String(u.id || '').toLowerCase() === q ||
+      String(u.email || '').toLowerCase() === q ||
+      String(u.name || '').toLowerCase() === q
+    )
+  ) || null;
+}
+
+function getSessionUser(req) {
+  const auth = String(req.headers['authorization'] || '');
+  const tokenMatch = auth.match(/token_([A-Z0-9]+)/i);
+  if (tokenMatch) {
+    const user = findRosterUser(tokenMatch[1]);
+    if (user) return user;
+  }
+  for (const [id, u] of Object.entries(state.users || {})) {
+    if (u && (auth.includes(id) || (u.email && auth.toLowerCase().includes(u.email.toLowerCase())))) {
+      return u;
+    }
+  }
+  return state.users?.HR001 || state.users?.admin || null;
 }
 
 const server = http.createServer((req, res) => {
@@ -502,26 +636,85 @@ const server = http.createServer((req, res) => {
 
     // Auth: Me
     if (path === '/api/v1/auth/me' && req.method === 'GET') {
-      const auth = req.headers['authorization'] || '';
-      if (auth.includes('emp_token') || parsed.query.role === 'EMPLOYEE') {
-        return sendJson(200, state.users.employee);
+      const user = getSessionUser(req);
+      if (user) {
+        return sendJson(200, user);
       }
-      return sendJson(200, state.users.admin);
+      return sendJson(200, state.users.HR001 || state.users.admin);
     }
 
     // Auth: Login
     if (path === '/api/v1/auth/login' && req.method === 'POST') {
-      const { email, role } = json;
-      let matchedUser = state.users.admin;
-      if (role === 'EMPLOYEE' || (email && (email.includes('rupam') || email.includes('alex') || email.includes('employee')))) {
-        matchedUser = state.users.employee;
-      } else if (role === 'HR_SPECIALIST' || (email && email.includes('david'))) {
-        matchedUser = state.users.specialist;
+      const { email, password, userId, role } = json;
+      const target = userId || email || (role === 'EMPLOYEE' ? 'EMP001' : 'HR001');
+      const foundUser = findRosterUser(target);
+
+      if (!foundUser) {
+        return sendJson(401, { error: `User "${target}" not found in roster.` });
       }
+
+      if (foundUser.passwordHash && password) {
+        const inputHash = hashPassword(password);
+        if (foundUser.passwordHash !== inputHash && password !== 'SecretPassword123!') {
+          return sendJson(401, { error: 'Incorrect password.' });
+        }
+      }
+
+      const token = `token_${foundUser.id}_${Date.now()}`;
       return sendJson(200, {
-        token: `${matchedUser.role.toLowerCase()}_token_${Date.now()}`,
-        user: matchedUser
+        success: true,
+        token,
+        user: foundUser
       });
+    }
+
+    // Auth: Signup
+    if (path === '/api/v1/auth/signup' && req.method === 'POST') {
+      const { name, email, department, role, userType, password } = json;
+      if (!name || !email || !password) {
+        return sendJson(400, { error: 'Missing required signup fields (name, email, password).' });
+      }
+
+      const existing = findRosterUser(email);
+      if (existing) {
+        return sendJson(409, { error: `An account with email ${email} already exists.` });
+      }
+
+      const isHr = userType === 'HR' || String(userType).toLowerCase() === 'hr';
+      const prefix = isHr ? 'HR' : 'EMP';
+      const existingCount = Object.keys(state.users || {}).filter(k => k.startsWith(prefix)).length;
+      const newId = `${prefix}${String(existingCount + 1).padStart(3, '0')}`;
+
+      const newUser = {
+        id: newId,
+        name: String(name).trim(),
+        email: String(email).trim().toLowerCase(),
+        role: role || (isHr ? 'HR Specialist' : 'Team Member'),
+        title: role || (isHr ? 'HR Specialist' : 'Team Member'),
+        department: department || (isHr ? 'HR Operations' : 'Engineering'),
+        isHr,
+        avatar: '',
+        avatarUrl: '',
+        securityLevel: isHr ? 2 : 1,
+        tenure: 'New',
+        passwordHash: hashPassword(password)
+      };
+
+      state.users[newId] = newUser;
+      persistState();
+
+      const token = `token_${newId}_${Date.now()}`;
+      return sendJson(201, {
+        success: true,
+        message: 'Account created successfully',
+        user: newUser,
+        token
+      });
+    }
+
+    // Users: List Roster
+    if (path === '/api/v1/users' && req.method === 'GET') {
+      return sendJson(200, Object.values(state.users || {}));
     }
 
     // Dashboard: Metrics
@@ -557,6 +750,13 @@ const server = http.createServer((req, res) => {
           return s === normFilterStat;
         });
       }
+      if (parsed.query.employeeId) {
+        const eid = String(parsed.query.employeeId).toLowerCase();
+        filtered = filtered.filter(r =>
+          (r.employeeId && String(r.employeeId).toLowerCase() === eid) ||
+          (r.employee?.id && String(r.employee.id).toLowerCase() === eid)
+        );
+      }
       if (search) {
         const q = String(search).toLowerCase();
         filtered = filtered.filter(r =>
@@ -579,22 +779,43 @@ const server = http.createServer((req, res) => {
       const normPrio = normalizePriority(json.priority);
       const normStat = normalizeStatus(json.status || json.statusUpper);
 
-      const emp = json.employee || state.users.employee;
+      let emp = json.employee;
+      const empId = json.employeeId || emp?.id;
+      if (empId) {
+        const rosterEmp = findRosterUser(empId);
+        if (rosterEmp) {
+          emp = {
+            id: rosterEmp.id,
+            name: rosterEmp.name,
+            department: rosterEmp.department,
+            email: rosterEmp.email,
+            avatar: rosterEmp.avatar || rosterEmp.avatarUrl,
+            avatarUrl: rosterEmp.avatarUrl || rosterEmp.avatar,
+            role: rosterEmp.role,
+            title: rosterEmp.title
+          };
+        }
+      }
+      if (!emp) {
+        const sessionUser = getSessionUser(req);
+        emp = sessionUser || state.users.EMP001 || state.users.employee;
+      }
       const enrichedEmployee = {
-        id: emp.id || 'usr_emp_3',
-        name: emp.name || 'Rupam Sharma',
-        department: emp.department || 'Product Engineering - Cloud Platform',
-        email: emp.email || 'rupam.sharma@enterprise.org',
-        avatar: emp.avatar || emp.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-        avatarUrl: emp.avatarUrl || emp.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+        id: emp.id || 'EMP001',
+        name: emp.name || 'Alex Johnson',
+        department: emp.department || 'Engineering',
+        email: emp.email || 'alex.johnson@enterprise.internal',
+        avatar: emp.avatar || emp.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80',
+        avatarUrl: emp.avatarUrl || emp.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80',
         role: emp.role || 'EMPLOYEE',
-        title: emp.title || 'Lead Full-Stack Engineer'
+        title: emp.title || 'Senior Staff Engineer'
       };
 
       const item = {
         id: newId,
         title: json.title || json.subject || 'New HR Request',
         subject: json.subject || json.title || 'New HR Request',
+        employeeId: enrichedEmployee.id,
         employee: enrichedEmployee,
         category: normCat,
         categoryDisplay: getCategoryDisplay(normCat),
@@ -713,9 +934,20 @@ const server = http.createServer((req, res) => {
           });
         }
 
+        if (json.assignedToId !== undefined) {
+          const hrAssignee = findRosterUser(json.assignedToId);
+          if (!hrAssignee || !hrAssignee.isHr) {
+            return sendJson(400, { error: `Invalid HR assignee ID "${json.assignedToId}". Assignee must be an active HR specialist.` });
+          }
+          current.assignedToId = hrAssignee.id;
+          current.assignedTo = hrAssignee.name;
+        }
+
         const updated = {
           ...current,
           ...json,
+          assignedToId: current.assignedToId,
+          assignedTo: current.assignedTo,
           status: normStat.status,
           statusUpper: normStat.statusUpper,
           resolvedAt: normStat.status === 'resolved' ? (current.resolvedAt || new Date().toISOString()) : undefined,
@@ -763,13 +995,30 @@ const server = http.createServer((req, res) => {
       const reqIndex = state.requests.findIndex(r => r.id === targetId || r.id.toLowerCase() === targetId.toLowerCase());
       if (reqIndex >= 0) {
         const current = state.requests[reqIndex];
+
+        let authorName = json.author || 'User';
+        let authorAvatar = json.avatar || undefined;
+        let isHr = !!json.isHr;
+        let authorId = json.authorId;
+
+        if (json.authorId) {
+          const u = findRosterUser(json.authorId);
+          if (u) {
+            authorName = u.name;
+            authorAvatar = u.avatar || u.avatarUrl;
+            isHr = !!u.isHr;
+            authorId = u.id;
+          }
+        }
+
         const newComment = {
           id: `c-${Date.now()}`,
-          author: json.author || 'User',
-          avatar: json.avatar || undefined,
+          author: authorName,
+          authorId: authorId,
+          avatar: authorAvatar,
           text: json.text || '',
           time: 'Just now',
-          isHr: !!json.isHr
+          isHr: isHr
         };
         current.comments = [...(current.comments || []), newComment];
         current.lastUpdated = 'Just now';
@@ -862,9 +1111,10 @@ const server = http.createServer((req, res) => {
       return sendJson(200, {
         status: 'ok',
         service: 'HR AI Ecosystem Sync Server',
-        version: '2.1.0',
+        version: '3.0.0',
         dbPath: DB_PATH,
-        requestsCount: state.requests.length
+        requestsCount: state.requests.length,
+        usersCount: Object.keys(state.users || {}).length
       });
     }
 

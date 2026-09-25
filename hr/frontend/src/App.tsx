@@ -460,13 +460,13 @@ function PortalRouter() {
     window.location.port === '3000'
   );
 
-  const isEmployee = (user?.role as string) === 'EMPLOYEE' || urlPortal === 'employee' || isEmployeePort;
+  const isEmployee = !user?.isHr || (user?.role as string) === 'EMPLOYEE' || urlPortal === 'employee' || isEmployeePort;
 
   useEffect(() => {
     if (user) {
       setPortalMode(isEmployee ? 'employee' : 'hr');
     }
-  }, [isEmployee, user?.role, setPortalMode]);
+  }, [isEmployee, user?.isHr, user?.role, setPortalMode]);
 
   if (isSplitView) {
     return <SplitWorkflowView />;
@@ -486,20 +486,20 @@ function PortalRouter() {
     return <LoginView />;
   }
 
-  if (urlPortal === 'employee' || (isEmployeePort && user.role === 'EMPLOYEE')) {
+  if (urlPortal === 'employee' || (isEmployeePort && (!user.isHr || user.role === 'EMPLOYEE'))) {
     return <EmployeePortal />;
   }
 
-  if (urlPortal === 'hr' && user.role !== 'EMPLOYEE') {
+  if (urlPortal === 'hr' && user.isHr) {
     return <HROperationsPortal />;
   }
 
-  // Role: EMPLOYEE -> Show User / Employee Self-Service Portal
-  if (user.role === 'EMPLOYEE') {
+  // Role: !user.isHr or EMPLOYEE -> Show User / Employee Self-Service Portal
+  if (!user.isHr || user.role === 'EMPLOYEE') {
     return <EmployeePortal />;
   }
 
-  // Role: HR_ADMIN or HR_SPECIALIST -> Show HR Operations Cockpit
+  // Role: HR_ADMIN or HR_SPECIALIST or user.isHr -> Show HR Operations Cockpit
   return <HROperationsPortal />;
 }
 

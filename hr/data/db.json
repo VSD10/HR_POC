@@ -1,13 +1,13 @@
 {
   "metrics": {
     "openRequests": {
-      "count": 4,
+      "count": 7,
       "changePercent": 0,
-      "comparisonText": "4 active"
+      "comparisonText": "7 active"
     },
     "highPriority": {
-      "count": 2,
-      "requiresAttention": 2
+      "count": 4,
+      "requiresAttention": 4
     },
     "pendingHRActions": {
       "count": 0,
@@ -20,7 +20,7 @@
     },
     "avgSla": "0m",
     "resolvedOvernight": 5,
-    "aiTriagedToday": 4,
+    "aiTriagedToday": 7,
     "aiAssistedCases": 0,
     "draftsGenerated": 0
   },
@@ -28,35 +28,35 @@
     "7D": {
       "range": "7D",
       "labels": [
-        "Thu",
-        "Fri",
         "Sat",
         "Sun",
         "Mon",
         "Tue",
-        "Wed"
+        "Wed",
+        "Thu",
+        "Fri"
       ],
       "incoming": [
-        3,
         0,
         0,
         0,
         0,
+        6,
         0,
-        6
+        3
       ],
       "resolved": [
-        3,
         0,
         0,
         0,
         0,
+        2,
         0,
-        2
+        0
       ],
-      "openTotal": 4,
-      "receivedToday": 6,
-      "resolvedToday": 2
+      "openTotal": 7,
+      "receivedToday": 3,
+      "resolvedToday": 0
     },
     "30D": {
       "range": "30D",
@@ -69,18 +69,18 @@
       "incoming": [
         0,
         0,
-        0,
+        3,
         9
       ],
       "resolved": [
         0,
         0,
-        0,
-        5
+        3,
+        2
       ],
-      "openTotal": 4,
-      "receivedToday": 6,
-      "resolvedToday": 2
+      "openTotal": 7,
+      "receivedToday": 3,
+      "resolvedToday": 0
     },
     "90D": {
       "range": "90D",
@@ -92,19 +92,175 @@
       "incoming": [
         0,
         0,
-        9
+        12
       ],
       "resolved": [
         0,
         0,
         5
       ],
-      "openTotal": 4,
-      "receivedToday": 6,
-      "resolvedToday": 2
+      "openTotal": 7,
+      "receivedToday": 3,
+      "resolvedToday": 0
     }
   },
   "requests": [
+    {
+      "id": "REQ-7282",
+      "title": "David Chen Fiscal Audit Verification",
+      "subject": "David Chen Fiscal Audit Verification",
+      "employeeId": "EMP004",
+      "employee": {
+        "id": "EMP004",
+        "name": "David Chen",
+        "department": "Finance & Operations",
+        "email": "david.chen@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+        "role": "Financial Analyst",
+        "title": "Financial Analyst"
+      },
+      "category": "documents",
+      "categoryDisplay": "Documents",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-25T11:31:40.091Z",
+      "createdDate": "Sep 25, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "DOCUMENTS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Fiscal Q3 end closing verification statement.",
+      "tags": [
+        "documents"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 25, 2026, 11:31 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "David Chen"
+        }
+      ],
+      "comments": [],
+      "assignedToId": "HR003",
+      "assignedTo": "Elena Rostova",
+      "resolutionNotes": "",
+      "lastUpdated": "Just now"
+    },
+    {
+      "id": "REQ-7248",
+      "title": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "subject": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "employeeId": "EMP002",
+      "employee": {
+        "id": "EMP002",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+        "role": "Lead Full-Stack Engineer",
+        "title": "Lead Full-Stack Engineer"
+      },
+      "category": "documents",
+      "categoryDisplay": "Documents",
+      "priority": "medium",
+      "priorityDisplay": "Medium",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-25T11:31:40.060Z",
+      "createdDate": "Sep 25, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "DOCUMENTS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Domain cert renewal verification.",
+      "tags": [
+        "documents"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 25, 2026, 11:31 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Rupam Sharma"
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": "REQ-3724",
+      "title": "Alex Private Test Ticket - GPU Cluster Access",
+      "subject": "Alex Private Test Ticket - GPU Cluster Access",
+      "employeeId": "EMP001",
+      "employee": {
+        "id": "EMP001",
+        "name": "Alex Johnson",
+        "department": "Engineering",
+        "email": "alex.johnson@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "role": "Senior Staff Engineer",
+        "title": "Senior Staff Engineer"
+      },
+      "category": "benefits",
+      "categoryDisplay": "Benefits & Info",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-25T11:31:39.983Z",
+      "createdDate": "Sep 25, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "BENEFITS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Need access to machine learning training nodes.",
+      "tags": [
+        "benefits"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 25, 2026, 11:31 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Alex Johnson"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790335900153",
+          "author": "Marcus Vance",
+          "authorId": "HR002",
+          "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+          "text": "Marcus Vance HR reply: reviewed GPU cluster authorization.",
+          "time": "Just now",
+          "isHr": true
+        },
+        {
+          "id": "c-1790335900169",
+          "author": "Alex Johnson",
+          "authorId": "EMP001",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "Alex Johnson employee reply: thank you for checking the GPU nodes.",
+          "time": "Just now",
+          "isHr": false
+        }
+      ],
+      "lastUpdated": "Just now",
+      "assignedToId": "HR002",
+      "assignedTo": "Marcus Vance",
+      "resolutionNotes": ""
+    },
     {
       "id": "REQ-1058",
       "title": "Experience letter and tenure certificate",
@@ -557,6 +713,45 @@
   ],
   "triageQueue": [
     {
+      "id": "TRG-1790335900091",
+      "requestId": "REQ-7282",
+      "title": "David Chen Fiscal Audit Verification",
+      "employeeName": "David Chen",
+      "predictedCategory": "documents",
+      "confidenceScore": 0.96,
+      "urgencyScore": "HIGH",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Documents.",
+      "suggestedAction": "Route to Documents specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790335900061",
+      "requestId": "REQ-7248",
+      "title": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "employeeName": "Rupam Sharma",
+      "predictedCategory": "documents",
+      "confidenceScore": 0.96,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Documents.",
+      "suggestedAction": "Route to Documents specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790335900008",
+      "requestId": "REQ-3724",
+      "title": "Alex Private Test Ticket - GPU Cluster Access",
+      "employeeName": "Alex Johnson",
+      "predictedCategory": "benefits",
+      "confidenceScore": 0.96,
+      "urgencyScore": "HIGH",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Benefits & Info.",
+      "suggestedAction": "Route to Benefits & Info specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
       "id": "TRG-1790159621123",
       "requestId": "REQ-1058",
       "title": "Experience letter and tenure certificate",
@@ -622,20 +817,20 @@
     {
       "category": "benefits",
       "name": "Health & Benefits",
-      "count": 1,
-      "percentage": 11
+      "count": 2,
+      "percentage": 17
     },
     {
       "category": "leave",
       "name": "Leave & Attendance",
       "count": 4,
-      "percentage": 44
+      "percentage": 33
     },
     {
       "category": "documents",
       "name": "Letters & Verification",
-      "count": 1,
-      "percentage": 11
+      "count": 3,
+      "percentage": 25
     },
     {
       "category": "compliance",
@@ -645,6 +840,66 @@
     }
   ],
   "activities": [
+    {
+      "id": "ACT-1790335900201",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-3724 to SUBMITTED",
+      "timeAgo": "Just now",
+      "subText": "Alex Private Test Ticket - GPU Cluster Access",
+      "tag": {
+        "text": "SUBMITTED",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900122",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-7282 to SUBMITTED",
+      "timeAgo": "Just now",
+      "subText": "David Chen Fiscal Audit Verification",
+      "tag": {
+        "text": "SUBMITTED",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900091",
+      "actorType": "user",
+      "actorName": "David Chen",
+      "actionText": "David Chen submitted REQ-7282 (Documents)",
+      "timeAgo": "Just now",
+      "subText": "David Chen Fiscal Audit Verification",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900061",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-7248 (Documents)",
+      "timeAgo": "Just now",
+      "subText": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900008",
+      "actorType": "user",
+      "actorName": "Alex Johnson",
+      "actionText": "Alex Johnson submitted REQ-3724 (Benefits & Info)",
+      "timeAgo": "Just now",
+      "subText": "Alex Private Test Ticket - GPU Cluster Access",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
     {
       "id": "ACT-1790159621123",
       "actorType": "user",
@@ -839,29 +1094,117 @@
     }
   ],
   "users": {
-    "admin": {
-      "id": "usr_admin_1",
+    "HR001": {
+      "id": "HR001",
       "name": "Sarah Jenkins",
       "email": "sarah.jenkins@enterprise.internal",
-      "role": "HR_ADMIN",
+      "role": "HR Operations Lead",
       "title": "HR Operations Lead",
-      "avatarUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0"
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+      "avatarUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+      "securityLevel": 3,
+      "tenure": "5 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
     },
-    "specialist": {
-      "id": "usr_spec_2",
-      "name": "David Chen",
-      "email": "david.chen@enterprise.internal",
-      "role": "HR_SPECIALIST",
-      "title": "Senior People Partner",
-      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+    "HR002": {
+      "id": "HR002",
+      "name": "Marcus Vance",
+      "email": "marcus.vance@enterprise.internal",
+      "role": "Senior HR Benefits & Leave Specialist",
+      "title": "Senior HR Benefits & Leave Specialist",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 2,
+      "tenure": "3 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
     },
-    "employee": {
-      "id": "usr_emp_3",
+    "HR003": {
+      "id": "HR003",
+      "name": "Elena Rostova",
+      "email": "elena.rostova@enterprise.internal",
+      "role": "Payroll & Compliance Admin",
+      "title": "Payroll & Compliance Admin",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 2,
+      "tenure": "4 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP001": {
+      "id": "EMP001",
+      "name": "Alex Johnson",
+      "email": "alex.johnson@enterprise.internal",
+      "role": "Senior Staff Engineer",
+      "title": "Senior Staff Engineer",
+      "department": "Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "4 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP002": {
+      "id": "EMP002",
       "name": "Rupam Sharma",
       "email": "rupam.sharma@enterprise.org",
-      "role": "EMPLOYEE",
+      "role": "Lead Full-Stack Engineer",
       "title": "Lead Full-Stack Engineer",
-      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+      "department": "Product Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "2 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP003": {
+      "id": "EMP003",
+      "name": "Maya Patel",
+      "email": "maya.patel@enterprise.internal",
+      "role": "Product Manager",
+      "title": "Product Manager",
+      "department": "Design & Product",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "3 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP004": {
+      "id": "EMP004",
+      "name": "David Chen",
+      "email": "david.chen@enterprise.internal",
+      "role": "Financial Analyst",
+      "title": "Financial Analyst",
+      "department": "Finance & Operations",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "1 year",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "HR004": {
+      "id": "HR004",
+      "name": "Kavitha Iyer",
+      "email": "kavitha.iyer@enterprise.internal",
+      "role": "Recruiter",
+      "title": "Recruiter",
+      "department": "Talent Acquisition",
+      "isHr": true,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 2,
+      "tenure": "New",
+      "passwordHash": "25d962d403426699fe878bd8eba6fc9df321fac748aeb01f57106cf3036d0185"
     }
   }
 }
