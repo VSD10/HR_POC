@@ -52,7 +52,7 @@ export const AttentionQueue: React.FC<AttentionQueueProps> = ({
                       {item.title}
                     </h4>
                     <p className="text-xs text-white/50">
-                      Employee: {typeof item.employee === 'object' && item.employee ? (item.employee.name || 'Employee') : (item.employee || 'Employee')}
+                      Employee: {item.employee.name}
                     </p>
                   </div>
                   <span

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   LayoutDashboard,
   Bot,
@@ -13,10 +13,9 @@ import {
   ShieldCheck,
   FileText,
   X,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { ScreenId } from '../types';
+import { ASSETS } from '../data/mockData';
 
 interface SidebarProps {
   currentScreen?: ScreenId;
@@ -32,8 +31,6 @@ interface SidebarProps {
   onOpenApplyLeave?: () => void;
   onOpenPayslip?: () => void;
   onOpenBankUpdate?: () => void;
-  isCollapsed?: boolean;
-  onToggleCollapse?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -50,37 +47,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenApplyLeave,
   onOpenPayslip,
   onOpenBankUpdate,
-  isCollapsed: isCollapsedProp,
-  onToggleCollapse,
 }) => {
   const active = activeScreen || currentScreen || 'dashboard';
   const handleNavigate = onNavigate || onSelectScreen || (() => {});
   const badgeCount = unreadCount ?? unreadNotificationsCount ?? 0;
   const isDrawerOpen = isMobileOpen ?? isOpenMobile ?? false;
-
-  const [localCollapsed, setLocalCollapsed] = useState(() => {
-    try {
-      return localStorage.getItem('hr_sidebar_collapsed') === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  const isCollapsed = isCollapsedProp !== undefined ? isCollapsedProp : localCollapsed;
-
-  const toggleCollapse = () => {
-    if (onToggleCollapse) {
-      onToggleCollapse();
-    } else {
-      setLocalCollapsed((prev) => {
-        const next = !prev;
-        try {
-          localStorage.setItem('hr_sidebar_collapsed', String(next));
-        } catch {}
-        return next;
-      });
-    }
-  };
 
   const handleNavClick = (screen: ScreenId) => {
     handleNavigate(screen);
@@ -142,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       icon: User,
     },
     {
-      id: 'help-support' as ScreenId,
+      id: 'help-and-support' as ScreenId,
       label: 'Help & Support',
       icon: HelpCircle,
     },
@@ -150,81 +121,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const sidebarContent = (
     <div className="flex flex-col flex-1 min-h-0">
-      {/* Top Branding Section with Collapse/Expand Control directly underneath */}
-      {isCollapsed ? (
-        /* Collapsed Header */
-        <div className="flex flex-col items-center gap-2 pb-2.5 border-b border-white/60 dark:border-white/10 shrink-0">
-          <button
-            onClick={() => handleNavClick('dashboard')}
-            className="flex items-center justify-center p-1 rounded-lg hover:bg-white/60 dark:hover:bg-white/10 transition-colors focus:outline-none cursor-pointer group"
-            title="Employee Portal - Dashboard"
-            aria-label="Employee Portal - Dashboard"
-          >
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0D9488] to-[#06B6D4] text-white flex items-center justify-center shadow-xs transition-transform group-hover:scale-105 shrink-0">
-              <span className="material-symbols-outlined text-[16px]">space_dashboard</span>
-            </div>
-          </button>
-          <button
-            type="button"
-            onClick={toggleCollapse}
-            className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white hover:bg-white/80 dark:hover:bg-white/10 border border-slate-200/70 dark:border-white/10 shadow-2xs transition-all focus:outline-none focus:ring-2 focus:ring-teal-500/30 cursor-pointer"
-            title="Expand sidebar"
-            aria-label="Expand sidebar"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-      ) : (
-        /* Expanded Header */
-        <div className="border-b border-white/60 dark:border-white/10 pb-2.5 shrink-0">
-          <div className="h-10 px-1 flex items-center justify-between">
-            <button
-              onClick={() => handleNavClick('dashboard')}
-              className="flex items-center gap-2.5 text-left focus:outline-none group min-w-0 cursor-pointer"
-            >
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0D9488] to-[#06B6D4] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0">
-                <span className="material-symbols-outlined text-[16px]">space_dashboard</span>
-              </div>
-              <div className="flex flex-col leading-none truncate">
-                <span className="font-bold text-[14px] text-[#0F172A] dark:text-white tracking-tight truncate">
-                  Employee Portal
-                </span>
-                <span className="text-[9px] font-semibold text-[#0D9488] dark:text-teal-400 tracking-wider uppercase mt-1 truncate">
-                  Self-Service Desk
-                </span>
-              </div>
-            </button>
-            {isDrawerOpen && (
-              <button
-                onClick={onCloseMobile}
-                className="p-1 rounded-lg text-slate-500 hover:bg-white/60 dark:hover:bg-white/10 md:hidden cursor-pointer"
-                aria-label="Close menu"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
+      {/* Logo Header */}
+      <div className="h-14 px-3 flex items-center justify-between border-b border-white/60 dark:border-white/10 shrink-0">
+        <button
+          onClick={() => handleNavClick('dashboard')}
+          className="flex items-center gap-2.5 text-left focus:outline-none group"
+        >
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0D9488] to-[#06B6D4] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0">
+            <span className="material-symbols-outlined text-[18px]">space_dashboard</span>
           </div>
-
-          {/* Collapse Control Directly Under Branding */}
-          <div className="hidden md:flex items-center justify-between mt-2 pt-1.5 px-1 border-t border-slate-200/40 dark:border-white/5">
-            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 dark:text-slate-400">
-              Navigation
+          <div className="flex flex-col leading-none">
+            <span className="font-bold text-[15px] text-[#0F172A] dark:text-white tracking-tight whitespace-nowrap">
+              Employee Portal
             </span>
-            <button
-              type="button"
-              onClick={toggleCollapse}
-              className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-[#0F172A] dark:hover:text-white hover:bg-white/80 dark:hover:bg-white/10 border border-slate-200/70 dark:border-white/10 shadow-2xs transition-all focus:outline-none focus:ring-2 focus:ring-teal-500/30 cursor-pointer"
-              title="Collapse sidebar"
-              aria-label="Collapse sidebar"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
+            <span className="text-[10px] font-semibold text-[#0D9488] tracking-wider uppercase mt-1 whitespace-nowrap">
+              Self-Service Desk
+            </span>
           </div>
-        </div>
-      )}
+        </button>
+        {isDrawerOpen && (
+          <button
+            onClick={onCloseMobile}
+            className="p-1 rounded-lg text-slate-500 hover:bg-white/60 dark:hover:bg-white/10 md:hidden"
+            aria-label="Close menu"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+      </div>
 
-      {/* Main Navigation List */}
-      <nav className="flex-1 px-0.5 py-2 space-y-1 overflow-y-auto min-h-0">
+      {/* Main Navigation */}
+      <nav className="flex-1 px-1 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = active === item.id;
@@ -232,79 +159,61 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              title={item.label}
-              aria-label={item.label}
-              className={`relative flex items-center ${
-                isCollapsed ? 'justify-center p-2.5' : 'gap-2.5 px-2.5 py-2'
-              } w-full rounded-xl transition-all text-left text-[13px] cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all text-left text-[14px] ${
                 isActive
-                  ? 'bg-teal-50 dark:bg-teal-500/20 text-teal-800 dark:text-teal-300 font-semibold shadow-xs border-l-[3px] border-[#0D9488] backdrop-blur-md'
-                  : 'text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white font-medium'
+                  ? 'bg-white/90 text-[#0F172A] font-semibold shadow-sm border-l-4 border-[#0D9488] backdrop-blur-md'
+                  : 'text-[#334155] hover:bg-white/60 hover:text-[#0F172A] font-medium'
               }`}
             >
               <Icon
-                className={`w-4 h-4 flex-shrink-0 transition-colors ${
-                  isActive ? 'text-[#0D9488] dark:text-teal-400' : 'text-slate-400 dark:text-slate-400 group-hover:text-slate-600'
+                className={`w-5 h-5 flex-shrink-0 ${
+                  isActive ? 'text-[#0D9488]' : 'text-slate-500'
                 }`}
               />
-              {!isCollapsed && <span className="flex-1 truncate">{item.label}</span>}
+              <span className="flex-1 truncate">{item.label}</span>
               {item.badge !== undefined && (
-                isCollapsed ? (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#0D9488] shadow-2xs" />
-                ) : (
-                  <span className="bg-[#0D9488] text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-full min-w-[18px] text-center shadow-2xs">
-                    {item.badge}
-                  </span>
-                )
+                <span className="bg-[#0D9488] text-white text-[11px] font-semibold px-2 py-0.5 rounded-full min-w-[20px] text-center shadow-xs">
+                  {item.badge}
+                </span>
               )}
             </button>
           );
         })}
       </nav>
 
-      {/* Quick Links Compact Glass Sub-panel */}
-      <div className={`crystal-glass-subtle rounded-xl mt-1.5 border border-slate-200/50 dark:border-white/10 shrink-0 ${isCollapsed ? 'p-1.5 flex flex-col items-center' : 'p-2.5'}`}>
-        {!isCollapsed && (
-          <div className="px-1.5 pb-1.5 text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-400 font-bold">
-            Quick Links
-          </div>
-        )}
-        <nav className={`space-y-0.5 ${isCollapsed ? 'w-full' : ''}`}>
+      {/* Quick Links Glass Sub-panel */}
+      <div className="p-3 crystal-glass-subtle rounded-xl mt-2">
+        <div className="px-2 pb-2 text-[11px] uppercase tracking-wider text-[#64748B] font-bold">
+          Quick Links
+        </div>
+        <nav className="space-y-0.5">
           <button
             onClick={() => handleQuickLink('leave')}
-            title="Leave Balance"
-            aria-label="Leave Balance"
-            className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'gap-2 px-2 py-1.5'} rounded-lg text-[12px] text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white transition-colors text-left group cursor-pointer`}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[13px] text-[#334155] hover:bg-white/70 hover:text-[#0F172A] transition-colors text-left"
           >
-            <CalendarCheck className="w-3.5 h-3.5 text-[#0D9488] dark:text-teal-400 flex-shrink-0 transition-transform group-hover:scale-110" />
-            {!isCollapsed && <span className="truncate">Leave Balance</span>}
+            <CalendarCheck className="w-4 h-4 text-[#0D9488] flex-shrink-0" />
+            <span>Leave Balance</span>
           </button>
           <button
             onClick={() => handleQuickLink('payslip')}
-            title="Payslip"
-            aria-label="Payslip"
-            className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'gap-2 px-2 py-1.5'} rounded-lg text-[12px] text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white transition-colors text-left group cursor-pointer`}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[13px] text-[#334155] hover:bg-white/70 hover:text-[#0F172A] transition-colors text-left"
           >
-            <CreditCard className="w-3.5 h-3.5 text-[#0D9488] dark:text-teal-400 flex-shrink-0 transition-transform group-hover:scale-110" />
-            {!isCollapsed && <span className="truncate">Payslip</span>}
+            <CreditCard className="w-4 h-4 text-[#0D9488] flex-shrink-0" />
+            <span>Payslip</span>
           </button>
           <button
             onClick={() => handleQuickLink('policies')}
-            title="HR Policies"
-            aria-label="HR Policies"
-            className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'gap-2 px-2 py-1.5'} rounded-lg text-[12px] text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white transition-colors text-left group cursor-pointer`}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[13px] text-[#334155] hover:bg-white/70 hover:text-[#0F172A] transition-colors text-left"
           >
-            <ShieldCheck className="w-3.5 h-3.5 text-[#0D9488] dark:text-teal-400 flex-shrink-0 transition-transform group-hover:scale-110" />
-            {!isCollapsed && <span className="truncate">HR Policies</span>}
+            <ShieldCheck className="w-4 h-4 text-[#0D9488] flex-shrink-0" />
+            <span>HR Policies</span>
           </button>
           <button
             onClick={() => handleQuickLink('forms')}
-            title="Forms & Templates"
-            aria-label="Forms & Templates"
-            className={`w-full flex items-center ${isCollapsed ? 'justify-center p-2' : 'gap-2 px-2 py-1.5'} rounded-lg text-[12px] text-slate-600 dark:text-slate-300 hover:bg-white/70 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white transition-colors text-left group cursor-pointer`}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[13px] text-[#334155] hover:bg-white/70 hover:text-[#0F172A] transition-colors text-left"
           >
-            <FileText className="w-3.5 h-3.5 text-[#0D9488] dark:text-teal-400 flex-shrink-0 transition-transform group-hover:scale-110" />
-            {!isCollapsed && <span className="truncate">Forms & Templates</span>}
+            <FileText className="w-4 h-4 text-[#0D9488] flex-shrink-0" />
+            <span>Forms & Templates</span>
           </button>
         </nav>
       </div>
@@ -314,8 +223,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {/* Desktop Non-Overlapping Fixed Sidebar Rail */}
-      <aside className={`hidden md:flex flex-col ${isCollapsed ? 'w-[68px]' : 'w-[230px]'} h-full shrink-0 z-20 transition-[width] duration-300 ease-in-out`}>
-        <div className={`h-full w-full crystal-glass rounded-2xl flex flex-col justify-between ${isCollapsed ? 'p-2' : 'p-2.5 sm:p-3'} shadow-glass-float border border-white/60 dark:border-white/10 transition-all duration-300`}>
+      <aside className="hidden md:flex flex-col w-64 h-full shrink-0 z-20">
+        <div className="h-full w-full crystal-glass rounded-2xl flex flex-col justify-between p-3.5 shadow-glass-float border border-white/60">
           {sidebarContent}
         </div>
       </aside>
@@ -327,7 +236,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"
             onClick={onCloseMobile}
           />
-          <aside className="relative w-64 max-w-[85vw] h-full crystal-glass p-3.5 shadow-2xl flex flex-col justify-between z-10 border-r border-white/60 dark:border-white/10">
+          <aside className="relative w-72 max-w-[85vw] h-full crystal-glass p-4 shadow-2xl flex flex-col justify-between z-10 border-r border-white/60">
             {sidebarContent}
           </aside>
         </div>

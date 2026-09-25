@@ -71,33 +71,9 @@ export interface HolidayItem {
 }
 
 export interface LeaveBalance {
-  casual: { remaining: number; total: number; used?: number };
-  sick: { remaining: number; total: number; used?: number };
-  earned: { remaining: number; total: number; used?: number };
-}
-
-export interface EmployeeProfile {
-  id: string;
-  name: string;
-  role: string;
-  department: string;
-  avatar: string;
-  email: string;
-  workLocation?: string;
-  location?: string;
-  manager: string;
-  joiningDate?: string;
-  joinDate?: string;
-  phone: string;
-  bankName?: string;
-  accountNumberMasked?: string;
-  ifsc?: string;
-  employeeId?: string;
-  bankDetails?: {
-    bankName: string;
-    accountNumber: string;
-    ifsc: string;
-  };
+  casual: { remaining: number; total: number };
+  sick: { remaining: number; total: number };
+  earned: { remaining: number; total: number };
 }
 
 export interface PolicyItem {

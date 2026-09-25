@@ -41,29 +41,29 @@ export const velocityDataset: Record<'7D' | '30D' | '90D', VelocityData> = {
   '7D': {
     range: '7D',
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    incoming: [16, 24, 28, 22, 34, 12, 19],
-    resolved: [14, 21, 26, 20, 31, 11, 18],
-    openTotal: 24,
-    receivedToday: 19,
-    resolvedToday: 18
+    incoming: [0, 0, 0, 0, 0, 0, 0],
+    resolved: [0, 0, 0, 0, 0, 0, 0],
+    openTotal: 0,
+    receivedToday: 0,
+    resolvedToday: 0
   },
   '30D': {
     range: '30D',
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-    incoming: [82, 95, 118, 104],
-    resolved: [78, 90, 112, 99],
-    openTotal: 24,
-    receivedToday: 19,
-    resolvedToday: 18
+    incoming: [0, 0, 0, 0],
+    resolved: [0, 0, 0, 0],
+    openTotal: 0,
+    receivedToday: 0,
+    resolvedToday: 0
   },
   '90D': {
     range: '90D',
-    labels: ['Jul', 'Aug', 'Sep'],
-    incoming: [320, 375, 412],
-    resolved: [305, 360, 396],
-    openTotal: 24,
-    receivedToday: 19,
-    resolvedToday: 18
+    labels: ['August', 'September', 'October'],
+    incoming: [0, 0, 0],
+    resolved: [0, 0, 0],
+    openTotal: 0,
+    receivedToday: 0,
+    resolvedToday: 0
   }
 };
 

@@ -133,31 +133,31 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
   return (
     <div className="w-full max-w-[1560px] mx-auto space-y-6">
       {/* Header Banner */}
-      <div className="crystal-glass rounded-2xl p-6 shadow-glass flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-white/80 dark:border-white/10">
+      <div className="crystal-glass rounded-2xl p-6 shadow-glass flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[24px] font-bold text-[#0F172A] dark:text-white">Raise an HR Request</h1>
-          <p className="text-[13px] text-[#334155] dark:text-slate-300 mt-0.5">
+          <h1 className="text-[24px] font-bold text-[#0F172A]">Raise an HR Request</h1>
+          <p className="text-[13px] text-[#334155] mt-0.5">
             Submit inquiries, document requests, and exceptions directly to People Operations.
           </p>
         </div>
         <button
           onClick={() => onNavigate('my-requests')}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/70 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-[13px] font-semibold text-[#0F172A] dark:text-white border border-white dark:border-white/10 shadow-xs"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/70 hover:bg-white text-[13px] font-semibold text-[#0F172A] border border-white shadow-xs"
         >
           <span>View My Existing Tickets</span>
         </button>
       </div>
 
       {submitted ? (
-        <div className="crystal-glass rounded-2xl shadow-glass p-12 text-center flex flex-col items-center justify-center space-y-4 max-w-xl mx-auto border border-white dark:border-white/10">
-          <div className="w-16 h-16 rounded-full bg-teal-50 dark:bg-teal-500/20 text-[#0D9488] dark:text-teal-400 flex items-center justify-center ring-8 ring-teal-50/60 dark:ring-teal-500/10">
+        <div className="crystal-glass rounded-2xl shadow-glass p-12 text-center flex flex-col items-center justify-center space-y-4 max-w-xl mx-auto border border-white">
+          <div className="w-16 h-16 rounded-full bg-teal-50 text-[#0D9488] flex items-center justify-center ring-8 ring-teal-50/60">
             <CheckCircle2 className="w-9 h-9" />
           </div>
-          <h3 className="text-[22px] font-bold text-[#0F172A] dark:text-white">Ticket Created Successfully!</h3>
-          <p className="text-[14px] text-slate-600 dark:text-slate-300">
-            Your request <strong className="font-mono text-[#0D9488] dark:text-teal-400">{createdId}</strong> has been logged and assigned to the relevant HR triage queue.
+          <h3 className="text-[22px] font-bold text-[#0F172A]">Ticket Created Successfully!</h3>
+          <p className="text-[14px] text-slate-600">
+            Your request <strong className="font-mono text-[#0D9488]">{createdId}</strong> has been logged and assigned to the relevant HR triage queue.
           </p>
-          <div className="p-4 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-white dark:border-white/10 text-left w-full text-[13px] space-y-1 text-slate-700 dark:text-slate-200">
+          <div className="p-4 rounded-xl bg-white/70 border border-white text-left w-full text-[13px] space-y-1 text-slate-700">
             <div><strong>Subject:</strong> {subject}</div>
             <div><strong>Category:</strong> {category}</div>
             <div><strong>Priority:</strong> {priority}</div>
@@ -166,7 +166,7 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
           <div className="flex gap-3 pt-2">
             <button
               onClick={() => onNavigate('my-requests')}
-              className="px-5 py-2.5 rounded-xl bg-[#0F172A] dark:bg-teal-600 text-white text-[13px] font-semibold hover:bg-slate-800 dark:hover:bg-teal-500 transition-all shadow-sm"
+              className="px-5 py-2.5 rounded-xl bg-[#0F172A] text-white text-[13px] font-semibold hover:bg-slate-800 transition-all shadow-sm"
             >
               Track in My Requests
             </button>
@@ -177,17 +177,17 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
                 setDescription('');
                 setAttachedFile(null);
               }}
-              className="px-5 py-2.5 rounded-xl bg-white/80 dark:bg-white/10 hover:bg-white dark:hover:bg-white/20 text-[13px] font-semibold text-[#0F172A] dark:text-white border border-white dark:border-white/10 transition-all"
+              className="px-5 py-2.5 rounded-xl bg-white/80 hover:bg-white text-[13px] font-semibold text-[#0F172A] border border-white transition-all"
             >
               Submit Another Request
             </button>
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="crystal-glass rounded-2xl shadow-glass p-6 sm:p-8 space-y-6 border border-white dark:border-white/10">
+        <form onSubmit={handleSubmit} className="crystal-glass rounded-2xl shadow-glass p-6 sm:p-8 space-y-6 border border-white">
           {/* 1. Category Selection */}
           <div className="space-y-3">
-            <label className="block text-[13px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <label className="block text-[13px] font-bold uppercase tracking-wider text-slate-500">
               1. Select Request Category
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -201,22 +201,22 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
                     onClick={() => setCategory(c.id)}
                     className={`p-4 rounded-2xl border text-left transition-all flex flex-col justify-between ${
                       isSelected
-                        ? 'bg-white dark:bg-slate-800 text-[#0F172A] dark:text-white border-teal-500 ring-2 ring-teal-500/20 shadow-md'
-                        : 'bg-white/60 dark:bg-slate-800/60 border-white dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-white/90 dark:hover:bg-slate-700'
+                        ? 'bg-white text-[#0F172A] border-teal-500 ring-2 ring-teal-500/20 shadow-md'
+                        : 'bg-white/60 border-white text-slate-700 hover:bg-white/90'
                     }`}
                   >
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${
                         isSelected
                           ? 'bg-[#0D9488] text-white'
-                          : 'bg-teal-500/10 text-[#0D9488] dark:text-teal-400'
+                          : 'bg-teal-500/10 text-[#0D9488]'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
                       <div className="text-[14px] font-bold leading-snug">{c.label}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 line-clamp-2">
+                      <div className="text-[11px] text-slate-500 mt-1 line-clamp-2">
                         {c.desc}
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
 
           {/* Quick template suggestions */}
           <div className="space-y-1.5">
-            <span className="text-[12px] font-semibold text-slate-500 dark:text-slate-400">
+            <span className="text-[12px] font-semibold text-slate-500">
               Frequently requested for {category}:
             </span>
             <div className="flex flex-wrap gap-2">
@@ -237,7 +237,7 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
                   key={i}
                   type="button"
                   onClick={() => setSubject(tpl)}
-                  className="px-3 py-1 rounded-lg bg-white/70 dark:bg-slate-800/70 hover:bg-white dark:hover:bg-slate-700 text-[12px] text-slate-700 dark:text-slate-200 border border-white dark:border-white/10 shadow-2xs transition-colors"
+                  className="px-3 py-1 rounded-lg bg-white/70 hover:bg-white text-[12px] text-slate-700 border border-white shadow-2xs transition-colors"
                 >
                   + {tpl}
                 </button>
@@ -248,7 +248,7 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
           {/* 2. Subject and Priority */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2 space-y-1">
-              <label className="block text-[13px] font-semibold text-[#0F172A] dark:text-white">
+              <label className="block text-[13px] font-semibold text-[#0F172A]">
                 Subject / Summary <span className="text-rose-500">*</span>
               </label>
               <input
@@ -256,19 +256,19 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Brief summary of your request"
-                className="w-full bg-white/90 dark:bg-slate-800/90 border border-white dark:border-white/10 rounded-xl px-4 py-2.5 text-[14px] text-[#0F172A] dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs focus:ring-2 focus:ring-teal-500/30 focus:outline-none"
+                className="w-full bg-white/90 border border-white rounded-xl px-4 py-2.5 text-[14px] text-[#0F172A] shadow-2xs focus:ring-2 focus:ring-teal-500/30 focus:outline-none"
                 required
               />
             </div>
 
             <div className="space-y-1">
-              <label className="block text-[13px] font-semibold text-[#0F172A] dark:text-white">
+              <label className="block text-[13px] font-semibold text-[#0F172A]">
                 Priority Level
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as RequestPriority)}
-                className="w-full bg-white/90 dark:bg-slate-800/90 border border-white dark:border-white/10 rounded-xl px-4 py-2.5 text-[14px] text-[#0F172A] dark:text-white shadow-2xs focus:ring-2 focus:ring-teal-500/30 focus:outline-none"
+                className="w-full bg-white/90 border border-white rounded-xl px-4 py-2.5 text-[14px] text-[#0F172A] shadow-2xs focus:ring-2 focus:ring-teal-500/30 focus:outline-none"
               >
                 <option value="Low">Low (Standard 48-72 hrs)</option>
                 <option value="Medium">Medium (Standard 24-48 hrs)</option>
@@ -280,7 +280,7 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
 
           {/* 3. Detailed Description */}
           <div className="space-y-1">
-            <label className="block text-[13px] font-semibold text-[#0F172A] dark:text-white">
+            <label className="block text-[13px] font-semibold text-[#0F172A]">
               Detailed Description <span className="text-rose-500">*</span>
             </label>
             <textarea
@@ -288,27 +288,27 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Provide all context, dates, reason, or specific particulars required by the HR team..."
               rows={4}
-              className="w-full bg-white/90 dark:bg-slate-800/90 border border-white dark:border-white/10 rounded-xl p-4 text-[14px] text-[#0F172A] dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs focus:ring-2 focus:ring-teal-500/30 focus:outline-none resize-none"
+              className="w-full bg-white/90 border border-white rounded-xl p-4 text-[14px] text-[#0F172A] placeholder:text-slate-400 shadow-2xs focus:ring-2 focus:ring-teal-500/30 focus:outline-none resize-none"
               required
             />
           </div>
 
           {/* 4. File Attachment Dropzone */}
           <div className="space-y-1.5">
-            <label className="block text-[13px] font-semibold text-[#0F172A] dark:text-white">
+            <label className="block text-[13px] font-semibold text-[#0F172A]">
               Supporting Documents (Optional)
             </label>
             <div
               onDragOver={(e) => e.preventDefault()}
               onDrop={handleFileDrop}
-              className="p-6 rounded-2xl bg-white/50 dark:bg-slate-800/50 border-2 border-dashed border-white dark:border-white/15 hover:border-teal-400/60 transition-all flex flex-col items-center justify-center text-center space-y-2 cursor-pointer"
+              className="p-6 rounded-2xl bg-white/50 border-2 border-dashed border-white hover:border-teal-400/60 transition-all flex flex-col items-center justify-center text-center space-y-2 cursor-pointer"
               onClick={() => document.getElementById('file-upload-input')?.click()}
             >
-              <UploadCloud className="w-8 h-8 text-[#0D9488] dark:text-teal-400" />
-              <div className="text-[13px] font-semibold text-[#0F172A] dark:text-white">
-                Drag & drop files here, or <span className="text-[#0D9488] dark:text-teal-400">browse files</span>
+              <UploadCloud className="w-8 h-8 text-[#0D9488]" />
+              <div className="text-[13px] font-semibold text-[#0F172A]">
+                Drag & drop files here, or <span className="text-[#0D9488]">browse files</span>
               </div>
-              <p className="text-[11px] text-slate-400 dark:text-slate-400">
+              <p className="text-[11px] text-slate-400">
                 Supports PDF, DOCX, PNG, JPG up to 25MB (e.g., medical certificates, receipts, cancelled cheque)
               </p>
               <input
@@ -320,15 +320,15 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
             </div>
 
             {attachedFile && (
-              <div className="p-3 rounded-xl bg-teal-50 dark:bg-teal-500/20 border border-teal-200/80 dark:border-teal-500/30 flex items-center justify-between text-[13px]">
-                <div className="flex items-center gap-2 text-teal-900 dark:text-teal-200 font-medium">
-                  <FileText className="w-4 h-4 text-[#0D9488] dark:text-teal-400" />
+              <div className="p-3 rounded-xl bg-teal-50 border border-teal-200/80 flex items-center justify-between text-[13px]">
+                <div className="flex items-center gap-2 text-teal-900 font-medium">
+                  <FileText className="w-4 h-4 text-[#0D9488]" />
                   <span>{attachedFile}</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setAttachedFile(null)}
-                  className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                  className="p-1 text-slate-400 hover:text-slate-700"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -337,7 +337,7 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
           </div>
 
           {/* Submitter details notice */}
-          <div className="p-3.5 rounded-xl bg-slate-100/70 dark:bg-white/10 text-[12px] text-slate-600 dark:text-slate-300 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl bg-slate-100/70 text-[12px] text-slate-600 flex items-center justify-between">
             <span>
               Submitting as: <strong>{CURRENT_USER.name}</strong> ({CURRENT_USER.employeeId}) • Department: {CURRENT_USER.department}
             </span>
@@ -349,13 +349,13 @@ export const RaiseRequestView: React.FC<RaiseRequestViewProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('dashboard')}
-              className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 dark:text-slate-300 hover:bg-white/80 dark:hover:bg-white/10 transition-colors"
+              className="px-5 py-2.5 rounded-xl text-[13px] font-semibold text-slate-600 hover:bg-white/80 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-[#0F172A] dark:bg-teal-600 hover:bg-slate-800 dark:hover:bg-teal-500 text-white text-[13px] font-semibold transition-all shadow-md active:scale-[0.98]"
+              className="px-6 py-2.5 rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white text-[13px] font-semibold transition-all shadow-md active:scale-[0.98]"
             >
               Submit Ticket to HR
             </button>

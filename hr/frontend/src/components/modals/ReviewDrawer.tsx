@@ -1,538 +1,391 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  X,
-  Send,
-  Sparkles,
-  Bot,
-  Copy,
-  Check,
-  RefreshCw,
-  MessageSquare,
-  Clock,
-  ShieldCheck,
-  BookOpen,
-  ArrowRight,
-  User,
-  CheckCircle2,
-  CornerDownRight,
-  FileText,
-  ChevronRight,
-  Maximize2,
-  Minimize2
-} from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
 import { RequestItem, RequestComment } from '../../types/hr';
+import { HR_USERS, getUserById } from '../../data/mockUsers';
+import { useAuth } from '../../context/AuthContext';
 import { hrService } from '../../services/hrService';
-import { MarkdownRenderer } from '../copilot/MarkdownRenderer';
+import { ShieldCheck, Send, MessageSquare, Clock, User, CheckCircle2 } from 'lucide-react';
 
 interface ReviewDrawerProps {
   item: RequestItem | null;
   onClose: () => void;
   onResolve: (id: string, notes: string) => void;
   onEscalate?: (id: string, notes: string) => void;
-  onAddComment?: (id: string, text: string) => Promise<any>;
+  onAssign?: (id: string, assignedToId: string, assignedToName: string) => void;
 }
 
 export const ReviewDrawer: React.FC<ReviewDrawerProps> = ({
   item,
   onClose,
   onResolve,
-  onEscalate,
-  onAddComment
+  onAssign
 }) => {
-  // State
-  const [draftReply, setDraftReply] = useState('');
-  const [isSendingReply, setIsSendingReply] = useState(false);
-  const [replyError, setReplyError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [notes, setNotes] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [assignedToId, setAssignedToId] = useState<string>('HR001');
+  const [assignedToName, setAssignedToName] = useState<string>('Sarah Jenkins');
+  const [comments, setComments] = useState<RequestComment[]>([]);
+  const [newCommentText, setNewCommentText] = useState('');
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [assignmentSuccess, setAssignmentSuccess] = useState(false);
 
-  // AI Copilot Expand / Collapse State (collapsible as a badge)
-  const [isAiExpanded, setIsAiExpanded] = useState(false);
-
-  // AI Copilot State
-  const [aiOutput, setAiOutput] = useState<{
-    type: 'draft' | 'summary' | 'policy' | 'custom';
-    text: string;
-    citations?: Array<{ title: string; section?: string; page?: number }>;
-  } | null>(null);
-  const [isAiLoading, setIsAiLoading] = useState(false);
-  const [aiQuery, setAiQuery] = useState('');
-  const [copied, setCopied] = useState(false);
-
-  // Resolution state
-  const [isResolving, setIsResolving] = useState(false);
-
-  // Refs
-  const threadEndRef = useRef<HTMLDivElement>(null);
-  const replyInputRef = useRef<HTMLTextAreaElement>(null);
-
-  // Reset state when case changes
   useEffect(() => {
-    if (!item) return;
-    setDraftReply('');
-    setReplyError(null);
-    setAiQuery('');
-    setAiOutput(null);
-  }, [item?.id]);
-
-  // Auto-scroll conversation
-  useEffect(() => {
-    if (threadEndRef.current) {
-      threadEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (item) {
+      setNotes(item.resolutionNotes || '');
+      setAssignedToId(item.assignedToId || 'HR001');
+      const defaultHr = getUserById(item.assignedToId || 'HR001');
+      setAssignedToName(item.assignedTo || defaultHr?.name || 'Sarah Jenkins');
+      setComments(item.comments || []);
+      setNewCommentText('');
+      setAssignmentSuccess(false);
     }
-  }, [item?.comments?.length]);
+  }, [item]);
 
   if (!item) return null;
 
-  // Safe employee extraction
-  const empName = typeof item.employee === 'object' && item.employee ? (item.employee.name || 'Employee') : (item.employee || 'Employee');
-  const empDept = typeof item.employee === 'object' && item.employee ? (item.employee.department || 'Operations') : 'Operations';
-  const empEmail = typeof item.employee === 'object' && item.employee ? (item.employee.email || '') : '';
-  const empAvatar = typeof item.employee === 'object' && item.employee && item.employee.avatar
-    ? item.employee.avatar
-    : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
-  const commentsList: RequestComment[] = Array.isArray(item.comments) ? item.comments : [];
-
-  // =========================================================================
-  // AI COPILOT HANDLERS
-  // =========================================================================
-  const runAiAction = async (action: 'draft_reply' | 'summarize' | 'check_policy' | 'custom_query', customText?: string) => {
-    if (isAiLoading) return;
-    setIsAiLoading(true);
-    setIsAiExpanded(true); // Auto-expand when AI is triggered
+  const handleAssignmentChange = async (newId: string) => {
+    const hr = getUserById(newId);
+    if (!hr) return;
+    setAssignedToId(newId);
+    setAssignedToName(hr.name);
 
     try {
-      const res = await hrService.queryCaseCopilot(item, action, customText);
-      const actionType = action === 'draft_reply' ? 'draft'
-        : action === 'summarize' ? 'summary'
-        : action === 'check_policy' ? 'policy'
-        : 'custom';
-
-      setAiOutput({
-        type: actionType,
-        text: res.text,
-        citations: res.citations
-      });
-    } catch {
-      setAiOutput({
-        type: 'custom',
-        text: 'Unable to connect to policy agent. Please try again.'
-      });
-    } finally {
-      setIsAiLoading(false);
-    }
-  };
-
-  const handleUseReply = (text: string) => {
-    setDraftReply(text);
-    if (replyInputRef.current) {
-      replyInputRef.current.focus();
-    }
-  };
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  // =========================================================================
-  // SEND REPLY
-  // =========================================================================
-  const handleSend = async () => {
-    if (!draftReply.trim() || isSendingReply) return;
-    setIsSendingReply(true);
-    setReplyError(null);
-
-    try {
-      if (onAddComment) {
-        await onAddComment(item.id, draftReply.trim());
-      } else {
-        await hrService.addComment(item.id, draftReply.trim(), 'Sarah Jenkins (HR Ops)', true);
+      await hrService.assignRequest(item.id, newId, hr.name);
+      item.assignedToId = newId;
+      item.assignedTo = hr.name;
+      if (onAssign) {
+        onAssign(item.id, newId, hr.name);
       }
-      setDraftReply('');
-    } catch (err: any) {
-      setReplyError(err.message || 'Failed to send reply. Please try again.');
+      setAssignmentSuccess(true);
+      setTimeout(() => setAssignmentSuccess(false), 3000);
+    } catch (err) {
+      console.warn('Assignment error:', err);
+    }
+  };
+
+  const handlePostComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCommentText.trim() || isSubmittingComment) return;
+
+    setIsSubmittingComment(true);
+    const commentData: Partial<RequestComment> = {
+      authorId: user?.id || (user?.isHr ? 'HR001' : 'EMP001'),
+      author: user?.name || (user?.isHr ? 'HR Specialist' : 'Employee'),
+      avatar: user?.avatar || user?.avatarUrl,
+      text: newCommentText.trim(),
+      isHr: user ? user.isHr : true,
+      time: 'Just now'
+    };
+
+    try {
+      const created = await hrService.addComment(item.id, commentData);
+      setComments(prev => [...prev, created]);
+      if (!item.comments) item.comments = [];
+      item.comments.push(created);
+      setNewCommentText('');
+    } catch (err) {
+      console.warn('Failed to add comment:', err);
     } finally {
-      setIsSendingReply(false);
+      setIsSubmittingComment(false);
     }
   };
 
   const handleResolve = async () => {
-    setIsResolving(true);
-    await onResolve(item.id, 'Case verified and resolved per company policy.');
-    setIsResolving(false);
+    setIsSubmitting(true);
+    const resolver = user ? `${user.name} (HR Ops)` : 'HR Operations Lead';
+    await onResolve(item.id, notes || `Case reviewed and verified against internal HR handbook policies by ${resolver}.`);
+    setIsSubmitting(false);
     onClose();
   };
 
+  const currentHr = getUserById(assignedToId) || HR_USERS[0];
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-xl animate-fadeIn">
-      {/* Clean Obsidian Modal Window Aligned with Main App Theme */}
-      <div
-        className="w-full max-w-6xl h-[92vh] max-h-[880px] rounded-3xl bg-[#060814]/95 backdrop-blur-2xl border border-white/10 shadow-2xl flex flex-col overflow-hidden text-slate-100 transition-all"
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-sm animate-fadeIn">
+      <div 
+        className="w-full max-w-2xl bg-[#090c1e] border-l border-white/20 shadow-2xl h-full flex flex-col justify-between overflow-y-auto specular-border"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ================================================================= */}
-        {/* 1. TOP HEADER: Case Identity, Employee, Status & Action Controls  */}
-        {/* ================================================================= */}
-        <div className="px-6 py-3.5 border-b border-white/10 bg-white/[0.03] flex items-center justify-between gap-4 shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="font-mono text-xs px-2.5 py-1 rounded-xl bg-cyan-500/15 border border-cyan-400/30 text-neon-cyan font-bold tracking-wide shrink-0">
-              {item.id}
-            </span>
-            <span className="font-mono text-[11px] uppercase px-2 py-0.5 rounded-full bg-white/10 border border-white/10 text-white/70 shrink-0">
-              {item.category}
-            </span>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold shrink-0 border ${
-              item.priority === 'high' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-            }`}>
-              {item.priority}
-            </span>
-            <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase shrink-0 border ${
-              item.status === 'resolved' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' : 'bg-cyan-500/20 text-cyan-300 border-cyan-400/30'
-            }`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${item.status === 'resolved' ? 'bg-emerald-400' : 'bg-cyan-400 animate-pulse'}`} />
-              {item.statusUpper || item.status}
-            </span>
-
-            <h2 className="text-sm sm:text-base font-bold text-white truncate max-w-xs md:max-w-md" title={item.title || item.subject}>
-              {item.title || item.subject || 'Case Details'}
-            </h2>
-          </div>
-
-          {/* Right Action Bar: AI Copilot Badge + Resolve Button + Close */}
-          <div className="flex items-center gap-2.5 shrink-0 ml-auto">
-            {/* AI Copilot Badge Button (Expands/Collapses on click) */}
-            <button
-              onClick={() => setIsAiExpanded(prev => !prev)}
-              className={`px-3 py-1.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                isAiExpanded
-                  ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400/50 shadow-[0_0_12px_rgba(6,182,212,0.25)]'
-                  : 'bg-white/[0.06] hover:bg-white/10 text-white/80 border-white/15 hover:border-cyan-400/40'
-              }`}
-              title={isAiExpanded ? 'Collapse AI Copilot panel' : 'Open AI Copilot assistance'}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>AI Copilot</span>
-              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-cyan-400/20 text-cyan-300">
-                {isAiExpanded ? 'Active' : 'Badge'}
+        {/* Header */}
+        <div className="p-6 border-b border-white/10 bg-white/[0.02]">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs px-2.5 py-1 rounded-lg bg-cyan-500/15 border border-cyan-400/30 text-neon-cyan font-bold">
+                {item.id}
               </span>
-            </button>
-
-            {/* Resolve Case Button */}
-            <button
-              disabled={isResolving}
-              onClick={handleResolve}
-              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-xs shadow-neon-emerald transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-            >
-              <CheckCircle2 className="w-4 h-4" />
-              <span>{isResolving ? 'Resolving...' : 'Resolve Case'}</span>
-            </button>
-
-            {/* Close Button */}
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold ${
+                item.priority === 'high'
+                  ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+              }`}>
+                {item.priority} priority
+              </span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono uppercase font-semibold ${
+                item.status === 'resolved'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                  : 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
+              }`}>
+                {item.status}
+              </span>
+            </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-xl text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-              title="Close Workspace"
+              className="p-1 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
           </div>
+
+          <h2 className="font-display text-lg font-bold text-white leading-tight">
+            {item.title}
+          </h2>
+          <p className="text-xs font-mono text-white/40 mt-1">
+            Waiting time: {item.waitingTime} • Submitted {new Date(item.createdAt).toLocaleDateString()}
+          </p>
         </div>
 
-        {/* ================================================================= */}
-        {/* 2. THE EMPLOYEE PROBLEM STATEMENT (PROMINENT & UN-COLLAPSED)      */}
-        {/* ================================================================= */}
-        <div className="px-6 py-3.5 bg-black/40 border-b border-white/10 shrink-0">
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-400/30 flex items-center justify-center shrink-0 mt-0.5">
-              <FileText className="w-4 h-4 text-cyan-400" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1 flex-wrap">
-                <span className="text-[11px] font-mono uppercase font-bold text-cyan-400 tracking-wider">
-                  Employee Issue & Problem Description
-                </span>
-                <span className="text-[11px] font-mono text-white/50">
-                  • Submitted by <strong className="text-white/90">{empName}</strong> ({empDept}) • {empEmail}
-                </span>
+        {/* Content Body */}
+        <div className="p-6 space-y-6 flex-1 overflow-y-auto">
+          {/* Employee Card */}
+          <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img
+                src={item.employee.avatar}
+                alt={item.employee.name}
+                className="w-12 h-12 rounded-xl object-cover ring-1 ring-white/20"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-semibold text-white">{item.employee.name}</h4>
+                  <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-cyan-300 border border-white/15">
+                    {item.employeeId || item.employee.id}
+                  </span>
+                </div>
+                <p className="text-xs text-white/50">{item.employee.title || item.employee.department}</p>
+                <span className="text-[11px] font-mono text-cyan-300/70">{item.employee.email}</span>
               </div>
-              <div className="text-xs sm:text-sm text-white/95 font-light leading-relaxed whitespace-pre-line bg-white/[0.02] p-3 rounded-xl border border-white/5">
-                {item.description || 'No description provided.'}
-              </div>
             </div>
-          </div>
-        </div>
-
-        {/* ================================================================= */}
-        {/* 3. MAIN WORKSPACE: Conversation Thread + Optional AI Copilot Split */}
-        {/* ================================================================= */}
-        <div className="flex-1 flex overflow-hidden min-h-0">
-          
-          {/* MAIN COLUMN: Conversation Stream & Attached Reply Box */}
-          <div className={`flex flex-col h-full overflow-hidden transition-all duration-300 ${
-            isAiExpanded ? 'w-full lg:w-[60%] border-r border-white/10' : 'w-full'
-          }`}>
-            {/* Thread Header */}
-            <div className="px-6 py-2.5 border-b border-white/10 bg-white/[0.02] flex items-center justify-between text-xs font-semibold text-white/80 shrink-0">
-              <span className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-cyan-400" />
-                <span>Conversation Thread ({commentsList.length})</span>
+            {item.employee.tenure && (
+              <span className="text-xs font-mono px-2.5 py-1 rounded-lg bg-black/40 border border-white/10 text-white/70">
+                Tenure: {item.employee.tenure}
               </span>
+            )}
+          </div>
 
-              {/* Quick AI Trigger Shortcut if AI panel is currently collapsed */}
-              {!isAiExpanded && (
-                <button
-                  onClick={() => runAiAction('draft_reply')}
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-xs font-medium transition-all cursor-pointer"
-                  title="Open AI Copilot and generate draft"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Draft with AI Copilot</span>
-                </button>
+          {/* HR Ticket Assignment Section */}
+          <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-950/40 to-cyan-950/30 border border-cyan-500/30 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                <span className="text-xs font-mono uppercase tracking-wider text-cyan-300 font-semibold">
+                  HR Specialist Assignment
+                </span>
+              </div>
+              {assignmentSuccess && (
+                <span className="text-[11px] font-mono text-emerald-400 flex items-center gap-1 animate-pulse">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Assigned to {assignedToName}</span>
+                </span>
               )}
             </div>
 
-            {/* Conversation Messages */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3.5">
-              {commentsList.length === 0 ? (
-                <div className="h-40 flex flex-col items-center justify-center text-white/40 text-xs">
-                  <MessageSquare className="w-8 h-8 opacity-25 text-cyan-400 mb-2" />
-                  <p className="font-medium text-white/70">No message history yet</p>
-                  <p className="text-[11px] text-white/30 mt-1">Use the AI Copilot badge above or write a reply below.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+              <div>
+                <label className="block text-[11px] font-mono text-white/60 mb-1">
+                  Assignee (HR Specialist)
+                </label>
+                <select
+                  value={assignedToId}
+                  onChange={(e) => handleAssignmentChange(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-black/60 border border-cyan-400/40 text-xs text-white focus:outline-none focus:border-neon-cyan font-mono cursor-pointer"
+                >
+                  {HR_USERS.map((hr) => (
+                    <option key={hr.id} value={hr.id} className="bg-[#0b0e22] text-white">
+                      {hr.name} ({hr.id}) - {hr.role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-3 p-2 rounded-xl bg-black/30 border border-white/10">
+                <img
+                  src={currentHr?.avatar}
+                  alt={currentHr?.name}
+                  className="w-8 h-8 rounded-lg object-cover ring-1 ring-cyan-400/40"
+                />
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold text-white truncate">
+                    Assigned to {currentHr?.name}
+                  </div>
+                  <div className="text-[10px] text-cyan-300/70 font-mono truncate">
+                    {currentHr?.id} • {currentHr?.role}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Issue Description */}
+          <div>
+            <h4 className="text-xs font-mono uppercase tracking-wider text-white/50 mb-2">
+              Case Narrative
+            </h4>
+            <div className="p-4 rounded-2xl bg-black/30 border border-white/10 text-xs text-white/90 leading-relaxed font-light">
+              {item.description || 'No additional narrative provided.'}
+            </div>
+          </div>
+
+          {/* AI Autonomous Triage Telemetry */}
+          {item.aiTriage && (
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-950/40 via-indigo-950/30 to-blue-950/40 border border-purple-500/30 shadow-neon-violet">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-purple-400 text-[18px]">
+                    auto_awesome
+                  </span>
+                  <span className="text-xs font-bold text-white tracking-wide">
+                    Autonomous AI Assessment
+                  </span>
+                </div>
+                <span className="text-xs font-mono px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-400/30">
+                  {Math.round(item.aiTriage.confidence * 100)}% Confidence
+                </span>
+              </div>
+              <p className="text-xs text-white/80 font-mono">
+                Classification: <span className="text-cyan-300">{item.aiTriage.classification}</span>
+              </p>
+              <p className="text-xs text-white/60 mt-2 font-light">
+                Recommendation: Standard policy clauses match handbook article. Response staged in triage queue.
+              </p>
+            </div>
+          )}
+
+          {/* Communication & Comments Thread */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-mono uppercase tracking-wider text-white/70 flex items-center gap-1.5">
+                <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Ticket Communication Thread ({comments.length})</span>
+              </h4>
+              <span className="text-[10px] font-mono text-white/40">
+                Replying as: <strong className="text-cyan-300">{user?.name || 'HR Specialist'}</strong> ({user?.isHr ? 'HR' : 'Employee'})
+              </span>
+            </div>
+
+            {/* Comment list */}
+            <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+              {comments.length === 0 ? (
+                <div className="p-4 rounded-xl bg-black/20 border border-white/5 text-center text-xs text-white/40 font-mono">
+                  No comments yet in this conversation thread.
                 </div>
               ) : (
-                commentsList.map((c) => (
+                comments.map((c, idx) => (
                   <div
-                    key={c.id}
-                    className={`flex flex-col ${c.isHr ? 'items-end' : 'items-start'}`}
+                    key={c.id || idx}
+                    className={`p-3.5 rounded-2xl border text-xs transition-all ${
+                      c.isHr
+                        ? 'bg-gradient-to-r from-purple-950/30 to-indigo-950/20 border-purple-500/30 ml-4'
+                        : 'bg-white/[0.03] border-white/10 mr-4'
+                    }`}
                   >
-                    <div
-                      className={`max-w-[88%] sm:max-w-[80%] rounded-2xl p-3.5 text-xs shadow-md transition-all ${
-                        c.isHr
-                          ? 'bg-gradient-to-r from-teal-950/70 via-emerald-950/60 to-teal-900/70 border border-teal-500/30 text-white'
-                          : 'bg-white/[0.05] border border-white/10 text-white/95'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-3 text-[10px] text-white/50 mb-1.5 pb-1 border-b border-white/10">
-                        <span className="font-semibold text-white/90 flex items-center gap-1.5">
-                          {c.isHr ? (
-                            <>
-                              <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-                              <span className="text-teal-200">Sarah Jenkins</span>
-                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#0D9488] text-white uppercase">
-                                HR Ops
-                              </span>
-                            </>
-                          ) : (
-                            <>
-                              <User className="w-3.5 h-3.5 text-cyan-300" />
-                              <span className="text-white/90">{c.author || empName}</span>
-                              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-white/10 text-white/60">
-                                Employee
-                              </span>
-                            </>
-                          )}
-                        </span>
-                        <span>{c.time}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2">
+                        {c.avatar ? (
+                          <img
+                            src={c.avatar}
+                            alt={c.author}
+                            className="w-5 h-5 rounded-full object-cover ring-1 ring-white/20"
+                          />
+                        ) : (
+                          <User className="w-4 h-4 text-white/60" />
+                        )}
+                        <span className="font-semibold text-white">{c.author}</span>
+                        {c.authorId && (
+                          <span className="text-[9px] font-mono text-white/40">({c.authorId})</span>
+                        )}
+                        {c.isHr ? (
+                          <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono bg-purple-500/20 text-purple-300 border border-purple-400/30 font-semibold">
+                            HR Specialist
+                          </span>
+                        ) : (
+                          <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono bg-teal-500/20 text-teal-300 border border-teal-500/30">
+                            Employee
+                          </span>
+                        )}
                       </div>
-                      <p className="whitespace-pre-line leading-relaxed font-light">{c.text}</p>
+                      <span className="text-[10px] font-mono text-white/40 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {c.time || 'Just now'}
+                      </span>
                     </div>
+                    <p className="text-white/80 leading-relaxed pl-7">{c.text}</p>
                   </div>
                 ))
               )}
-              <div ref={threadEndRef} />
             </div>
 
-            {/* Attached Reply Box (Docked right under thread) */}
-            <div className="p-4 border-t border-white/10 bg-black/40 shrink-0">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-mono uppercase font-bold text-white/70 flex items-center gap-1.5">
-                  <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Reply to {empName}</span>
-                </label>
-
-                {!isAiExpanded && (
-                  <button
-                    onClick={() => runAiAction('draft_reply')}
-                    className="text-xs text-cyan-300 hover:text-cyan-200 flex items-center gap-1 cursor-pointer transition-colors"
-                  >
-                    <Sparkles className="w-3 h-3" />
-                    <span>Auto-draft with AI</span>
-                  </button>
-                )}
-              </div>
-
-              <textarea
-                ref={replyInputRef}
-                rows={2}
-                value={draftReply}
-                onChange={(e) => setDraftReply(e.target.value)}
-                onKeyDown={(e) => {
-                  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
-                placeholder={`Write official reply to ${empName}... (Ctrl+Enter to send)`}
-                className="w-full p-3 rounded-xl bg-white/[0.04] border border-white/15 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400 transition-all font-sans leading-relaxed"
+            {/* Post comment input */}
+            <form onSubmit={handlePostComment} className="flex gap-2">
+              <input
+                type="text"
+                value={newCommentText}
+                onChange={(e) => setNewCommentText(e.target.value)}
+                placeholder={`Post update to thread as ${user?.name || 'HR Specialist'}...`}
+                className="flex-1 px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-neon-cyan"
               />
-
-              {replyError && (
-                <p className="text-xs text-rose-400 mt-1">{replyError}</p>
-              )}
-
-              <div className="flex items-center justify-between mt-2.5">
-                <span className="text-[10px] font-mono text-white/40">
-                  Ctrl+Enter sends reply directly to employee portal
-                </span>
-                <button
-                  disabled={!draftReply.trim() || isSendingReply}
-                  onClick={handleSend}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-neon-cyan transition-all disabled:opacity-40 cursor-pointer"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{isSendingReply ? 'Sending...' : 'Send Reply'}</span>
-                </button>
-              </div>
-            </div>
+              <button
+                type="submit"
+                disabled={!newCommentText.trim() || isSubmittingComment}
+                className="px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-neon-cyan"
+              >
+                <Send className="w-3.5 h-3.5" />
+                <span>Send</span>
+              </button>
+            </form>
           </div>
 
-          {/* AI COPILOT EXPANDED PANE (Toggled via AI Copilot Badge) */}
-          {isAiExpanded && (
-            <div className="w-full lg:w-[40%] flex flex-col h-full bg-[#06091a] border-l border-white/10 overflow-hidden animate-in fade-in slide-in-from-right-4 duration-200">
-              {/* AI Header */}
-              <div className="px-5 py-3 border-b border-white/10 bg-white/[0.02] flex items-center justify-between text-xs font-semibold shrink-0">
-                <span className="flex items-center gap-1.5 text-cyan-300">
-                  <Sparkles className="w-4 h-4 text-cyan-400" />
-                  <span>AI Copilot Intelligence</span>
-                </span>
+          {/* Action Resolution Form */}
+          <div>
+            <label className="block text-xs font-mono uppercase tracking-wider text-white/70 mb-2">
+              HR Resolution Notes (Signing Off as {user?.name || 'Sarah Jenkins'})
+            </label>
+            <textarea
+              rows={3}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="e.g. Verified policy guidelines and executed request resolution..."
+              className="w-full p-3.5 rounded-2xl bg-black/40 border border-white/15 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-neon-cyan"
+            />
+          </div>
+        </div>
 
-                <button
-                  onClick={() => setIsAiExpanded(false)}
-                  className="p-1 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
-                  title="Collapse AI panel back to badge"
-                >
-                  <Minimize2 className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="p-3 border-b border-white/5 flex flex-wrap gap-2 shrink-0 bg-black/20">
-                <button
-                  disabled={isAiLoading}
-                  onClick={() => runAiAction('draft_reply')}
-                  className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-200 text-xs font-medium transition-all flex items-center gap-1 cursor-pointer disabled:opacity-40 shadow-xs"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Draft Reply</span>
-                </button>
-                <button
-                  disabled={isAiLoading}
-                  onClick={() => runAiAction('summarize')}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-xs font-medium transition-all cursor-pointer disabled:opacity-40"
-                >
-                  <span>Summarize</span>
-                </button>
-                <button
-                  disabled={isAiLoading}
-                  onClick={() => runAiAction('check_policy')}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-xs font-medium transition-all cursor-pointer disabled:opacity-40"
-                >
-                  <span>Check Policy</span>
-                </button>
-              </div>
-
-              {/* Output Display with MarkdownRenderer (NO RAW ASTERISKS!) */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                {isAiLoading ? (
-                  <div className="h-40 flex flex-col items-center justify-center text-xs text-cyan-300 gap-2">
-                    <div className="w-5 h-5 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
-                    <p className="font-mono text-[11px] animate-pulse">Reviewing policy & drafting response...</p>
-                  </div>
-                ) : aiOutput ? (
-                  <div className="p-4 rounded-2xl bg-white/[0.03] border border-cyan-500/30 text-xs space-y-3 shadow-inner">
-                    <div className="flex items-center justify-between text-[11px] text-cyan-300 font-semibold border-b border-white/10 pb-2">
-                      <span className="uppercase font-mono tracking-wider">
-                        {aiOutput.type === 'draft' ? 'Suggested Employee Reply'
-                          : aiOutput.type === 'summary' ? 'Case Executive Summary'
-                          : aiOutput.type === 'policy' ? 'Policy Verification'
-                          : 'AI Assistant Response'}
-                      </span>
-                      <button
-                        onClick={() => handleCopy(aiOutput.text)}
-                        className="text-white/60 hover:text-white flex items-center gap-1 cursor-pointer transition-colors"
-                      >
-                        {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                        <span>{copied ? 'Copied' : 'Copy'}</span>
-                      </button>
-                    </div>
-
-                    {/* Rich Formatted Markdown Output (Clean, No Asterisks) */}
-                    <div className="text-white/95 leading-relaxed font-light text-xs">
-                      <MarkdownRenderer content={aiOutput.text} />
-                    </div>
-
-                    {/* Policy citations */}
-                    {aiOutput.citations && aiOutput.citations.length > 0 && (
-                      <div className="flex flex-wrap items-center gap-1 text-[10px] text-cyan-300 font-mono pt-2 border-t border-white/5">
-                        <BookOpen className="w-3 h-3" />
-                        <span>Sources:</span>
-                        {aiOutput.citations.map((c, idx) => (
-                          <span key={idx} className="px-1.5 py-0.5 rounded bg-cyan-950/60 border border-cyan-400/30">
-                            {c.title} {c.page ? `(p.${c.page})` : ''}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* "Use in Reply" Button */}
-                    <div className="pt-2 border-t border-white/10 flex justify-end">
-                      <button
-                        onClick={() => handleUseReply(aiOutput.text)}
-                        className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
-                      >
-                        <CornerDownRight className="w-3.5 h-3.5" />
-                        <span>Use in Reply</span>
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="h-40 flex flex-col items-center justify-center text-center text-white/40 text-xs px-4">
-                    <Bot className="w-8 h-8 text-cyan-400/50 mb-2" />
-                    <p className="font-medium text-white/70">Click "Draft Reply" above</p>
-                    <p className="text-[11px] text-white/30 mt-1">
-                      AI will analyze {empName}'s issue against company policies and generate a ready-to-send reply.
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* Custom AI Query Box */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (!aiQuery.trim()) return;
-                  runAiAction('custom_query', aiQuery.trim());
-                  setAiQuery('');
-                }}
-                className="p-3 border-t border-white/10 bg-black/40 flex gap-2 shrink-0"
-              >
-                <input
-                  type="text"
-                  value={aiQuery}
-                  onChange={(e) => setAiQuery(e.target.value)}
-                  placeholder="Ask AI anything about this case..."
-                  className="flex-1 bg-white/[0.05] border border-white/15 rounded-xl px-3 py-1.5 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-400"
-                />
-                <button
-                  type="submit"
-                  disabled={!aiQuery.trim() || isAiLoading}
-                  className="px-3 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold disabled:opacity-40 transition-colors cursor-pointer"
-                >
-                  Ask
-                </button>
-              </form>
-            </div>
-          )}
+        {/* Footer Actions */}
+        <div className="p-6 border-t border-white/10 bg-black/50 flex flex-wrap items-center justify-between gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 text-xs font-medium transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <div className="flex items-center gap-2">
+            <button
+              disabled={isSubmitting}
+              onClick={() => {
+                alert(`Case ${item.id} escalated to Tier-2 Operations Lead.`);
+                onClose();
+              }}
+              className="px-3.5 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-300 text-xs font-medium transition-all cursor-pointer"
+            >
+              Escalate
+            </button>
+            <button
+              disabled={isSubmitting}
+              onClick={handleResolve}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold text-xs shadow-neon-emerald transition-all cursor-pointer"
+            >
+              {isSubmitting ? 'Resolving...' : `Approve & Resolve as ${user?.name || 'HR'}`}
+            </button>
+          </div>
         </div>
       </div>
     </div>

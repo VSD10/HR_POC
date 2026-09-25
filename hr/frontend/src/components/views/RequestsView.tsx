@@ -20,45 +20,17 @@ export const RequestsView: React.FC<RequestsViewProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
   const filtered = requests.filter((r) => {
-    // Resilient Category Matching
-    if (selectedCategory !== 'all') {
-      const catNorm = (r.category || '').toLowerCase().trim();
-      const match = catNorm === selectedCategory ||
-        (selectedCategory === 'leave' && (catNorm.includes('leave') || catNorm.includes('time') || catNorm.includes('vacation') || catNorm.includes('attendance'))) ||
-        (selectedCategory === 'payroll' && (catNorm.includes('pay') || catNorm.includes('salary') || catNorm.includes('tax') || catNorm.includes('bonus'))) ||
-        (selectedCategory === 'benefits' && (catNorm.includes('benefit') || catNorm.includes('health') || catNorm.includes('info') || catNorm.includes('insurance'))) ||
-        (selectedCategory === 'documents' && (catNorm.includes('doc') || catNorm.includes('letter') || catNorm.includes('verification'))) ||
-        (selectedCategory === 'compliance' && (catNorm.includes('polic') || catNorm.includes('compliance') || catNorm.includes('conduct')));
-      if (!match) return false;
-    }
-
-    // Resilient Priority Matching
-    if (selectedPriority !== 'all') {
-      const prioNorm = (r.priority || '').toLowerCase().trim();
-      const targetPrio = selectedPriority.toLowerCase().trim();
-      const match = prioNorm === targetPrio || (targetPrio === 'high' && prioNorm === 'urgent');
-      if (!match) return false;
-    }
-
-    // Resilient Status Matching
-    if (selectedStatus !== 'all') {
-      const statNorm = (r.status || '').toLowerCase().trim();
-      const upperNorm = (r.statusUpper || '').toUpperCase().trim();
-      const target = selectedStatus.toLowerCase().trim();
-      const match = statNorm === target ||
-        (target === 'open' && (statNorm === 'open' || upperNorm === 'SUBMITTED')) ||
-        (target === 'in_review' && (statNorm === 'in_review' || upperNorm === 'IN PROGRESS')) ||
-        (target === 'resolved' && (statNorm === 'resolved' || upperNorm === 'RESOLVED'));
-      if (!match) return false;
-    }
-
+    if (selectedCategory !== 'all' && r.category !== selectedCategory) return false;
+    if (selectedPriority !== 'all' && r.priority !== selectedPriority) return false;
+    if (selectedStatus !== 'all' && r.status !== selectedStatus) return false;
     if (search) {
       const q = search.toLowerCase();
-      const titleStr = (r.title || r.subject || '').toLowerCase();
-      const idStr = (r.id || '').toLowerCase();
-      const empName = (r.employee?.name || '').toLowerCase();
-      const empDept = (r.employee?.department || '').toLowerCase();
-      return titleStr.includes(q) || idStr.includes(q) || empName.includes(q) || empDept.includes(q);
+      return (
+        r.title.toLowerCase().includes(q) ||
+        r.id.toLowerCase().includes(q) ||
+        r.employee.name.toLowerCase().includes(q) ||
+        r.employee.department.toLowerCase().includes(q)
+      );
     }
     return true;
   });
@@ -177,15 +149,7 @@ export const RequestsView: React.FC<RequestsViewProps> = ({
             </thead>
             <tbody className="divide-y divide-white/5">
               {filtered.map((req) => {
-                const p = (req.priority || 'medium').toLowerCase();
-                const isHigh = p === 'high' || p === 'urgent';
-                const isMed = p === 'medium';
-                const empAvatar = req.employee?.avatar || (req.employee as any)?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80';
-                const empName = req.employee?.name || 'Employee';
-                const empDept = req.employee?.department || 'Operations';
-                const confidence = req.aiTriage?.confidence ?? 0.96;
-                const catDisplay = (req as any).categoryDisplay || req.category;
-
+                const isHigh = req.priority === 'high';
                 return (
                   <tr
                     key={req.id}
@@ -198,36 +162,36 @@ export const RequestsView: React.FC<RequestsViewProps> = ({
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <img
-                          src={empAvatar}
-                          alt={empName}
+                          src={req.employee.avatar}
+                          alt={req.employee.name}
                           className="w-8 h-8 rounded-lg object-cover ring-1 ring-white/15"
                         />
                         <div>
                           <div className="font-semibold text-white group-hover:text-cyan-300 transition-colors">
-                            {empName}
+                            {req.employee.name}
                           </div>
                           <div className="text-[11px] text-white/40">
-                            {empDept}
+                            {req.employee.department}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-4 max-w-xs">
-                      <p className="font-medium text-white line-clamp-1">{req.title || req.subject || 'Request'}</p>
-                      <p className="text-[11px] text-white/40 line-clamp-1">{req.description || 'No description provided'}</p>
+                      <p className="font-medium text-white line-clamp-1">{req.title}</p>
+                      <p className="text-[11px] text-white/40 line-clamp-1">{req.description}</p>
                     </td>
                     <td className="px-5 py-4 font-mono uppercase text-[11px] text-white/70">
-                      {catDisplay}
+                      {req.category}
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-xs text-purple-300 font-semibold">
-                          {Math.round(confidence * 100)}%
+                          {Math.round(req.aiTriage.confidence * 100)}%
                         </span>
                         <div className="w-12 h-1.5 rounded-full bg-white/10 overflow-hidden">
                           <div
                             className="h-full bg-purple-400 rounded-full"
-                            style={{ width: `${confidence * 100}%` }}
+                            style={{ width: `${req.aiTriage.confidence * 100}%` }}
                           />
                         </div>
                       </div>
@@ -237,7 +201,7 @@ export const RequestsView: React.FC<RequestsViewProps> = ({
                         className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono whitespace-nowrap font-medium ${
                           isHigh
                             ? 'bg-rose-500/15 border border-rose-500/30 text-rose-300'
-                            : isMed
+                            : req.priority === 'medium'
                             ? 'bg-amber-500/15 border border-amber-500/30 text-amber-300'
                             : 'bg-white/10 text-white/70'
                         }`}
@@ -247,7 +211,7 @@ export const RequestsView: React.FC<RequestsViewProps> = ({
                             isHigh ? 'bg-rose-500 animate-pulse' : 'bg-amber-400'
                           }`}
                         />
-                        {(req as any).priorityDisplay || req.priority}
+                        {req.priority}
                       </span>
                     </td>
                     <td className="px-5 py-4 font-mono text-white/50 whitespace-nowrap">

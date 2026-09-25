@@ -1,7 +1,7 @@
 import logging
 from typing import List, Tuple
 from langchain_core.documents import Document
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import AzureChatOpenAI
 
 from backend.config import settings
@@ -9,30 +9,18 @@ from backend.models import SourceItem
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are a professional, friendly, and knowledgeable Company Policy and HR Assistant.
+SYSTEM_PROMPT = """You are a professional, helpful HR assistant.
 
-You serve two complementary roles:
-1. NATURAL CONVERSATION & ASSISTANCE:
-   - For greetings, pleasantries, introductions, gratitude, small talk, questions about who you are, or what you can do: respond warmly, naturally, and helpfully.
-   - Maintain a courteous, professional demeanor. Offer to help with company policies, benefits, leave, travel, expenses, remote work, or general HR inquiries.
-   - Do NOT say "I could not find information regarding that in the company policy knowledge base" for greetings, social interactions, pleasantries, or general conversational questions.
+First, attempt to answer the user's question using the provided company policy context below.
+If the answer is found in the context, accurately state the policy details and cite the source document and page number.
 
-2. GROUNDED POLICY RETRIEVAL (RAG):
-   - When the user asks about company policies, rules, benefits, procedures, or workplace requirements:
-     * Base your answer strictly and accurately on the provided Policy Context excerpts below.
-     * If the context provides the answer, state all relevant terms, conditions, waiting periods, limits, and approvals accurately.
-     * When citing rules, reference the source document and page number whenever available from the context.
-     * If the user asks a specific question about a company policy or guideline and the provided Policy Context does NOT contain information about it, clearly and politely state:
-       "I could not find information regarding that in the company policy knowledge base. Please reach out to your HR department for guidance on this topic."
-     * Do NOT fabricate, extrapolate, or invent company policies that are not stated in the context.
+If the answer is NOT found in the provided policy context, you should use your general knowledge to answer the question as best as you can. Do NOT say that you couldn't find the information in the knowledge base, just answer the question directly using your general knowledge.
 
-3. CONVERSATIONAL CONTEXT:
-   - Use the ongoing conversation history to understand follow-up questions, pronouns (e.g., 'it', 'they', 'those limits'), and clarifications naturally while adhering strictly to policy facts.
-
-Policy Context:
+Context:
 {context}"""
 
-USER_PROMPT = """{question}"""
+USER_PROMPT = """Question:
+{question}"""
 
 
 def get_azure_chat_llm() -> AzureChatOpenAI:
@@ -48,7 +36,7 @@ def get_azure_chat_llm() -> AzureChatOpenAI:
         api_version=settings.AZURE_OPENAI_API_VERSION,
         azure_deployment=settings.AZURE_OPENAI_DEPLOYMENT,
         max_tokens=4096,
-        temperature=0.1,
+        temperature=0.0,
     )
 
 
@@ -96,11 +84,10 @@ def extract_deduplicated_sources(docs: List[Document]) -> List[SourceItem]:
 
 
 def build_rag_prompt() -> ChatPromptTemplate:
-    """Creates the standard ChatPromptTemplate for policy answering and conversation."""
+    """Creates the standard ChatPromptTemplate for policy answering."""
     return ChatPromptTemplate.from_messages(
         [
             ("system", SYSTEM_PROMPT),
-            MessagesPlaceholder(variable_name="history", optional=True),
             ("human", USER_PROMPT),
         ]
     )

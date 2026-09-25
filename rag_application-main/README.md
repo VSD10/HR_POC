@@ -1,4 +1,4 @@
-# Company Policy Knowledge Base RAG Assistant
+﻿# Company Policy Knowledge Base RAG Assistant
 
 A production-grade, modular Retrieval-Augmented Generation (RAG) application enabling employees to query company policies stored as PDF documents through a clean **FastAPI** REST backend and an interactive **Streamlit** chat interface.
 
@@ -49,12 +49,11 @@ Powered by **LangChain**, **Azure OpenAI**, **ChromaDB**, and **PyPDF**.
 
 ## Features
 
-- **Conversational & Grounded RAG**: Combines natural conversational pleasantries, greetings, and multi-turn dialogue with strict, grounded retrieval for company policy inquiries.
 - **Automated PDF Ingestion**: Dynamically discovers all `.pdf` documents in `knowledge_base/`, extracts text page-by-page, and preserves document name and page numbers in chunk metadata.
 - **Persistent Vector Store**: Local vector index managed via ChromaDB (`chroma_db/`), eliminating index recreation on server startup.
-- **Production Guardrails & Grounding**: Dual-role prompt instructing the model to converse naturally while relying strictly on policy context for company rules, preserving limits/eligibility conditions and citing exact documents and page numbers.
+- **Production Guardrails & Grounding**: Strict system prompt instructing the model to rely only on policy context, preserve limits/eligibility conditions, and cite exact documents and page numbers.
 - **Modular Azure OpenAI Integration**: Decoupled chat model deployment (`AZURE_OPENAI_DEPLOYMENT`) and embedding model deployment (`AZURE_OPENAI_EMBEDDING_DEPLOYMENT`).
-- **RESTful FastAPI Service**: Standardized schemas with Pydantic validation, CORS middleware for Streamlit, multi-turn history support, and explicit error handlers preventing credential leaks.
+- **RESTful FastAPI Service**: Standardized schemas with Pydantic validation, CORS middleware for Streamlit, and explicit error handlers preventing credential leaks.
 - **Interactive Streamlit UI**: Chat interface with session history, backend connectivity monitor, sample questions, and collapsible source citations.
 
 ---

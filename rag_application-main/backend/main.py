@@ -1,4 +1,4 @@
-import logging
+﻿import logging
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -107,10 +107,10 @@ async def health():
 @app.post(
     "/api/chat",
     response_model=ChatResponse,
-    summary="Conversational & Grounded Policy Assistant",
-    tags=["Conversational RAG Chat"],
+    summary="Query Company Policies",
+    tags=["RAG Chat"],
     responses={
-        200: {"description": "Grounded answer with policy citations or conversational response"},
+        200: {"description": "Grounded answer with policy citations"},
         400: {"description": "Invalid or empty question"},
         502: {"description": "Azure OpenAI communication failure"},
         503: {"description": "Missing configuration or unindexed vector store"},
@@ -118,9 +118,8 @@ async def health():
 )
 async def chat_endpoint(request: ChatRequest) -> ChatResponse:
     """
-    Receives an employee question or conversational input alongside dialogue history,
-    engages in natural multi-turn conversation, and provides grounded policy answers
-    with source citations when querying company policies.
+    Receives an employee question, retrieves relevant chunks from the company policy vector database,
+    and returns a grounded answer generated via Azure OpenAI with citations.
     """
     service = ChatService()
     return service.answer_question(request)

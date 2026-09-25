@@ -1,4 +1,4 @@
-export type ScreenId =
+﻿export type ScreenId =
   | 'dashboard'
   | 'ask-hr'
   | 'raise-request'
@@ -29,6 +29,7 @@ export interface RequestTimelineEvent {
 
 export interface RequestComment {
   id: string;
+  authorId?: string;
   author: string;
   avatar?: string;
   text: string;
@@ -38,6 +39,16 @@ export interface RequestComment {
 
 export interface HrRequest {
   id: string;
+  employeeId?: string;
+  employee?: {
+    id: string;
+    name: string;
+    department?: string;
+    email?: string;
+    avatar?: string;
+    title?: string;
+  };
+  assignedToId?: string;
   subject: string;
   category: RequestCategory;
   status: RequestStatus;

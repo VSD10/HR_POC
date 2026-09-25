@@ -40,11 +40,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const navigationItems: { id: NavTab; label: string; icon: string; category: string }[] = [
     { id: 'dashboard', label: 'Go to HR Dashboard', icon: 'space_dashboard', category: 'Navigation' },
     { id: 'requests', label: 'View Requests Queue', icon: 'inbox', category: 'Navigation' },
-    { id: 'ai-assistance', label: 'Open HR AI Copilot', icon: 'smart_toy', category: 'Navigation' },
     { id: 'ai-triage', label: 'Open Autonomous AI Triage', icon: 'auto_awesome', category: 'Navigation' },
+    { id: 'ai-assistance', label: 'Open HR AI Copilot', icon: 'smart_toy', category: 'Navigation' },
     { id: 'deliverables', label: 'Review Deliverables & Docs', icon: 'assignment_turned_in', category: 'Navigation' },
     { id: 'hr-actions', label: 'Execute HR Actions', icon: 'bolt', category: 'Navigation' },
     { id: 'insights', label: 'Inspect Process Insights', icon: 'insights', category: 'Navigation' },
+    { id: 'backend-docs', label: 'Backend API Blueprint & Docs', icon: 'api', category: 'System' },
     { id: 'settings', label: 'System Settings', icon: 'settings', category: 'System' }
   ];
 

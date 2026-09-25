@@ -1,25 +1,15 @@
-from typing import List, Optional
+﻿from typing import List, Optional
 from pydantic import BaseModel, Field, field_validator
 
 
-class ChatMessage(BaseModel):
-    """Represents a single message in the conversation history."""
-    role: str = Field(..., description="Role of the speaker, e.g. 'user' or 'assistant'")
-    content: str = Field(..., description="Message text content")
-
-
 class ChatRequest(BaseModel):
-    """Incoming user chat query with optional conversation history."""
+    """Incoming user chat query."""
     question: str = Field(
         ...,
         min_length=1,
         max_length=2000,
-        description="User question or conversational input",
+        description="User question about company policies",
         examples=["How many annual leave days do employees receive?"]
-    )
-    history: List[ChatMessage] = Field(
-        default_factory=list,
-        description="Previous conversation messages for multi-turn dialogue context"
     )
 
     @field_validator("question")

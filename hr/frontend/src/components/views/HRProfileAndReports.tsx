@@ -1,24 +1,36 @@
-import React from 'react';
+﻿import React from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 export const HRProfileView: React.FC = () => {
+  const { user } = useAuth();
+
+  const displayName = user?.name || 'Sarah Jenkins';
+  const displayTitle = user?.title || user?.role || 'HR Operations Lead';
+  const displayDepartment = user?.department || 'HR Operations';
+  const displayEmail = user?.email || 'sarah.jenkins@enterprise.internal';
+  const displayId = user?.id || 'HR001';
+  const displayAvatar = user?.avatar || user?.avatarUrl || "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0";
+  const securityLevel = user?.securityLevel || 3;
+  const tenure = user?.tenure || '3+ years';
+
   return (
     <div className="flex-1 flex flex-col gap-6 max-w-4xl">
       <div className="rounded-3xl p-6 bg-white/[0.04] backdrop-blur-2xl border border-white/10 shadow-glass specular-border space-y-6">
         <div className="flex items-center gap-4 pb-6 border-b border-white/10">
           <img
-            alt="Sarah Jenkins Headshot"
+            alt={displayName}
             className="w-16 h-16 rounded-2xl object-cover ring-2 ring-cyan-400/50 shadow-neon-cyan"
-            src="https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0"
+            src={displayAvatar}
           />
           <div>
             <h2 className="font-display text-xl font-bold text-white tracking-tight">
-              Sarah Jenkins
+              {displayName}
             </h2>
             <p className="text-xs font-mono text-cyan-300">
-              HR Operations Lead · Enterprise Global People Ops
+              {displayTitle} • {displayDepartment}
             </p>
             <span className="inline-block mt-2 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-mono">
-              Role: HR_ADMIN · Security Clearance Level 3
+              ID: {displayId} • Security Clearance Level {securityLevel}
             </span>
           </div>
         </div>
@@ -26,17 +38,17 @@ export const HRProfileView: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
           <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-1">
             <span className="text-white/40">Email:</span>
-            <p className="text-white font-medium">sarah.jenkins@enterprise.internal</p>
+            <p className="text-white font-medium">{displayEmail}</p>
           </div>
 
           <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-1">
-            <span className="text-white/40">Jurisdiction:</span>
-            <p className="text-white font-medium">Global (US, EMEA, APAC Coverage)</p>
+            <span className="text-white/40">Jurisdiction & Coverage:</span>
+            <p className="text-white font-medium">Enterprise Global Operations ({displayDepartment})</p>
           </div>
 
           <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-1">
-            <span className="text-white/40">Active Cases Supervised:</span>
-            <p className="text-neon-cyan font-bold text-sm">128 Cases</p>
+            <span className="text-white/40">Tenure at Enterprise:</span>
+            <p className="text-neon-cyan font-bold text-sm">{tenure}</p>
           </div>
 
           <div className="p-4 rounded-xl bg-black/40 border border-white/5 space-y-1">
@@ -79,15 +91,23 @@ export const ReportsView: React.FC = () => {
           ].map((rep, i) => (
             <div key={i} className="p-4 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between hover:bg-white/5 transition-all">
               <div className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-cyan-400 text-[22px]">picture_as_pdf</span>
+                <span className="material-symbols-outlined text-cyan-400 text-[20px]">
+                  description
+                </span>
                 <div>
                   <h4 className="text-xs font-semibold text-white">{rep.title}</h4>
-                  <p className="text-[10px] font-mono text-white/40">{rep.size} · Published {rep.date} · Hash: {rep.hash}</p>
+                  <div className="text-[10px] text-white/40 flex items-center gap-3 mt-0.5">
+                    <span>{rep.size}</span>
+                    <span>•</span>
+                    <span>{rep.date}</span>
+                    <span>•</span>
+                    <span className="text-cyan-300 font-mono">{rep.hash}</span>
+                  </div>
                 </div>
               </div>
               <button 
-                onClick={() => alert(`Downloading ${rep.title}`)}
-                className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-mono transition-colors cursor-pointer"
+                onClick={() => alert(`Downloading verified audit bundle for: ${rep.title}`)}
+                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs border border-white/10 hover:border-cyan-400/40 transition-all cursor-pointer"
               >
                 Download
               </button>

@@ -1,4 +1,4 @@
-export type Priority = 'high' | 'medium' | 'low';
+﻿export type Priority = 'high' | 'medium' | 'low';
 export type TicketStatus = 'open' | 'in_review' | 'resolved' | 'escalated';
 export type Category = 'payroll' | 'benefits' | 'leave' | 'documents' | 'compliance' | 'other';
 
@@ -14,6 +14,7 @@ export interface Employee {
 
 export interface RequestComment {
   id: string;
+  authorId?: string;
   author: string;
   avatar?: string;
   text: string;
@@ -21,17 +22,13 @@ export interface RequestComment {
   isHr: boolean;
 }
 
-export interface TimelineEvent {
-  title: string;
-  desc: string;
-  date: string;
-  actor: string;
-}
-
 export interface RequestItem {
   id: string;
   title: string;
+  employeeId?: string;
   employee: Employee;
+  assignedToId?: string;
+  assignedTo?: string;
   category: Category;
   priority: Priority;
   status: TicketStatus;
@@ -44,12 +41,15 @@ export interface RequestItem {
   };
   description: string;
   resolutionNotes?: string;
+  resolverName?: string;
   tags?: string[];
-  timeline?: TimelineEvent[];
+  timeline?: any[];
   comments?: RequestComment[];
   statusUpper?: string;
   attachmentName?: string;
   subject?: string;
+  lastUpdated?: string;
+  createdDate?: string;
 }
 
 export interface AITriageItem {
@@ -169,10 +169,4 @@ export interface CopilotMessage {
     page?: number;
   }[];
   suggestedActions?: string[];
-  isError?: boolean;
-  feedback?: 'up' | 'down';
-  keyDetails?: {
-    label: string;
-    value: string;
-  }[];
 }

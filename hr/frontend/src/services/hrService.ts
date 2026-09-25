@@ -1,15 +1,15 @@
-import {
+﻿import {
   DashboardMetrics,
   VelocityData,
   RequestItem,
+  RequestComment,
   AITriageItem,
   DeliverableItem,
   HRActionItem,
   InsightItem,
   CategoryVolume,
   ActivityEvent,
-  CopilotMessage,
-  RequestComment
+  CopilotMessage
 } from '../types/hr';
 import {
   initialMetrics,
@@ -44,91 +44,41 @@ const delay = (ms = 180) => new Promise(resolve => setTimeout(resolve, ms));
 type SyncListener = (event: { type: string; data: any }) => void;
 const syncListeners = new Set<SyncListener>();
 
-// Auto-connect to real-time Server-Sent Events stream on port 8000 with auto-reconnect
+// Auto-connect to real-time Server-Sent Events stream on port 8000
 if (typeof window !== 'undefined') {
-  let es: EventSource | null = null;
-  let reconnectTimer: any = null;
-
-  const connectSSE = () => {
-    try {
-      if (es) {
-        try { es.close(); } catch {}
-      }
-      es = new EventSource('http://localhost:8000/api/v1/stream');
-
-      es.onopen = () => {
-        console.log('[HR Live Sync] Connected to SSE stream on http://localhost:8000/api/v1/stream');
-      };
-
-      es.addEventListener('REQUEST_CREATED', (e: MessageEvent) => {
-        try {
-          const payload = JSON.parse(e.data);
-          if (payload.request) {
-            const req = payload.request;
-            if (!state.requests.some(r => r.id === req.id || (r.id && req.id && r.id.toLowerCase() === req.id.toLowerCase()))) {
-              state.requests.unshift(req);
-            }
-          }
-          if (payload.triageItem && !state.triageQueue.some(t => t.id === payload.triageItem.id)) {
-            state.triageQueue.unshift(payload.triageItem);
-          }
-          if (payload.activity && !state.activities.some(a => a.id === payload.activity.id)) {
-            state.activities.unshift(payload.activity);
-          }
-          if (payload.metrics) state.metrics = payload.metrics;
-          if (payload.categoryVolumes) state.categoryVolumes = payload.categoryVolumes;
-          syncListeners.forEach(fn => fn({ type: 'REQUEST_CREATED', data: payload }));
-        } catch (err) {
-          console.warn('[HR Live Sync] Error handling REQUEST_CREATED:', err);
+  try {
+    const es = new EventSource('http://localhost:8000/api/v1/stream');
+    es.addEventListener('REQUEST_CREATED', (e: MessageEvent) => {
+      try {
+        const payload = JSON.parse(e.data);
+        if (payload.request && !state.requests.some(r => r.id === payload.request.id)) {
+          state.requests.unshift(payload.request);
         }
-      });
-
-      es.addEventListener('REQUEST_UPDATED', (e: MessageEvent) => {
-        try {
-          const payload = JSON.parse(e.data);
-          if (payload.request) {
-            const req = payload.request;
-            const idx = state.requests.findIndex(r => r.id === req.id || (r.id && req.id && r.id.toLowerCase() === req.id.toLowerCase()));
-            if (idx >= 0) {
-              state.requests[idx] = { ...state.requests[idx], ...req };
-            } else {
-              state.requests.unshift(req);
-            }
-          }
-          if (payload.activity && !state.activities.some(a => a.id === payload.activity.id)) {
-            state.activities.unshift(payload.activity);
-          }
-          if (payload.metrics) state.metrics = payload.metrics;
-          if (payload.categoryVolumes) state.categoryVolumes = payload.categoryVolumes;
-          syncListeners.forEach(fn => fn({ type: 'REQUEST_UPDATED', data: payload }));
-        } catch (err) {
-          console.warn('[HR Live Sync] Error handling REQUEST_UPDATED:', err);
+        if (payload.activity && !state.activities.some(a => a.id === payload.activity.id)) {
+          state.activities.unshift(payload.activity);
         }
-      });
+        if (payload.metrics) state.metrics = payload.metrics;
+        syncListeners.forEach(fn => fn({ type: 'REQUEST_CREATED', data: payload }));
+      } catch {}
+    });
 
-      es.onerror = () => {
-        if (es) {
-          try { es.close(); } catch {}
-          es = null;
+    es.addEventListener('REQUEST_UPDATED', (e: MessageEvent) => {
+      try {
+        const payload = JSON.parse(e.data);
+        if (payload.request) {
+          const idx = state.requests.findIndex(r => r.id === payload.request.id);
+          if (idx >= 0) state.requests[idx] = payload.request;
         }
-        if (!reconnectTimer) {
-          reconnectTimer = setTimeout(() => {
-            reconnectTimer = null;
-            connectSSE();
-          }, 3000);
+        if (payload.activity && !state.activities.some(a => a.id === payload.activity.id)) {
+          state.activities.unshift(payload.activity);
         }
-      };
-    } catch {
-      if (!reconnectTimer) {
-        reconnectTimer = setTimeout(() => {
-          reconnectTimer = null;
-          connectSSE();
-        }, 5000);
-      }
-    }
-  };
-
-  connectSSE();
+        if (payload.metrics) state.metrics = payload.metrics;
+        syncListeners.forEach(fn => fn({ type: 'REQUEST_UPDATED', data: payload }));
+      } catch {}
+    });
+  } catch (err) {
+    console.warn('Real-time sync SSE info:', err);
+  }
 }
 
 export const hrService = {
@@ -156,7 +106,7 @@ export const hrService = {
     return request<DashboardMetrics>('/dashboard/metrics');
   },
 
-  async getVelocity(range: '7D' | '30D' | '90D'): Promise<VelocityData> {
+  async getVelocity(range: '7D' | '30D' | '90D' = '7D'): Promise<VelocityData> {
     try {
       const res = await fetch(`http://localhost:8000/api/v1/dashboard/velocity?range=${range}`);
       if (res.ok) {
@@ -165,7 +115,7 @@ export const hrService = {
     } catch {}
 
     if (IS_MOCK_MODE) {
-      await delay(120);
+      await delay();
       return velocityDataset[range];
     }
     return request<VelocityData>(`/dashboard/velocity?range=${range}`);
@@ -182,30 +132,35 @@ export const hrService = {
       if (res.ok) {
         const data = await res.json();
         state.requests = data;
+        if (typeof window !== 'undefined') {
+          try { localStorage.setItem('hr_cached_requests', JSON.stringify(data)); } catch {}
+        }
         return data;
       }
-    } catch {}
+    } catch (err) {
+      console.warn('Backend unavailable, using cached state:', err);
+    }
 
     if (IS_MOCK_MODE) {
       await delay();
-      return state.requests.filter(req => {
-        if (category && category !== 'all' && req.category !== category) return false;
-        if (priority && priority !== 'all' && req.priority !== priority) return false;
-        if (search) {
-          const q = search.toLowerCase();
-          const matchTitle = req.title.toLowerCase().includes(q);
-          const matchEmp = req.employee.name.toLowerCase().includes(q);
-          const matchId = req.id.toLowerCase().includes(q);
-          return matchTitle || matchEmp || matchId;
-        }
-        return true;
-      });
+      let filtered = [...state.requests];
+      if (category && category !== 'all') {
+        filtered = filtered.filter(r => r.category === category);
+      }
+      if (priority && priority !== 'all') {
+        filtered = filtered.filter(r => r.priority === priority);
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        filtered = filtered.filter(r => 
+          r.title.toLowerCase().includes(q) ||
+          r.employee.name.toLowerCase().includes(q) ||
+          r.description.toLowerCase().includes(q)
+        );
+      }
+      return filtered;
     }
-    const params = new URLSearchParams();
-    if (category) params.append('category', category);
-    if (priority) params.append('priority', priority);
-    if (search) params.append('search', search);
-    return request<RequestItem[]>(`/requests?${params.toString()}`);
+    return request<RequestItem[]>('/requests');
   },
 
   async createRequest(newReq: Partial<RequestItem>): Promise<RequestItem> {
@@ -232,16 +187,21 @@ export const hrService = {
 
     await delay(120);
     const id = newReq.id || `REQ-${Math.floor(1000 + Math.random() * 9000)}`;
+    const emp = newReq.employee || {
+      id: newReq.employeeId || 'EMP001',
+      name: 'Alex Johnson',
+      department: 'Engineering',
+      email: 'alex.johnson@enterprise.internal',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80'
+    };
+
     const item: RequestItem = {
       id,
       title: newReq.title || 'New HR Inquiry',
-      employee: newReq.employee || {
-        id: 'EMP-999',
-        name: 'Rupam Sharma',
-        department: 'Core Platform & AI Systems',
-        email: 'rupam.sharma@enterprise.org',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
-      },
+      employeeId: newReq.employeeId || emp.id,
+      employee: emp,
+      assignedToId: newReq.assignedToId,
+      assignedTo: newReq.assignedTo,
       category: newReq.category || 'other',
       priority: newReq.priority || 'medium',
       status: 'open',
@@ -252,7 +212,8 @@ export const hrService = {
         classification: 'Autonomous Intake',
         autoRouted: true
       },
-      description: newReq.description || ''
+      description: newReq.description || '',
+      comments: newReq.comments || []
     };
     state.requests.unshift(item);
     state.metrics.openRequests.count += 1;
@@ -271,7 +232,79 @@ export const hrService = {
     return item;
   },
 
-  async reviewRequest(id: string, notes: string, status: 'resolved' | 'in_review' = 'resolved'): Promise<RequestItem> {
+  async assignRequest(id: string, assignedToId: string, assignedToName: string): Promise<RequestItem> {
+    try {
+      const res = await fetch(`http://localhost:8000/api/v1/requests/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          assignedToId,
+          assignedTo: assignedToName
+        })
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        const idx = state.requests.findIndex(r => r.id === id || r.id?.toLowerCase() === id.toLowerCase());
+        if (idx >= 0) state.requests[idx] = updated;
+        if (typeof window !== 'undefined') {
+          try { localStorage.setItem('hr_cached_requests', JSON.stringify(state.requests)); } catch {}
+        }
+        return updated;
+      }
+    } catch {}
+
+    const req = state.requests.find(r => r.id === id || r.id?.toLowerCase() === id.toLowerCase());
+    if (req) {
+      req.assignedToId = assignedToId;
+      req.assignedTo = assignedToName;
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('hr_cached_requests', JSON.stringify(state.requests)); } catch {}
+      }
+      return req;
+    }
+    throw new Error('Request not found');
+  },
+
+  async addComment(id: string, comment: Partial<RequestComment>): Promise<RequestComment> {
+    try {
+      const res = await fetch(`http://localhost:8000/api/v1/requests/${encodeURIComponent(id)}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(comment)
+      });
+      if (res.ok) {
+        const createdComment = await res.json();
+        const req = state.requests.find(r => r.id === id || r.id?.toLowerCase() === id.toLowerCase());
+        if (req) {
+          req.comments = [...(req.comments || []), createdComment];
+          if (typeof window !== 'undefined') {
+            try { localStorage.setItem('hr_cached_requests', JSON.stringify(state.requests)); } catch {}
+          }
+        }
+        return createdComment;
+      }
+    } catch {}
+
+    const created: RequestComment = {
+      id: `c-${Date.now()}`,
+      author: comment.author || 'User',
+      authorId: comment.authorId,
+      avatar: comment.avatar,
+      text: comment.text || '',
+      time: 'Just now',
+      isHr: !!comment.isHr
+    };
+    const req = state.requests.find(r => r.id === id || r.id?.toLowerCase() === id.toLowerCase());
+    if (req) {
+      req.comments = [...(req.comments || []), created];
+      if (typeof window !== 'undefined') {
+        try { localStorage.setItem('hr_cached_requests', JSON.stringify(state.requests)); } catch {}
+      }
+    }
+    return created;
+  },
+
+  async reviewRequest(id: string, notes: string, status: 'resolved' | 'in_review' = 'resolved', resolverName = 'HR Operations'): Promise<RequestItem> {
     const statusUpper = status === 'resolved' ? 'RESOLVED' : 'IN PROGRESS';
     try {
       const res = await fetch(`http://localhost:8000/api/v1/requests/${encodeURIComponent(id)}`, {
@@ -281,7 +314,7 @@ export const hrService = {
           status,
           statusUpper,
           resolutionNotes: notes,
-          resolverName: 'Sarah Jenkins (HR Ops)'
+          resolverName
         })
       });
       if (res.ok) {
@@ -300,6 +333,7 @@ export const hrService = {
     if (req) {
       req.status = status;
       req.resolutionNotes = notes;
+      req.resolverName = resolverName;
       (req as any).statusUpper = statusUpper;
       if (status === 'resolved') {
         state.metrics.resolvedOvernight += 1;
@@ -308,8 +342,8 @@ export const hrService = {
       state.activities.unshift({
         id: `ACT-${Date.now()}`,
         actorType: 'user',
-        actorName: 'Sarah Jenkins',
-        actionText: `Sarah approved & resolved ${id}`,
+        actorName: resolverName,
+        actionText: `${resolverName} approved & resolved ${id}`,
         timeAgo: 'Just now',
         subText: notes || req.title,
         tag: { text: statusUpper, color: 'emerald' }
@@ -323,177 +357,118 @@ export const hrService = {
   },
 
   async getTriageQueue(): Promise<AITriageItem[]> {
-    try {
-      const res = await fetch('http://localhost:8000/api/v1/triage/queue');
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          state.triageQueue = data;
-          return data;
-        }
-      }
-    } catch {}
-    return [...state.triageQueue];
+    if (IS_MOCK_MODE) {
+      await delay();
+      return [...state.triageQueue];
+    }
+    return request<AITriageItem[]>('/ai/triage/queue');
   },
 
   async overrideTriage(triageId: string, newCategory: any): Promise<void> {
-    try {
-      await fetch('http://localhost:8000/api/v1/triage/override', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ triageId, newCategory })
-      });
-    } catch {}
-
-    const item = state.triageQueue.find(t => t.id === triageId);
-    if (item) {
-      item.predictedCategory = newCategory;
-      item.status = 'OVERRIDDEN';
+    if (IS_MOCK_MODE) {
+      await delay(200);
+      const item = state.triageQueue.find(t => t.id === triageId);
+      if (item) {
+        item.predictedCategory = newCategory;
+        item.status = 'OVERRIDDEN';
+      }
+      return;
     }
+    return request<void>('/ai/triage/override', {
+      method: 'POST',
+      body: JSON.stringify({ triageId, newCategory })
+    });
   },
 
   async getDeliverables(): Promise<DeliverableItem[]> {
-    try {
-      const res = await fetch('http://localhost:8000/api/v1/deliverables');
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          state.deliverables = data;
-          return data;
-        }
-      }
-    } catch {}
-    return [...state.deliverables];
+    if (IS_MOCK_MODE) {
+      await delay();
+      return [...state.deliverables];
+    }
+    return request<DeliverableItem[]>('/deliverables');
   },
 
   async approveDeliverable(id: string): Promise<DeliverableItem> {
-    try {
-      const res = await fetch(`http://localhost:8000/api/v1/deliverables/${encodeURIComponent(id)}/approve`, { method: 'POST' });
-      if (res.ok) {
-        const updated = await res.json();
-        const idx = state.deliverables.findIndex(d => d.id === id);
-        if (idx >= 0) state.deliverables[idx] = updated;
-        return updated;
+    if (IS_MOCK_MODE) {
+      await delay(200);
+      const item = state.deliverables.find(d => d.id === id);
+      if (item) {
+        item.status = 'approved';
+        state.activities.unshift({
+          id: `ACT-${Date.now()}`,
+          actorType: 'user',
+          actorName: 'Sarah Jenkins',
+          actionText: `Approved ${id}`,
+          timeAgo: 'Just now',
+          subText: item.title,
+          tag: { text: 'Approved', color: 'emerald' }
+        });
       }
-    } catch {}
-
-    const item = state.deliverables.find(d => d.id === id);
-    if (item) {
-      item.status = 'approved';
-      state.activities.unshift({
-        id: `ACT-${Date.now()}`,
-        actorType: 'user',
-        actorName: 'Sarah',
-        actionText: `Sarah approved ${id}`,
-        timeAgo: 'Just now',
-        subText: item.title,
-        tag: { text: 'Approved', color: 'emerald' }
-      });
+      return item!;
     }
-    return item!;
+    return request<DeliverableItem>(`/deliverables/${id}/approve`, { method: 'POST' });
   },
 
   async getHRActions(): Promise<HRActionItem[]> {
-    try {
-      const res = await fetch('http://localhost:8000/api/v1/actions');
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          state.hrActions = data;
-          return data;
-        }
-      }
-    } catch {}
-    return [...state.hrActions];
+    if (IS_MOCK_MODE) {
+      await delay();
+      return [...state.hrActions];
+    }
+    return request<HRActionItem[]>('/actions');
   },
 
   async executeHRAction(id: string): Promise<HRActionItem> {
-    try {
-      const res = await fetch(`http://localhost:8000/api/v1/actions/${encodeURIComponent(id)}/execute`, { method: 'POST' });
-      if (res.ok) {
-        const updated = await res.json();
-        const idx = state.hrActions.findIndex(a => a.id === id);
-        if (idx >= 0) state.hrActions[idx] = updated;
-        return updated;
+    if (IS_MOCK_MODE) {
+      await delay(250);
+      const item = state.hrActions.find(a => a.id === id);
+      if (item) {
+        item.status = 'completed';
+        state.metrics.pendingHRActions.count = Math.max(0, state.metrics.pendingHRActions.count - 1);
+        state.activities.unshift({
+          id: `ACT-${Date.now()}`,
+          actorType: 'user',
+          actorName: 'HR Operations',
+          actionText: `Executed Action ${id}: ${item.title}`,
+          timeAgo: 'Just now',
+          subText: item.employeeName,
+          tag: { text: 'Executed', color: 'cyan' }
+        });
       }
-    } catch {}
-
-    const item = state.hrActions.find(a => a.id === id);
-    if (item) {
-      item.status = 'completed';
-      state.metrics.pendingHRActions.count = Math.max(0, state.metrics.pendingHRActions.count - 1);
-      state.activities.unshift({
-        id: `ACT-${Date.now()}`,
-        actorType: 'user',
-        actorName: 'Sarah',
-        actionText: `Executed Action ${id}: ${item.title}`,
-        timeAgo: 'Just now',
-        subText: item.employeeName,
-        tag: { text: 'Executed', color: 'cyan' }
-      });
+      return item!;
     }
-    return item!;
+    return request<HRActionItem>(`/actions/${id}/execute`, { method: 'POST' });
   },
 
   async getInsights(): Promise<InsightItem[]> {
-    try {
-      const res = await fetch('http://localhost:8000/api/v1/insights');
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          state.insights = data;
-          return data;
-        }
-      }
-    } catch {}
-    return [...state.insights];
+    if (IS_MOCK_MODE) {
+      await delay();
+      return [...state.insights];
+    }
+    return request<InsightItem[]>('/insights/trends');
   },
 
   async getCategoryVolumes(): Promise<CategoryVolume[]> {
-    try {
-      const res = await fetch('http://localhost:8000/api/v1/category-volumes');
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          state.categoryVolumes = data;
-          return data;
-        }
-      }
-    } catch {}
-    return [...state.categoryVolumes];
+    if (IS_MOCK_MODE) {
+      await delay();
+      return [...state.categoryVolumes];
+    }
+    return request<CategoryVolume[]>('/insights/categories');
   },
 
   async getActivities(): Promise<ActivityEvent[]> {
-    try {
-      const res = await fetch('http://localhost:8000/api/v1/activities');
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          state.activities = data;
-          return data;
-        }
-      }
-    } catch {}
-    return [...state.activities];
+    if (IS_MOCK_MODE) {
+      await delay();
+      return [...state.activities];
+    }
+    return request<ActivityEvent[]>('/dashboard/recent-activity');
   },
 
-  async getRagHealth(): Promise<{ status: string; azure_configured: boolean; vector_store_ready: boolean; knowledge_base_files: number } | null> {
+  async queryCopilot(prompt: string): Promise<CopilotMessage> {
     try {
-      const res = await fetch('/health');
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {}
-    return null;
-  },
-
-  async queryCopilot(prompt: string, history: Array<{ role: string; content: string }> = []): Promise<CopilotMessage> {
-    try {
-      // 1. Query the RAG agent backend (port 8001 direct or port 8000 proxy)
       let res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: prompt, history })
+        body: JSON.stringify({ question: prompt })
       }).catch((e) => {
         console.warn('Primary fetch failed:', e);
         return null;
@@ -503,7 +478,7 @@ export const hrService = {
         res = await fetch('/api/v1/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: prompt, history })
+          body: JSON.stringify({ question: prompt })
         }).catch((e) => {
           console.warn('Fallback fetch failed:', e);
           return null;
@@ -521,36 +496,29 @@ export const hrService = {
           page: s.page
         }));
 
-        // Contextual suggested actions for HR Operations
         const lower = prompt.toLowerCase();
         let suggestedActions = [
-          "Verify Policy Eligibility Checklist",
-          "Draft Official HR Response to Employee",
-          "Log HR Policy Audit Action"
+          "Generate Official Resolution Addendum",
+          "Notify Employee via Email",
+          "Log HR Action"
         ];
         if (lower.includes('leave') || lower.includes('pto') || lower.includes('vacation')) {
           suggestedActions = [
-            "Audit Leave Eligibility Requirements",
-            "Draft Policy Clarification to Employee",
-            "Verify Medical Documentation Rules"
+            "Check Employee PTO Balance",
+            "Generate Leave Signoff Document",
+            "Notify Department Manager"
           ];
         } else if (lower.includes('remote') || lower.includes('home') || lower.includes('stipend')) {
           suggestedActions = [
-            "Verify Hybrid Agreement Requirements",
-            "Check $500 Stipend 90-Day Eligibility Rule",
-            "Review IT Equipment Compliance Terms"
+            "Initiate $500 Home Office Stipend Reimbursement",
+            "Verify Hybrid Agreement Status",
+            "Notify IT Hardware Procurement"
           ];
         } else if (lower.includes('travel') || lower.includes('expense') || lower.includes('per diem')) {
           suggestedActions = [
-            "Audit Expense Claim Against Policy Limits",
-            "Verify 45-Day Receipt Submission Window",
-            "Draft Incomplete Claim Clarification Notice"
-          ];
-        } else if (lower.includes('parental') || lower.includes('maternity') || lower.includes('paternity')) {
-          suggestedActions = [
-            "Verify 6-Month Tenure Eligibility Requirement",
-            "Audit Primary vs Secondary Caregiver Criteria",
-            "Draft Official Parental Leave Signoff"
+            "Review Travel Authorization Claim",
+            "Approve Per Diem Expense",
+            "Route to Finance for Reimbursement"
           ];
         }
 
@@ -569,7 +537,6 @@ export const hrService = {
       console.warn('RAG backend query error, falling back to local simulation:', err);
     }
 
-    // Local fallback if backend is unreachable
     await delay(300);
     let reply = `Based on the Enterprise HR Policy Library, here is the verified rule for "${prompt}":`;
     let citations = [
@@ -598,254 +565,5 @@ export const hrService = {
     };
     state.copilotMessages.push(assistantMsg);
     return assistantMsg;
-  },
-
-  async addComment(
-    requestId: string,
-    text: string,
-    author = 'Sarah Jenkins (HR Ops)',
-    isHr = true,
-    avatar?: string
-  ): Promise<RequestComment> {
-    try {
-      const res = await fetch(`http://localhost:8000/api/v1/requests/${encodeURIComponent(requestId)}/comments`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          author,
-          text,
-          isHr,
-          avatar
-        })
-      });
-      if (res.ok) {
-        const newComment: RequestComment = await res.json();
-        const target = state.requests.find(r => r.id === requestId || r.id?.toLowerCase() === requestId.toLowerCase());
-        if (target) {
-          if (!target.comments) target.comments = [];
-          if (!target.comments.some(c => c.id === newComment.id)) {
-            target.comments.push(newComment);
-          }
-          target.lastUpdated = 'Just now';
-        }
-        return newComment;
-      }
-    } catch (err) {
-      console.warn('Backend comment post failed, applying local fallback:', err);
-    }
-
-    await delay(120);
-    const newComment: RequestComment = {
-      id: `c-${Date.now()}`,
-      author,
-      text,
-      time: 'Just now',
-      isHr,
-      avatar
-    };
-    const target = state.requests.find(r => r.id === requestId || r.id?.toLowerCase() === requestId.toLowerCase());
-    if (target) {
-      if (!target.comments) target.comments = [];
-      target.comments.push(newComment);
-      target.lastUpdated = 'Just now';
-    }
-    return newComment;
-  },
-
-  async queryCaseCopilot(
-    caseItem: RequestItem,
-    action: 'draft_reply' | 'summarize' | 'check_policy' | 'missing_info' | 'improve_tone' | 'next_steps' | 'custom_query',
-    userQuery?: string,
-    tone?: string
-  ): Promise<CopilotMessage> {
-    const empName = typeof caseItem.employee === 'object' && caseItem.employee ? (caseItem.employee.name || 'Employee') : (caseItem.employee || 'Employee');
-    const empDept = typeof caseItem.employee === 'object' && caseItem.employee ? (caseItem.employee.department || 'Operations') : 'Operations';
-    const commentsList = caseItem.comments || [];
-    const conversationHistoryStr = commentsList.length > 0
-      ? commentsList.map(c => `[${c.isHr ? 'HR Response' : 'Employee'}] (${c.author}, ${c.time}): ${c.text}`).join('\n')
-      : '(No previous messages in conversation thread)';
-
-    let prompt = '';
-    const systemRoleDesc = `You are an AI Copilot specialized in enterprise HR case resolution and employee relations for GlobalTech Enterprise.`;
-
-    switch (action) {
-      case 'draft_reply':
-        prompt = `${systemRoleDesc}
-Please generate an official, professional, and empathetic employee communication reply from HR to ${empName}.
-Tone: ${tone || 'Polite, clear, supportive, and grounded in official HR policy'}.
-
-CASE CONTEXT:
-- Case ID: ${caseItem.id}
-- Case Title: ${caseItem.title || caseItem.subject || 'HR Inquiry'}
-- Category: ${caseItem.category}
-- Priority: ${caseItem.priority}
-- Current Status: ${caseItem.status}
-- Employee: ${empName} (${empDept})
-- Original Case Narrative:
-"""
-${caseItem.description}
-"""
-
-CONVERSATION THREAD SO FAR:
-${conversationHistoryStr}
-
-INSTRUCTIONS FOR THE HR REPLY:
-1. Address ${empName} warmly by first name.
-2. Direct and transparent answer referencing their request and the latest comment.
-3. If applicable, cite the relevant company policy rules (e.g. Leave, Remote Work, Benefits, Payroll).
-4. Provide clear next steps or expected timeline.
-5. Close professionally from Sarah Jenkins, HR Operations Lead.`;
-        break;
-
-      case 'summarize':
-        prompt = `${systemRoleDesc}
-Provide a concise, high-level bullet-point executive summary of this case and all communications.
-
-CASE CONTEXT:
-- Case ID: ${caseItem.id}
-- Title: ${caseItem.title || caseItem.subject}
-- Employee: ${empName} (${empDept})
-- Narrative: ${caseItem.description}
-- Conversation History:
-${conversationHistoryStr}
-
-Format with:
-- **Core Request**: (1 sentence)
-- **Status & Timeline**: (current state)
-- **Key Details**: (bullet points)
-- **Action Required**: (what HR needs to do next)`;
-        break;
-
-      case 'check_policy':
-        prompt = `${systemRoleDesc}
-Check applicable company policies for this case:
-Case ID: ${caseItem.id}
-Category: ${caseItem.category}
-Narrative: ${caseItem.description}
-${userQuery ? `Specific Question: ${userQuery}` : 'Identify the exact policy requirements, eligibility criteria, and SLA timelines.'}`;
-        break;
-
-      case 'missing_info':
-        prompt = `${systemRoleDesc}
-Review the case details and conversation history below. Identify any missing information, documents, approvals, or dates that HR needs from the employee before this case can be resolved.
-Case: ${caseItem.title}
-Narrative: ${caseItem.description}
-Conversation:
-${conversationHistoryStr}`;
-        break;
-
-      case 'improve_tone':
-        prompt = `${systemRoleDesc}
-Refine and polish the following draft response to be ${tone || 'more empathetic, professional, and clear'}:
-Draft:
-"""
-${userQuery || ''}
-"""
-Target audience: ${empName} regarding Case ${caseItem.title}.`;
-        break;
-
-      case 'next_steps':
-        prompt = `${systemRoleDesc}
-Based on this case status (${caseItem.status}) and history, outline the 3 immediate operational next steps for HR to bring this case to resolution.
-Case: ${caseItem.id} - ${caseItem.title}
-Narrative: ${caseItem.description}
-Conversation:
-${conversationHistoryStr}`;
-        break;
-
-      case 'custom_query':
-      default:
-        prompt = `${systemRoleDesc}
-Case Context: ${caseItem.id} (${caseItem.title}), Category: ${caseItem.category}, Employee: ${empName} (${empDept}).
-Narrative: ${caseItem.description}
-Conversation History:
-${conversationHistoryStr}
-
-HR Specialist Query:
-${userQuery || 'Analyze this request and recommend appropriate action.'}`;
-        break;
-    }
-
-    try {
-      let res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: prompt, history: [] })
-      }).catch(() => null);
-
-      if (!res || !res.ok) {
-        res = await fetch('http://localhost:8001/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: prompt, history: [] })
-        }).catch(() => null);
-      }
-
-      if (res && res.ok) {
-        const data = await res.json();
-        const sources: Array<{ document: string; page: number }> = data.sources || [];
-        const citations = sources.map(s => ({
-          title: s.document
-            ? s.document.replace('.pdf', '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-            : 'Company Policy',
-          section: s.document || 'Policy Document',
-          page: s.page
-        }));
-
-        return {
-          id: `COP-CASE-${Date.now()}`,
-          sender: 'assistant',
-          text: data.answer || 'Response generated from policy agent.',
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          citations,
-          suggestedActions: [
-            'Use Reply',
-            'Make More Empathetic',
-            'Make More Concise',
-            'Check Policy Details'
-          ]
-        };
-      }
-    } catch (err) {
-      console.warn('RAG backend query error, falling back to local domain knowledge:', err);
-    }
-
-    // Local fallback with rich context
-    await delay(250);
-    const categoryLower = (caseItem.category || '').toLowerCase();
-    let replyText = '';
-    let citations = [{ title: 'Employee Handbook', section: 'employee_handbook.pdf', page: 1 }];
-
-    if (action === 'draft_reply') {
-      if (categoryLower.includes('leave')) {
-        replyText = `Hi ${empName},\n\nThank you for reaching out regarding your leave inquiry for Case ${caseItem.id}. According to our Leave & Time Off Policy (Section 3.2), full-time employees accrue 1.67 PTO days per month. I have reviewed your balance and verified that your requested dates can be accommodated.\n\nPlease ensure your direct supervisor has also approved the calendar block in the portal. Feel free to reply if you need any adjustments!\n\nBest regards,\nSarah Jenkins\nHR Operations Lead`;
-        citations = [{ title: 'Leave Policy', section: 'leave_policy.pdf', page: 1 }];
-      } else if (categoryLower.includes('payroll')) {
-        replyText = `Hi ${empName},\n\nThank you for following up on your payroll case (${caseItem.id}). Our finance and payroll operations team has verified the batch disbursement. The adjustment has been scheduled for the upcoming pay cycle on the 1st of next month.\n\nYou will see the revised breakdown on your itemized payslip. Please let me know if you have any questions in the meantime.\n\nWarm regards,\nSarah Jenkins\nHR Operations Lead`;
-        citations = [{ title: 'Compensation & Payroll Policy', section: 'employee_handbook.pdf', page: 4 }];
-      } else {
-        replyText = `Hi ${empName},\n\nThank you for providing the details for Case ${caseItem.id}. I have reviewed your submission regarding "${caseItem.title || 'your request'}" alongside our company guidelines.\n\nWe are currently processing the verification and will have this resolved for you within 24–48 hours. Please let me know if any additional context comes up.\n\nSincerely,\nSarah Jenkins\nHR Operations Lead`;
-        citations = [{ title: 'Employee Relations Guide', section: 'employee_handbook.pdf', page: 2 }];
-      }
-    } else if (action === 'summarize') {
-      replyText = `**Case Summary for ${caseItem.id}**:\n- **Employee**: ${empName} (${empDept})\n- **Status**: ${caseItem.status.toUpperCase()} (${caseItem.priority} priority)\n- **Subject**: ${caseItem.title || caseItem.subject}\n- **Core Narrative**: ${caseItem.description}\n- **Conversation State**: ${commentsList.length} total messages exchanged.\n- **Action Required**: Review documentation and confirm resolution notes.`;
-    } else if (action === 'check_policy') {
-      replyText = `**Applicable Company Policy Clauses**:\n1. **Standard Service SLA**: Inquiries must receive initial specialist response within 4 business hours.\n2. **Documentation Retention**: Communications are archived in accordance with Article 6 (Compliance & Records).\n3. **Policy Grounding**: Verified against ${categoryLower.includes('leave') ? 'leave_policy.pdf' : categoryLower.includes('remote') ? 'remote_work_policy.pdf' : 'employee_handbook.pdf'}.`;
-    } else {
-      replyText = `I have analyzed Case ${caseItem.id} for ${empName}. Based on the request details ("${caseItem.description}"), all mandatory fields are present. You can proceed with drafting a response or approving the case.`;
-    }
-
-    return {
-      id: `COP-CASE-${Date.now()}`,
-      sender: 'assistant',
-      text: replyText,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      citations,
-      suggestedActions: [
-        'Use Reply',
-        'Make More Empathetic',
-        'Make More Concise'
-      ]
-    };
   }
 };

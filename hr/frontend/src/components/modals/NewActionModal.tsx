@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Category, Priority, RequestItem } from '../../types/hr';
+import { EMPLOYEE_USERS } from '../../data/mockUsers';
 
 interface NewActionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Partial<RequestItem>) => void;
+  onSubmit: (request: Partial<RequestItem>) => void;
 }
 
 export const NewActionModal: React.FC<NewActionModalProps> = ({
@@ -15,12 +16,13 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Category>('payroll');
   const [priority, setPriority] = useState<Priority>('medium');
-  const [employeeName, setEmployeeName] = useState('Alex Johnson');
-  const [department, setDepartment] = useState('Platform Engineering');
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>(EMPLOYEE_USERS[0].id);
   const [description, setDescription] = useState('');
   const [autoTriage, setAutoTriage] = useState(true);
 
   if (!isOpen) return null;
+
+  const currentEmp = EMPLOYEE_USERS.find(e => e.id === selectedEmployeeId) || EMPLOYEE_USERS[0];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,12 +33,15 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
       category,
       priority,
       description,
+      employeeId: currentEmp.id,
       employee: {
-        id: `EMP-${Math.floor(Math.random() * 800) + 100}`,
-        name: employeeName,
-        department,
-        email: `${employeeName.toLowerCase().replace(/\s+/g, '.')}@enterprise.internal`,
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80'
+        id: currentEmp.id,
+        name: currentEmp.name,
+        department: currentEmp.department,
+        email: currentEmp.email,
+        avatar: currentEmp.avatar,
+        title: currentEmp.role,
+        tenure: currentEmp.tenure
       }
     });
 
@@ -65,7 +70,7 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1 rounded-lg text-white/40 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
@@ -86,29 +91,21 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-mono text-white/70 mb-1.5 uppercase">
-                Employee Name
-              </label>
-              <input
-                type="text"
-                value={employeeName}
-                onChange={(e) => setEmployeeName(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-mono text-white/70 mb-1.5 uppercase">
-                Department
-              </label>
-              <input
-                type="text"
-                value={department}
-                onChange={(e) => setDepartment(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-black/40 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan"
-              />
-            </div>
+          <div>
+            <label className="block text-xs font-mono text-white/70 mb-1.5 uppercase">
+              Attributed Employee
+            </label>
+            <select
+              value={selectedEmployeeId}
+              onChange={(e) => setSelectedEmployeeId(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan font-mono cursor-pointer"
+            >
+              {EMPLOYEE_USERS.map((emp) => (
+                <option key={emp.id} value={emp.id} className="bg-[#0b0e22] text-white">
+                  {emp.name} ({emp.id}) • {emp.department}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -119,7 +116,7 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as Category)}
-                className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan"
+                className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan cursor-pointer"
               >
                 <option value="payroll">Payroll</option>
                 <option value="benefits">Benefits</option>
@@ -137,7 +134,7 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as Priority)}
-                className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan"
+                className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/15 text-white text-xs focus:outline-none focus:border-neon-cyan cursor-pointer"
               >
                 <option value="high">High Priority (Urgent)</option>
                 <option value="medium">Medium Priority</option>
@@ -180,13 +177,13 @@ export const NewActionModal: React.FC<NewActionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 text-xs font-medium transition-colors"
+              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 text-xs font-medium transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs shadow-neon-cyan transition-all"
+              className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs shadow-neon-cyan transition-all cursor-pointer"
             >
               Dispatch Case
             </button>

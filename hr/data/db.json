@@ -1,61 +1,61 @@
 {
   "metrics": {
     "openRequests": {
-      "count": 4,
-      "changePercent": 0,
-      "comparisonText": "4 active"
+      "count": 8,
+      "changePercent": 12,
+      "comparisonText": "5 open cases"
     },
     "highPriority": {
-      "count": 2,
+      "count": 5,
       "requiresAttention": 2
     },
     "pendingHRActions": {
-      "count": 0,
+      "count": 2,
       "waitingOver24h": 0
     },
     "slaCompliance": {
-      "percent": 100,
-      "changePercent": 0,
+      "percent": 98.6,
+      "changePercent": 1.2,
       "targetPercent": 92
     },
-    "avgSla": "0m",
-    "resolvedOvernight": 5,
-    "aiTriagedToday": 4,
-    "aiAssistedCases": 0,
-    "draftsGenerated": 0
+    "avgSla": "18m",
+    "resolvedOvernight": 4,
+    "aiTriagedToday": 6,
+    "aiAssistedCases": 5,
+    "draftsGenerated": 4
   },
   "velocity": {
     "7D": {
       "range": "7D",
       "labels": [
+        "Mon",
+        "Tue",
+        "Wed",
         "Thu",
         "Fri",
         "Sat",
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed"
+        "Sun"
       ],
       "incoming": [
-        3,
-        0,
-        0,
-        0,
-        0,
-        0,
-        6
+        4,
+        6,
+        8,
+        5,
+        7,
+        2,
+        3
       ],
       "resolved": [
         3,
-        0,
-        0,
-        0,
-        0,
-        0,
+        5,
+        7,
+        6,
+        6,
+        2,
         2
       ],
-      "openTotal": 4,
-      "receivedToday": 6,
+      "openTotal": 5,
+      "receivedToday": 3,
       "resolvedToday": 2
     },
     "30D": {
@@ -67,759 +67,698 @@
         "Week 4"
       ],
       "incoming": [
-        0,
-        0,
-        0,
-        9
+        22,
+        28,
+        25,
+        30
       ],
       "resolved": [
-        0,
-        0,
-        0,
-        5
+        20,
+        26,
+        24,
+        28
       ],
-      "openTotal": 4,
-      "receivedToday": 6,
+      "openTotal": 5,
+      "receivedToday": 3,
       "resolvedToday": 2
     },
     "90D": {
       "range": "90D",
       "labels": [
-        "Jul",
-        "Aug",
-        "Sep"
+        "August",
+        "September",
+        "October"
       ],
       "incoming": [
-        0,
-        0,
-        9
+        85,
+        92,
+        104
       ],
       "resolved": [
-        0,
-        0,
-        5
+        82,
+        90,
+        99
       ],
-      "openTotal": 4,
-      "receivedToday": 6,
+      "openTotal": 5,
+      "receivedToday": 3,
       "resolvedToday": 2
     }
   },
   "requests": [
     {
-      "id": "REQ-1058",
-      "title": "Experience letter and tenure certificate",
-      "subject": "Experience letter and tenure certificate",
+      "id": "REQ-5536",
+      "title": "David Chen Fiscal Audit Verification",
+      "subject": "David Chen Fiscal Audit Verification",
+      "employeeId": "EMP004",
       "employee": {
-        "id": "usr_emp_3",
-        "name": "Rupam Sharma",
-        "department": "Product Engineering - Cloud Platform",
-        "email": "rupam.sharma@enterprise.org",
-        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-        "role": "EMPLOYEE",
-        "title": "Lead Full-Stack Engineer"
+        "id": "EMP004",
+        "name": "David Chen",
+        "department": "Finance & Operations",
+        "email": "david.chen@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+        "title": "Financial Analyst"
       },
+      "assignedToId": "HR003",
+      "assignedTo": "Elena Rostova",
       "category": "documents",
-      "categoryDisplay": "Documents",
-      "priority": "medium",
-      "priorityDisplay": "Medium",
+      "priority": "high",
       "status": "open",
       "statusUpper": "SUBMITTED",
       "waitingTime": "Just now",
-      "createdAt": "2026-09-23T10:33:41.122Z",
-      "createdDate": "Sep 23, 2026",
+      "createdAt": "2026-09-24T06:35:00.528Z",
+      "createdDate": "Sep 24, 2026",
       "aiTriage": {
         "confidence": 0.96,
         "classification": "DOCUMENTS Inquiry",
         "autoRouted": true
       },
-      "description": "wdwewew",
+      "description": "Fiscal Q3 end closing verification statement.",
       "tags": [
         "documents"
       ],
       "timeline": [
         {
-          "date": "Sep 23, 2026, 10:33 AM",
+          "date": "Sep 24, 2026, 6:35 AM",
           "title": "Request Created",
-          "desc": "Submitted through HR Service Desk self-service portal.",
-          "actor": "Rupam Sharma"
-        }
-      ],
-      "comments": [
-        {
-          "id": "c-1790163505703",
-          "author": "Sarah Jenkins (HR Ops)",
-          "text": "Verification test comment from HR AI Copilot workspace.",
-          "time": "Just now",
-          "isHr": true
-        }
-      ],
-      "lastUpdated": "Just now"
-    },
-    {
-      "id": "REQ-1358",
-      "title": "Maternity / Parental leave return schedule",
-      "subject": "Maternity / Parental leave return schedule",
-      "employee": {
-        "id": "usr_emp_3",
-        "name": "Rupam Sharma",
-        "department": "Product Engineering - Cloud Platform",
-        "email": "rupam.sharma@enterprise.org",
-        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-        "role": "EMPLOYEE",
-        "title": "Lead Full-Stack Engineer"
-      },
-      "category": "other",
-      "categoryDisplay": "General Inquiry",
-      "priority": "high",
-      "priorityDisplay": "High",
-      "status": "open",
-      "statusUpper": "SUBMITTED",
-      "waitingTime": "Just now",
-      "createdAt": "2026-09-23T10:33:15.932Z",
-      "createdDate": "Sep 23, 2026",
-      "aiTriage": {
-        "confidence": 0.96,
-        "classification": "OTHER Inquiry",
-        "autoRouted": true
-      },
-      "description": "asdfghjkl;",
-      "tags": [
-        "other"
-      ],
-      "timeline": [
-        {
-          "date": "Sep 23, 2026, 10:33 AM",
-          "title": "Request Created",
-          "desc": "Submitted through HR Service Desk self-service portal.",
-          "actor": "Rupam Sharma"
-        }
-      ],
-      "comments": []
-    },
-    {
-      "id": "REQ-1062",
-      "title": "Casual Leave application for family event",
-      "subject": "Casual Leave application for family event",
-      "employee": {
-        "id": "EMP-20491",
-        "name": "Rupam Sharma",
-        "department": "Core Platform & AI Systems",
-        "email": "rupam.sharma@enterprise.org",
-        "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1We_fGu7ivsnlA9Sip2HUdvK_UW0DrH_HdC3JT5FMLT30mc7YMTBRoA6RZejOoDa-L9qu0bw0bVGaJ_KvvrYxKdIyccNkh1o0xBzT3gFiK7CeBRkAaH4a0U9ru2r6JsBB1APj0Ttd5eo5asFCWTCCXcdFtpYkHJOoK6UI5wKWjnHatdZyMQai7HlV53rP81t6-CuBcvlflzjLdw3CIxpZkZ-JJ06fPeSAinW0kCAO6Q1TUoyR19MEm581Y",
-        "avatarUrl": "https://lh3.googleusercontent.com/aida/AEtjO1We_fGu7ivsnlA9Sip2HUdvK_UW0DrH_HdC3JT5FMLT30mc7YMTBRoA6RZejOoDa-L9qu0bw0bVGaJ_KvvrYxKdIyccNkh1o0xBzT3gFiK7CeBRkAaH4a0U9ru2r6JsBB1APj0Ttd5eo5asFCWTCCXcdFtpYkHJOoK6UI5wKWjnHatdZyMQai7HlV53rP81t6-CuBcvlflzjLdw3CIxpZkZ-JJ06fPeSAinW0kCAO6Q1TUoyR19MEm581Y",
-        "role": "EMPLOYEE",
-        "title": "Lead Full-Stack Engineer"
-      },
-      "category": "leave",
-      "categoryDisplay": "Leave & Time",
-      "priority": "medium",
-      "priorityDisplay": "Medium",
-      "status": "resolved",
-      "statusUpper": "RESOLVED",
-      "waitingTime": "Just now",
-      "createdAt": "2026-09-23T09:54:49.180Z",
-      "createdDate": "Sep 23, 2026",
-      "aiTriage": {
-        "confidence": 0.96,
-        "classification": "LEAVE Inquiry",
-        "autoRouted": true
-      },
-      "description": "testing",
-      "tags": [
-        "leave"
-      ],
-      "timeline": [
-        {
-          "date": "Sep 23, 2026, 9:54 AM",
-          "title": "Request Created",
-          "desc": "Submitted through HR Service Desk self-service portal.",
-          "actor": "Rupam Sharma"
-        },
-        {
-          "date": "Sep 23, 2026, 9:55 AM",
-          "title": "Approved & Resolved",
-          "desc": "Approved and resolved directly by HR Operations Lead.",
-          "actor": "Sarah Jenkins (HR Ops)"
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "David Chen"
         }
       ],
       "comments": [],
-      "resolutionNotes": "Approved and resolved directly by HR Operations Lead.",
-      "resolverName": "Sarah Jenkins (HR Ops)",
+      "resolutionNotes": "",
       "lastUpdated": "Just now"
     },
     {
-      "id": "REQ-SYNC-9850",
-      "title": "Urgent Biometric Missed Punch Correction",
-      "subject": "Urgent Biometric Missed Punch Correction",
+      "id": "REQ-9045",
+      "title": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "subject": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "employeeId": "EMP002",
       "employee": {
-        "id": "usr_emp_3",
-        "name": "Rupam Sharma",
-        "department": "Core Platform & AI Systems",
-        "email": "rupam.sharma@enterprise.org",
-        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
-        "role": "EMPLOYEE",
-        "title": "Lead Full-Stack Engineer"
-      },
-      "category": "leave",
-      "categoryDisplay": "Leave & Time",
-      "priority": "high",
-      "priorityDisplay": "High",
-      "status": "resolved",
-      "statusUpper": "RESOLVED",
-      "waitingTime": "Just now",
-      "createdAt": "2026-09-23T09:35:47.271Z",
-      "createdDate": "Sep 23, 2026",
-      "aiTriage": {
-        "confidence": 0.96,
-        "classification": "LEAVE Inquiry",
-        "autoRouted": true
-      },
-      "description": "Fingerprint scanner did not register clock-in on Monday 9 AM.",
-      "tags": [
-        "leave"
-      ],
-      "timeline": [
-        {
-          "date": "Sep 23, 2026, 9:35 AM",
-          "title": "Request Created",
-          "desc": "Submitted through HR Self-Service Portal",
-          "actor": "Rupam Sharma"
-        },
-        {
-          "date": "Sep 23, 2026, 9:35 AM",
-          "title": "Approved & Resolved",
-          "desc": "Biometric logs verified against building security gate. Attendance regularized.",
-          "actor": "Sarah Jenkins (HR Ops)"
-        }
-      ],
-      "comments": [
-        {
-          "id": "c-1790156148564",
-          "author": "Rupam Sharma",
-          "text": "Thank you Sarah, verified the attendance update in ESS portal!",
-          "time": "Just now",
-          "isHr": false
-        },
-        {
-          "id": "c-1790163457680",
-          "author": "Sarah Jenkins (HR Ops)",
-          "text": "okk",
-          "time": "Just now",
-          "isHr": true
-        }
-      ],
-      "resolutionNotes": "Biometric logs verified against building security gate. Attendance regularized.",
-      "resolverName": "Sarah Jenkins (HR Ops)",
-      "lastUpdated": "Just now"
-    },
-    {
-      "id": "REQ-SSE-TEST",
-      "title": "SSE Test Request",
-      "subject": "SSE Test Request",
-      "employee": {
-        "id": "usr_emp_3",
-        "name": "Rupam Sharma",
-        "email": "rupam.sharma@enterprise.org",
-        "role": "EMPLOYEE",
-        "title": "Lead Full-Stack Engineer",
-        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-      },
-      "category": "leave",
-      "priority": "high",
-      "status": "open",
-      "statusUpper": "SUBMITTED",
-      "waitingTime": "Just now",
-      "createdAt": "2026-09-23T09:15:52.769Z",
-      "createdDate": "Sep 23, 2026",
-      "aiTriage": {
-        "confidence": 0.96,
-        "classification": "LEAVE Inquiry",
-        "autoRouted": true
-      },
-      "description": "",
-      "tags": [
-        "leave"
-      ],
-      "timeline": [
-        {
-          "date": "Sep 23, 2026, 9:15 AM",
-          "title": "Request Created",
-          "desc": "Submitted through HR Self-Service Portal",
-          "actor": "Employee"
-        }
-      ],
-      "comments": [
-        {
-          "id": "c-1790164552564",
-          "author": "Sarah Jenkins (HR Ops)",
-          "text": "Hi Rupam,\n\nThank you for reaching out to HR and for submitting case REQ-SSE-TEST regarding your leave.\n\nI’m not seeing specific details in your request description, so I’ll outline the key leave options available under our current policies. If I’ve misunderstood the type of leave you’re seeking, please reply with a brief clarification (e.g., “annual leave,” “sick leave,” “parental leave,” or “unpaid personal leave”), and I’ll adjust the guidance and processing accordingly.\n\nBased on our Company Leave and Time Off Policy (leave_policy.pdf):\n\n1. **Annual Paid Time Off (PTO)** – Page 1  \n   - Full-time permanent employees are entitled to **20 business days of paid annual leave per calendar year**, accruing monthly at **1.67 days per completed month of active service**.  \n   - If your request is for **planned annual leave exceeding 3 consecutive days**, it must be **submitted through the HR portal at least 2 weeks in advance** and approved by your direct manager.  \n   - Up to **5 unused leave days** can be carried forward into the next calendar year and must be used by **March 31**; any additional carryover is forfeited without monetary compensation.\n\n2. **Sick Leave and Medical Absences** – Page 2  \n   - Employees receive **10 paid sick days per calendar year** (allocated in full on January 1, or pro-rated from your start date).  \n   - If you are ill for **more than 3 consecutive working days**, you must provide an **official medical certificate** from a licensed healthcare provider to People Operations upon your return.\n\n3. **Parental and Family Caregiver Leave** – Page 3  \n   - **Primary caregivers** are eligible for **16 weeks of 100% paid parental leave** following birth, adoption, or foster placement.  \n   - **Secondary caregivers** are eligible for **6 weeks of fully paid leave**.  \n   - You must have completed **at least 6 consecutive months of employment** to be eligible for paid parental leave.\n\n4. **Unpaid Personal Leave** – Page 3  \n   - You may request **unpaid leave of absence** for personal emergencies or educational sabbaticals for up to **90 calendar days**.  \n   - This requires **approval from your Department Director and the Head of HR**.\n\n---\n\n**Next Steps**\n\nTo move your case forward quickly, please reply with the following (or update your case in the HR portal):\n\n1. **Type of leave requested** (annual PTO, sick leave, parental leave, unpaid personal leave, or other).  \n2. **Requested dates** (start date and end date).  \n3. **Whether this is planned in advance or due to an urgent/emergency situation.**\n\nOnce we have these details:\n\n- We will **review your eligibility** under the relevant policy.\n- We will **coordinate with your manager** (and, if needed, your Department Director and Head of HR) for approval.\n- For standard annual leave requests submitted with sufficient notice, you can typically expect an update or decision **within 2–3 business days** of providing complete information.\n\nIf your situation is urgent (e.g., sudden illness or family emergency), please indicate that clearly so we can prioritize and respond as quickly as possible.\n\nThank you again, Rupam. We’re here to support you and ensure your leave is handled smoothly and in line with company policy.\n\nBest regards,  \n**Sarah Jenkins**  \nHR Operations Lead  \nGlobalTech Enterprise",
-          "time": "Just now",
-          "isHr": true
-        }
-      ],
-      "lastUpdated": "Just now"
-    },
-    {
-      "id": "REQ-9999",
-      "title": "Test Ticket from Node",
-      "subject": "Test Ticket from Node",
-      "employee": {
-        "id": "usr_emp_3",
+        "id": "EMP002",
         "name": "Rupam Sharma",
         "department": "Product Engineering",
-        "email": "rupam@test.com",
-        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+        "title": "Lead Full-Stack Engineer"
       },
-      "category": "Leave & Time",
-      "priority": "High",
+      "category": "documents",
+      "priority": "medium",
       "status": "open",
       "statusUpper": "SUBMITTED",
       "waitingTime": "Just now",
-      "createdAt": "2026-09-23T08:48:54.465Z",
-      "createdDate": "Sep 23, 2026",
+      "createdAt": "2026-09-24T06:35:00.482Z",
+      "createdDate": "Sep 24, 2026",
       "aiTriage": {
         "confidence": 0.96,
-        "classification": "LEAVE & TIME Inquiry",
+        "classification": "DOCUMENTS Inquiry",
         "autoRouted": true
       },
-      "description": "Testing ticket sync",
+      "description": "Domain cert renewal verification.",
       "tags": [
-        "Leave & Time"
+        "documents"
       ],
       "timeline": [
         {
-          "date": "Today",
-          "title": "Created",
-          "desc": "Test",
-          "actor": "Employee"
+          "date": "Sep 24, 2026, 6:35 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Rupam Sharma"
         }
       ],
       "comments": []
     },
     {
-      "id": "REQ-1124",
-      "title": "Attendance regularization for biometric missed punch",
-      "subject": "Attendance regularization for biometric missed punch",
+      "id": "REQ-3307",
+      "title": "Alex Private Test Ticket - GPU Cluster Access",
+      "subject": "Alex Private Test Ticket - GPU Cluster Access",
+      "employeeId": "EMP001",
       "employee": {
-        "id": "usr_emp_3",
-        "name": "Rupam Sharma",
-        "department": "Product Engineering - Cloud Platform",
-        "email": "rupam.sharma@enterprise.org",
-        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-      },
-      "category": "leave",
-      "priority": "medium",
-      "status": "resolved",
-      "statusUpper": "RESOLVED",
-      "waitingTime": "Just now",
-      "createdAt": "2026-09-17T12:18:50.492Z",
-      "createdDate": "Sep 17, 2026",
-      "aiTriage": {
-        "confidence": 0.96,
-        "classification": "LEAVE Inquiry",
-        "autoRouted": true
-      },
-      "description": "wewe",
-      "tags": [
-        "leave"
-      ],
-      "timeline": [
-        {
-          "date": "Sep 17, 2026, 12:18 PM",
-          "title": "Request Created",
-          "desc": "Submitted through HR Service Desk self-service portal.",
-          "actor": "Rupam Sharma"
-        },
-        {
-          "date": "Sep 17, 2026, 12:19 PM",
-          "title": "Approved & Resolved",
-          "desc": "Approved and resolved directly by HR Operations Lead.",
-          "actor": "Sarah Jenkins (HR Ops)"
-        }
-      ],
-      "comments": [],
-      "resolutionNotes": "Approved and resolved directly by HR Operations Lead.",
-      "resolverName": "Sarah Jenkins (HR Ops)",
-      "lastUpdated": "Just now"
-    },
-    {
-      "id": "REQ-5325",
-      "title": "New HR Request",
-      "subject": "New HR Request",
-      "employee": {
-        "id": "usr_emp_3",
-        "name": "Rupam Sharma",
-        "email": "rupam.sharma@enterprise.org",
-        "role": "EMPLOYEE",
-        "title": "Lead Full-Stack Engineer",
-        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
-      },
-      "category": "other",
-      "priority": "medium",
-      "status": "resolved",
-      "statusUpper": "RESOLVED",
-      "waitingTime": "Just now",
-      "createdAt": "2026-09-17T12:17:39.228Z",
-      "createdDate": "Sep 17, 2026",
-      "aiTriage": {
-        "confidence": 0.96,
-        "classification": "Autonomous Intake",
-        "autoRouted": true
-      },
-      "description": "",
-      "tags": [
-        "General"
-      ],
-      "timeline": [
-        {
-          "date": "Sep 17, 2026, 12:17 PM",
-          "title": "Request Created",
-          "desc": "Submitted through HR Self-Service Portal",
-          "actor": "Employee"
-        },
-        {
-          "date": "Sep 17, 2026, 12:17 PM",
-          "title": "Approved & Resolved",
-          "desc": "Approved by HR Director",
-          "actor": "Sarah Jenkins (HR Ops)"
-        }
-      ],
-      "comments": [],
-      "resolutionNotes": "Approved by HR Director",
-      "lastUpdated": "Just now"
-    },
-    {
-      "id": "REQ-1051",
-      "title": "asdfghjkl",
-      "subject": "asdfghjkl",
-      "employee": {
-        "id": "usr_emp_3",
+        "id": "EMP001",
         "name": "Alex Johnson",
-        "department": "Product Engineering - Cloud Platform",
+        "department": "Engineering",
         "email": "alex.johnson@enterprise.internal",
-        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80"
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "title": "Senior Staff Engineer"
       },
+      "assignedToId": "HR002",
+      "assignedTo": "Marcus Vance",
       "category": "benefits",
       "priority": "high",
-      "status": "resolved",
-      "statusUpper": "RESOLVED",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
       "waitingTime": "Just now",
-      "createdAt": "2026-09-17T12:15:55.296Z",
-      "createdDate": "Sep 17, 2026",
+      "createdAt": "2026-09-24T06:35:00.405Z",
+      "createdDate": "Sep 24, 2026",
       "aiTriage": {
         "confidence": 0.96,
         "classification": "BENEFITS Inquiry",
         "autoRouted": true
       },
-      "description": "vvbvb",
+      "description": "Need access to machine learning training nodes.",
       "tags": [
         "benefits"
       ],
       "timeline": [
         {
-          "date": "Sep 17, 2026, 12:15 PM",
+          "date": "Sep 24, 2026, 6:35 AM",
           "title": "Request Created",
-          "desc": "Submitted through HR Service Desk self-service portal.",
+          "desc": "Submitted through HR Self-Service Portal",
           "actor": "Alex Johnson"
-        },
-        {
-          "date": "Sep 17, 2026, 12:16 PM",
-          "title": "Approved & Resolved",
-          "desc": "Case reviewed and verified against internal HR handbook policies.",
-          "actor": "Sarah Jenkins (HR Ops)"
         }
       ],
       "comments": [
         {
-          "id": "c-1789647386941",
-          "author": "Alex Johnson",
-          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80",
-          "text": "REQ-1051",
+          "id": "c-1790231700575",
+          "authorId": "HR002",
+          "author": "Marcus Vance",
+          "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+          "text": "Marcus Vance HR reply: reviewed GPU cluster authorization.",
           "time": "Just now",
-          "isHr": false
+          "isHr": true
         },
         {
-          "id": "c-1789647386959",
+          "id": "c-1790231700589",
+          "authorId": "EMP001",
           "author": "Alex Johnson",
-          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80",
-          "text": "REQ-1051",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "Alex Johnson employee reply: thank you for checking the GPU nodes.",
           "time": "Just now",
           "isHr": false
         }
       ],
-      "resolutionNotes": "okokokoko\n",
-      "resolverName": "Sarah Jenkins (HR Ops)",
-      "lastUpdated": "Just now"
+      "lastUpdated": "Just now",
+      "resolutionNotes": ""
+    },
+    {
+      "id": "REQ-1001",
+      "title": "Biometric missed punch regularization for Platform team sprint",
+      "subject": "Biometric missed punch regularization for Platform team sprint",
+      "employeeId": "EMP001",
+      "employee": {
+        "id": "EMP001",
+        "name": "Alex Johnson",
+        "department": "Engineering",
+        "email": "alex.johnson@enterprise.internal",
+        "role": "Senior Staff Engineer",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "tenure": "4 years"
+      },
+      "assignedToId": "HR002",
+      "assignedTo": "Marcus Vance",
+      "category": "leave",
+      "priority": "high",
+      "status": "in_review",
+      "statusUpper": "IN PROGRESS",
+      "waitingTime": "24m ago",
+      "createdAt": "2026-09-24T04:15:00.000Z",
+      "createdDate": "Sep 24, 2026",
+      "aiTriage": {
+        "confidence": 0.98,
+        "classification": "LEAVE & ATTENDANCE Inquiry",
+        "autoRouted": true
+      },
+      "description": "Forgot to badge in during the datacenter deployment on Monday. Need attendance record regularized.",
+      "tags": [
+        "leave",
+        "attendance"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 24, 2026, 9:45 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Alex Johnson"
+        },
+        {
+          "date": "Sep 24, 2026, 10:00 AM",
+          "title": "Assigned to HR Specialist",
+          "desc": "Assigned to Marcus Vance for attendance log reconciliation.",
+          "actor": "Autonomous AI Dispatch"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1001-1",
+          "authorId": "EMP001",
+          "author": "Alex Johnson",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "Attached VPN connection logs confirming 8.5 hours active work.",
+          "time": "30m ago",
+          "isHr": false
+        },
+        {
+          "id": "c-1001-2",
+          "authorId": "HR002",
+          "author": "Marcus Vance",
+          "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+          "text": "Thanks Alex, verifying server logs against the badge reader. Will regularize before noon.",
+          "time": "15m ago",
+          "isHr": true
+        }
+      ]
+    },
+    {
+      "id": "REQ-1002",
+      "title": "Add newborn dependent to corporate health coverage (MediAssist)",
+      "subject": "Add newborn dependent to corporate health coverage (MediAssist)",
+      "employeeId": "EMP002",
+      "employee": {
+        "id": "EMP002",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering",
+        "email": "rupam.sharma@enterprise.org",
+        "role": "Lead Full-Stack Engineer",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+        "tenure": "2 years"
+      },
+      "assignedToId": "HR001",
+      "assignedTo": "Sarah Jenkins",
+      "category": "benefits",
+      "priority": "high",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "1h ago",
+      "createdAt": "2026-09-24T03:30:00.000Z",
+      "createdDate": "Sep 24, 2026",
+      "aiTriage": {
+        "confidence": 0.95,
+        "classification": "BENEFITS & INSURANCE Inquiry",
+        "autoRouted": true
+      },
+      "description": "Requesting to add baby daughter to corporate group medical policy. Birth certificate uploaded.",
+      "tags": [
+        "benefits",
+        "insurance"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 24, 2026, 9:00 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Rupam Sharma"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1002-1",
+          "authorId": "EMP002",
+          "author": "Rupam Sharma",
+          "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+          "text": "Birth certificate and hospital discharge summary provided.",
+          "time": "1h ago",
+          "isHr": false
+        },
+        {
+          "id": "c-1002-2",
+          "authorId": "HR001",
+          "author": "Sarah Jenkins",
+          "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+          "text": "Congratulations Rupam! Reviewing documents for MediAssist endorsement.",
+          "time": "40m ago",
+          "isHr": true
+        }
+      ]
+    },
+    {
+      "id": "REQ-1003",
+      "title": "Tax declaration adjustment & investment declaration verification",
+      "subject": "Tax declaration adjustment & investment declaration verification",
+      "employeeId": "EMP003",
+      "employee": {
+        "id": "EMP003",
+        "name": "Maya Patel",
+        "department": "Design & Product",
+        "email": "maya.patel@enterprise.internal",
+        "role": "Product Manager",
+        "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+        "tenure": "3 years"
+      },
+      "assignedToId": "HR003",
+      "assignedTo": "Elena Rostova",
+      "category": "payroll",
+      "priority": "medium",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "2h ago",
+      "createdAt": "2026-09-24T02:00:00.000Z",
+      "createdDate": "Sep 24, 2026",
+      "aiTriage": {
+        "confidence": 0.94,
+        "classification": "PAYROLL & TAX Inquiry",
+        "autoRouted": true
+      },
+      "description": "Updated home loan interest certificate and HRA rent receipts for FY2026 Q3 tax withholding recalculation.",
+      "tags": [
+        "payroll",
+        "tax"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 24, 2026, 7:30 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Maya Patel"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1003-1",
+          "authorId": "EMP003",
+          "author": "Maya Patel",
+          "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+          "text": "Please adjust TDS calculations prior to the end-of-month payroll run.",
+          "time": "2h ago",
+          "isHr": false
+        }
+      ]
+    },
+    {
+      "id": "REQ-1004",
+      "title": "Verification of Employment letter for mortgage loan pre-approval",
+      "subject": "Verification of Employment letter for mortgage loan pre-approval",
+      "employeeId": "EMP004",
+      "employee": {
+        "id": "EMP004",
+        "name": "David Chen",
+        "department": "Finance & Operations",
+        "email": "david.chen@enterprise.internal",
+        "role": "Financial Analyst",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+        "tenure": "1 year"
+      },
+      "assignedToId": "HR001",
+      "assignedTo": "Sarah Jenkins",
+      "category": "documents",
+      "priority": "medium",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "3h ago",
+      "createdAt": "2026-09-24T01:10:00.000Z",
+      "createdDate": "Sep 24, 2026",
+      "aiTriage": {
+        "confidence": 0.99,
+        "classification": "DOCUMENTS & VERIFICATION Inquiry",
+        "autoRouted": true
+      },
+      "description": "Bank requires official signed letter detailing current salary, designation and start date.",
+      "tags": [
+        "documents",
+        "verification"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 24, 2026, 6:40 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "David Chen"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1004-1",
+          "authorId": "EMP004",
+          "author": "David Chen",
+          "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+          "text": "Loan officer requested digital signature and official seal on the PDF.",
+          "time": "3h ago",
+          "isHr": false
+        }
+      ]
+    },
+    {
+      "id": "REQ-1005",
+      "title": "Home office equipment ergonomics stipend reimbursement",
+      "subject": "Home office equipment ergonomics stipend reimbursement",
+      "employeeId": "EMP001",
+      "employee": {
+        "id": "EMP001",
+        "name": "Alex Johnson",
+        "department": "Engineering",
+        "email": "alex.johnson@enterprise.internal",
+        "role": "Senior Staff Engineer",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "tenure": "4 years"
+      },
+      "assignedToId": "HR002",
+      "assignedTo": "Marcus Vance",
+      "category": "benefits",
+      "priority": "low",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "1d ago",
+      "createdAt": "2026-09-23T11:00:00.000Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.97,
+        "classification": "BENEFITS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Standing desk converter and ergonomic chair receipt submitted for $500 policy allowance.",
+      "resolutionNotes": "Approved against Remote Work Policy Article 3. Reimbursed in next payroll cycle.",
+      "resolverName": "Marcus Vance (HR Ops)",
+      "tags": [
+        "benefits",
+        "stipend"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 23, 2026, 4:30 PM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Alex Johnson"
+        },
+        {
+          "date": "Sep 23, 2026, 5:15 PM",
+          "title": "Approved & Resolved",
+          "desc": "Approved against Remote Work Policy Article 3.",
+          "actor": "Marcus Vance (HR Ops)"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1005-1",
+          "authorId": "EMP001",
+          "author": "Alex Johnson",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "Invoices attached from authorized office supplier.",
+          "time": "1d ago",
+          "isHr": false
+        },
+        {
+          "id": "c-1005-2",
+          "authorId": "HR002",
+          "author": "Marcus Vance",
+          "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+          "text": "Receipts validated and sent to accounts payable.",
+          "time": "1d ago",
+          "isHr": true
+        }
+      ]
     }
   ],
   "triageQueue": [
     {
-      "id": "TRG-1790159621123",
-      "requestId": "REQ-1058",
-      "title": "Experience letter and tenure certificate",
-      "employeeName": "Rupam Sharma",
-      "predictedCategory": "documents",
-      "confidenceScore": 0.96,
-      "urgencyScore": "MEDIUM",
-      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Documents.",
-      "suggestedAction": "Route to Documents specialist queue.",
-      "status": "AUTO_ROUTED",
-      "timestamp": "Just now"
-    },
-    {
-      "id": "TRG-1790159595957",
-      "requestId": "REQ-1358",
-      "title": "Maternity / Parental leave return schedule",
-      "employeeName": "Rupam Sharma",
-      "predictedCategory": "other",
-      "confidenceScore": 0.96,
-      "urgencyScore": "HIGH",
-      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for General Inquiry.",
-      "suggestedAction": "Route to General Inquiry specialist queue.",
-      "status": "AUTO_ROUTED",
-      "timestamp": "Just now"
-    },
-    {
-      "id": "TRG-1790157289181",
-      "requestId": "REQ-1062",
-      "title": "Casual Leave application for family event",
-      "employeeName": "Rupam Sharma",
+      "id": "TRG-901",
+      "requestId": "REQ-1001",
+      "title": "Biometric missed punch attendance regularization",
+      "employeeName": "Alex Johnson",
       "predictedCategory": "leave",
-      "confidenceScore": 0.96,
-      "urgencyScore": "MEDIUM",
-      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Leave & Time.",
-      "suggestedAction": "Route to Leave & Time specialist queue.",
+      "confidenceScore": 0.98,
+      "urgencyScore": "HIGH",
+      "reasoning": "Keywords match missed biometric punch and time card reconciliation.",
+      "suggestedAction": "Auto-populate attendance adjustment form for Marcus Vance review.",
       "status": "AUTO_ROUTED",
       "timestamp": "Just now"
     },
     {
-      "id": "TRG-1790156147301",
-      "requestId": "REQ-SYNC-9850",
-      "title": "Urgent Biometric Missed Punch Correction",
+      "id": "TRG-902",
+      "requestId": "REQ-1002",
+      "title": "Add newborn dependent to medical coverage",
       "employeeName": "Rupam Sharma",
-      "predictedCategory": "leave",
-      "confidenceScore": 0.96,
+      "predictedCategory": "benefits",
+      "confidenceScore": 0.95,
       "urgencyScore": "HIGH",
-      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Leave & Time.",
-      "suggestedAction": "Route to Leave & Time specialist queue.",
+      "reasoning": "Qualifying life event verified; birth certificate attached.",
+      "suggestedAction": "Forward document package to Sarah Jenkins for insurance enrollment.",
       "status": "AUTO_ROUTED",
-      "timestamp": "Just now"
+      "timestamp": "1h ago"
+    },
+    {
+      "id": "TRG-903",
+      "requestId": "REQ-1003",
+      "title": "Tax declaration adjustment & HRA verification",
+      "employeeName": "Maya Patel",
+      "predictedCategory": "payroll",
+      "confidenceScore": 0.94,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Mid-year tax adjustment requires Elena Rostova compliance sign-off.",
+      "suggestedAction": "Stage tax withholding revision in payroll queue.",
+      "status": "NEEDS_VERIFICATION",
+      "timestamp": "2h ago"
     }
   ],
-  "deliverables": [],
-  "hrActions": [],
-  "insights": [],
+  "deliverables": [
+    {
+      "id": "DEL-401",
+      "title": "Standard Verification of Employment Letter",
+      "type": "verification_of_employment",
+      "employeeName": "David Chen",
+      "department": "Finance & Operations",
+      "status": "pending_approval",
+      "generatedAt": "Today, 6:45 AM",
+      "contentPreview": "This letter certifies that David Chen is employed full-time at Enterprise Global People Ops..."
+    },
+    {
+      "id": "DEL-402",
+      "title": "Ergonomics Allowance Reimbursement Voucher",
+      "type": "compensation_letter",
+      "employeeName": "Alex Johnson",
+      "department": "Engineering",
+      "status": "approved",
+      "generatedAt": "Yesterday, 5:15 PM",
+      "contentPreview": "Authorized reimbursement for $500 remote work stipend..."
+    }
+  ],
+  "hrActions": [
+    {
+      "id": "ACT-801",
+      "title": "Attendance Regularization Approval",
+      "type": "leave_signoff",
+      "employeeName": "Alex Johnson",
+      "department": "Engineering",
+      "urgency": "HIGH",
+      "status": "pending",
+      "timestamp": "Today, 10:00 AM",
+      "effectiveDate": "Sep 22, 2026",
+      "summary": "Regularize missed badge tap for datacenter maintenance shift."
+    },
+    {
+      "id": "ACT-802",
+      "title": "Dependent Insurance Enrollment",
+      "type": "role_transition",
+      "employeeName": "Rupam Sharma",
+      "department": "Product Engineering",
+      "urgency": "HIGH",
+      "status": "pending",
+      "timestamp": "Today, 9:00 AM",
+      "effectiveDate": "Oct 01, 2026",
+      "summary": "Add infant dependent under group medical plan tier 1."
+    }
+  ],
+  "insights": [
+    {
+      "id": "INS-1",
+      "title": "AI Autonomous Routing Accuracy",
+      "description": "96.4% of incoming tickets classified correctly without manual operator reassignment.",
+      "icon": "auto_awesome",
+      "type": "emerald",
+      "changeText": "+3.2% vs last month"
+    },
+    {
+      "id": "INS-2",
+      "title": "Leave Regularization Bottleneck",
+      "description": "Attendance regularization volume increased 28% following badge reader firmware update.",
+      "icon": "warning",
+      "type": "warning",
+      "changeText": "Requires IT sync"
+    },
+    {
+      "id": "INS-3",
+      "title": "Median Resolution Speed",
+      "description": "Median response time for policy queries reduced to 18 minutes using grounded RAG Copilot.",
+      "icon": "bolt",
+      "type": "info",
+      "changeText": "4x faster than baseline"
+    }
+  ],
   "categoryVolumes": [
     {
       "category": "payroll",
       "name": "Payroll & Compensation",
-      "count": 0,
-      "percentage": 0
+      "count": 28,
+      "percentage": 24
     },
     {
       "category": "benefits",
       "name": "Health & Benefits",
-      "count": 1,
-      "percentage": 11
+      "count": 35,
+      "percentage": 30
     },
     {
       "category": "leave",
       "name": "Leave & Attendance",
-      "count": 4,
-      "percentage": 44
+      "count": 32,
+      "percentage": 27
     },
     {
       "category": "documents",
       "name": "Letters & Verification",
-      "count": 1,
-      "percentage": 11
+      "count": 14,
+      "percentage": 12
     },
     {
       "category": "compliance",
       "name": "HR Policies",
-      "count": 0,
-      "percentage": 0
+      "count": 8,
+      "percentage": 7
     }
   ],
   "activities": [
     {
-      "id": "ACT-1790159621123",
+      "id": "ACT-1790231700620",
       "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-1058 (Documents)",
+      "actorName": "Marcus Vance",
+      "actionText": "Marcus Vance updated case REQ-3307",
       "timeAgo": "Just now",
-      "subText": "Experience letter and tenure certificate",
+      "subText": "Alex Private Test Ticket - GPU Cluster Access",
       "tag": {
-        "text": "New Ticket",
-        "color": "cyan"
-      }
-    },
-    {
-      "id": "ACT-1790159595957",
-      "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-1358 (General Inquiry)",
-      "timeAgo": "Just now",
-      "subText": "Maternity / Parental leave return schedule",
-      "tag": {
-        "text": "New Ticket",
-        "color": "cyan"
-      }
-    },
-    {
-      "id": "ACT-1790157307940",
-      "actorType": "user",
-      "actorName": "HR Operations",
-      "actionText": "HR updated case REQ-1062 to RESOLVED",
-      "timeAgo": "Just now",
-      "subText": "Approved and resolved directly by HR Operations Lead.",
-      "tag": {
-        "text": "RESOLVED",
+        "text": "SUBMITTED",
         "color": "emerald"
       }
     },
     {
-      "id": "ACT-1790157289181",
+      "id": "ACT-1790231700559",
       "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-1062 (Leave & Time)",
+      "actorName": "Elena Rostova",
+      "actionText": "Elena Rostova updated case REQ-5536",
       "timeAgo": "Just now",
-      "subText": "Casual Leave application for family event",
+      "subText": "David Chen Fiscal Audit Verification",
       "tag": {
-        "text": "New Ticket",
-        "color": "cyan"
-      }
-    },
-    {
-      "id": "ACT-1790156147952",
-      "actorType": "user",
-      "actorName": "HR Operations",
-      "actionText": "HR updated case REQ-SYNC-9850 to RESOLVED",
-      "timeAgo": "Just now",
-      "subText": "Biometric logs verified against building security gate. Attendance regularized.",
-      "tag": {
-        "text": "RESOLVED",
+        "text": "SUBMITTED",
         "color": "emerald"
       }
     },
     {
-      "id": "ACT-1790156147301",
+      "id": "ACT-1790231700529",
       "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-SYNC-9850 (Leave & Time)",
+      "actorName": "David Chen",
+      "actionText": "David Chen submitted REQ-5536 (documents)",
       "timeAgo": "Just now",
-      "subText": "Urgent Biometric Missed Punch Correction",
+      "subText": "David Chen Fiscal Audit Verification",
       "tag": {
         "text": "New Ticket",
         "color": "cyan"
       }
     },
     {
-      "id": "ACT-1790154952770",
+      "id": "ACT-1790231700482",
       "actorType": "user",
       "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-SSE-TEST (leave)",
+      "actionText": "Rupam Sharma submitted REQ-9045 (documents)",
       "timeAgo": "Just now",
-      "subText": "SSE Test Request",
+      "subText": "Rupam Deployment Ticket - K8s Ingress SSL",
       "tag": {
         "text": "New Ticket",
         "color": "cyan"
       }
     },
     {
-      "id": "ACT-1790153334486",
-      "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-9999 (Leave & Time)",
-      "timeAgo": "Just now",
-      "subText": "Test Ticket from Node",
-      "tag": {
-        "text": "New Ticket",
-        "color": "cyan"
-      }
-    },
-    {
-      "id": "ACT-1789647540911",
-      "actorType": "user",
-      "actorName": "HR Operations",
-      "actionText": "HR approved & resolved case REQ-1124",
-      "timeAgo": "Just now",
-      "subText": "Approved and resolved directly by HR Operations Lead.",
-      "tag": {
-        "text": "RESOLVED",
-        "color": "emerald"
-      }
-    },
-    {
-      "id": "ACT-1789647530493",
-      "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-1124 (leave)",
-      "timeAgo": "Just now",
-      "subText": "Attendance regularization for biometric missed punch",
-      "tag": {
-        "text": "New Ticket",
-        "color": "cyan"
-      }
-    },
-    {
-      "id": "ACT-1789647478304",
-      "actorType": "user",
-      "actorName": "HR Operations",
-      "actionText": "HR approved & resolved case REQ-5325",
-      "timeAgo": "Just now",
-      "subText": "Approved by HR Director",
-      "tag": {
-        "text": "RESOLVED",
-        "color": "emerald"
-      }
-    },
-    {
-      "id": "ACT-1789647459228",
-      "actorType": "user",
-      "actorName": "Rupam Sharma",
-      "actionText": "Rupam Sharma submitted REQ-5325 (other)",
-      "timeAgo": "Just now",
-      "subText": "New HR Request",
-      "tag": {
-        "text": "New Ticket",
-        "color": "cyan"
-      }
-    },
-    {
-      "id": "ACT-1789647402261",
-      "actorType": "user",
-      "actorName": "HR Operations",
-      "actionText": "HR approved & resolved case REQ-1051",
-      "timeAgo": "Just now",
-      "subText": "okokokoko\n",
-      "tag": {
-        "text": "RESOLVED",
-        "color": "emerald"
-      }
-    },
-    {
-      "id": "ACT-1789647373712",
-      "actorType": "user",
-      "actorName": "HR Operations",
-      "actionText": "HR approved & resolved case REQ-1051",
-      "timeAgo": "Just now",
-      "subText": "Case reviewed and verified against internal HR handbook policies.",
-      "tag": {
-        "text": "RESOLVED",
-        "color": "emerald"
-      }
-    },
-    {
-      "id": "ACT-1789647355314",
+      "id": "ACT-1790231700425",
       "actorType": "user",
       "actorName": "Alex Johnson",
-      "actionText": "Alex Johnson submitted REQ-1051 (benefits)",
+      "actionText": "Alex Johnson submitted REQ-3307 (benefits)",
       "timeAgo": "Just now",
-      "subText": "asdfghjkl",
+      "subText": "Alex Private Test Ticket - GPU Cluster Access",
       "tag": {
         "text": "New Ticket",
         "color": "cyan"
@@ -829,39 +768,162 @@
       "id": "ACT-INIT-1",
       "actorType": "ai",
       "actorName": "HR AI Engine",
-      "actionText": "Intake pipeline active & persistent storage connected",
+      "actionText": "Multi-user authentication and ticket attribution system active",
       "timeAgo": "Just now",
-      "subText": "Sync Server active on port 8000 with file database",
+      "subText": "Sync Server v3.0 connected with 7 enterprise users and persistent database",
       "tag": {
-        "text": "Online",
+        "text": "Active",
         "color": "emerald"
       }
     }
   ],
   "users": {
-    "admin": {
-      "id": "usr_admin_1",
+    "HR001": {
+      "id": "HR001",
       "name": "Sarah Jenkins",
       "email": "sarah.jenkins@enterprise.internal",
-      "role": "HR_ADMIN",
+      "role": "HR Operations Lead",
       "title": "HR Operations Lead",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
       "avatarUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0"
     },
-    "specialist": {
-      "id": "usr_spec_2",
-      "name": "David Chen",
-      "email": "david.chen@enterprise.internal",
-      "role": "HR_SPECIALIST",
-      "title": "Senior People Partner",
-      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+    "HR002": {
+      "id": "HR002",
+      "name": "Marcus Vance",
+      "email": "marcus.vance@enterprise.internal",
+      "role": "Senior HR Benefits & Leave Specialist",
+      "title": "Senior HR Benefits & Leave Specialist",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80"
     },
-    "employee": {
-      "id": "usr_emp_3",
+    "HR003": {
+      "id": "HR003",
+      "name": "Elena Rostova",
+      "email": "elena.rostova@enterprise.internal",
+      "role": "Payroll & Compliance Admin",
+      "title": "Payroll & Compliance Admin",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80"
+    },
+    "EMP001": {
+      "id": "EMP001",
+      "name": "Alex Johnson",
+      "email": "alex.johnson@enterprise.internal",
+      "role": "Senior Staff Engineer",
+      "title": "Senior Staff Engineer",
+      "department": "Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80"
+    },
+    "EMP002": {
+      "id": "EMP002",
       "name": "Rupam Sharma",
       "email": "rupam.sharma@enterprise.org",
-      "role": "EMPLOYEE",
+      "role": "Lead Full-Stack Engineer",
       "title": "Lead Full-Stack Engineer",
-      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+      "department": "Product Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80"
+    },
+    "EMP003": {
+      "id": "EMP003",
+      "name": "Maya Patel",
+      "email": "maya.patel@enterprise.internal",
+      "role": "Product Manager",
+      "title": "Product Manager",
+      "department": "Design & Product",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80"
+    },
+    "EMP004": {
+      "id": "EMP004",
+      "name": "David Chen",
+      "email": "david.chen@enterprise.internal",
+      "role": "Financial Analyst",
+      "title": "Financial Analyst",
+      "department": "Finance & Operations",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80"
+    },
+    "EMP005": {
+      "id": "EMP005",
+      "name": "Test User",
+      "email": "test.user123@enterprise.internal",
+      "role": "Software Engineer",
+      "title": "Software Engineer",
+      "department": "Engineering",
+      "isHr": false,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 1,
+      "tenure": "New",
+      "passwordHash": "8776f108e247ab1e2b323042c049c266407c81fbad41bde1e8dfc1bb66fd267e"
+    },
+    "EMP006": {
+      "id": "EMP006",
+      "name": "saravanan",
+      "email": "saravanan.sekar@tcs.comdhsdc",
+      "role": "MFG",
+      "title": "MFG",
+      "department": "hdgehc",
+      "isHr": false,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 1,
+      "tenure": "New",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP007": {
+      "id": "EMP007",
+      "name": "hrsaravaan",
+      "email": "hrsaravana@tcs.com",
+      "role": "sjd",
+      "title": "sjd",
+      "department": "engineering",
+      "isHr": false,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 1,
+      "tenure": "New",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "HR004": {
+      "id": "HR004",
+      "name": "dgwcbh",
+      "email": "john@tcs.com",
+      "role": "bdxjcbjm",
+      "title": "bdxjcbjm",
+      "department": "bsjdm",
+      "isHr": true,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 3,
+      "tenure": "New",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP008": {
+      "id": "EMP008",
+      "name": "saravanan",
+      "email": "saran1@tcs.com",
+      "role": "hej",
+      "title": "hej",
+      "department": "dj",
+      "isHr": false,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 1,
+      "tenure": "New",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
     }
   }
 }

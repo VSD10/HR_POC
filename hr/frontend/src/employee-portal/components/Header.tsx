@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 import {
   Search,
   HelpCircle,
@@ -101,14 +101,14 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="flex-1 max-w-md mx-1 sm:mx-2 min-w-0">
         <button
           onClick={onOpenSearch}
-          className="search-box-container relative flex items-center w-full rounded-xl px-3 py-1.5 shadow-2xs text-left group cursor-pointer"
+          className="relative flex items-center w-full bg-white/75 hover:bg-white/95 dark:bg-white/[0.08] dark:hover:bg-white/[0.14] rounded-xl px-3 py-1.5 border border-white/90 dark:border-white/10 shadow-xs focus:ring-2 focus:ring-teal-500/30 transition-all text-left group"
         >
-          <Search className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400 group-hover:text-[#0D9488] transition-colors shrink-0" />
-          <span className="text-[12px] text-slate-500 dark:text-slate-300 ml-2.5 truncate font-normal flex-1">
+          <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0D9488] transition-colors shrink-0" />
+          <span className="text-[12px] text-slate-400 ml-2.5 truncate font-normal flex-1">
             Search policies, leave balance, payslips...
           </span>
           <div className="hidden md:flex items-center gap-0.5 ml-auto pl-2 shrink-0">
-            <kbd className="px-1.5 py-0.5 text-[9px] font-medium text-slate-500 dark:text-slate-300 bg-slate-100/90 dark:bg-white/10 rounded border border-slate-300/80 dark:border-white/15 shadow-2xs">
+            <kbd className="px-1.5 py-0.5 text-[9px] font-medium text-slate-400 bg-white/90 dark:bg-white/10 rounded border border-slate-200 dark:border-white/10 shadow-2xs">
               ⌘K
             </kbd>
           </div>
@@ -178,15 +178,15 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Profile Dropdown Menu */}
           {profileOpen && (
-            <div className="absolute right-0 mt-2 w-64 crystal-glass rounded-2xl shadow-xl border border-white dark:border-white/10 p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
-              <div className="p-3 border-b border-white/60 dark:border-white/10 mb-1">
-                <p className="text-[13px] font-semibold text-[#0F172A] dark:text-white">
+            <div className="absolute right-0 mt-2 w-64 crystal-glass rounded-2xl shadow-xl border border-white p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+              <div className="p-3 border-b border-white/60 mb-1">
+                <p className="text-[13px] font-semibold text-[#0F172A]">
                   {displayName}
                 </p>
-                <p className="text-[11px] text-[#64748B] dark:text-slate-300 truncate">
+                <p className="text-[11px] text-[#64748B] truncate">
                   {displayEmail}
                 </p>
-                <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 bg-teal-50 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 rounded-full border border-teal-200/50 dark:border-teal-500/30">
+                <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full border border-teal-200/50">
                   ID: {user?.id || CURRENT_USER.employeeId}
                 </span>
               </div>
@@ -196,9 +196,9 @@ export const Header: React.FC<HeaderProps> = ({
                   handleNavigate('my-profile');
                   setProfileOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#334155] dark:text-slate-200 hover:bg-white/80 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white rounded-xl transition-colors text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#334155] hover:bg-white/80 hover:text-[#0F172A] rounded-xl transition-colors text-left"
               >
-                <User className="w-4 h-4 text-[#0D9488] dark:text-teal-400" />
+                <User className="w-4 h-4 text-[#0D9488]" />
                 <span>My Profile & Job Info</span>
               </button>
 
@@ -207,9 +207,9 @@ export const Header: React.FC<HeaderProps> = ({
                   handleNavigate('ask-hr');
                   setProfileOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#334155] dark:text-slate-200 hover:bg-white/80 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white rounded-xl transition-colors text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#334155] hover:bg-white/80 hover:text-[#0F172A] rounded-xl transition-colors text-left"
               >
-                <Sparkles className="w-4 h-4 text-[#0D9488] dark:text-teal-400" />
+                <Sparkles className="w-4 h-4 text-[#0D9488]" />
                 <span>Ask HR Assistant</span>
               </button>
 
@@ -218,22 +218,22 @@ export const Header: React.FC<HeaderProps> = ({
                   handleNavigate('my-requests');
                   setProfileOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#334155] dark:text-slate-200 hover:bg-white/80 dark:hover:bg-white/10 hover:text-[#0F172A] dark:hover:text-white rounded-xl transition-colors text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#334155] hover:bg-white/80 hover:text-[#0F172A] rounded-xl transition-colors text-left"
               >
-                <CreditCard className="w-4 h-4 text-[#0D9488] dark:text-teal-400" />
+                <CreditCard className="w-4 h-4 text-[#0D9488]" />
                 <span>My Requests & Inquiries</span>
               </button>
 
-              <div className="my-1 border-t border-white/60 dark:border-white/10"></div>
+              <div className="my-1 border-t border-white/60"></div>
 
               <button
                 onClick={() => {
                   demoLogin('HR_SPECIALIST');
                   setProfileOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-teal-700 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-500/20 rounded-xl transition-colors text-left font-medium"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-teal-700 hover:bg-teal-50 rounded-xl transition-colors text-left font-medium"
               >
-                <Sparkles className="w-4 h-4 text-[#0D9488] dark:text-teal-400" />
+                <Sparkles className="w-4 h-4 text-[#0D9488]" />
                 <span>Switch to HR Specialist View</span>
               </button>
 
@@ -242,9 +242,9 @@ export const Header: React.FC<HeaderProps> = ({
                   logout();
                   setProfileOpen(false);
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/20 rounded-xl transition-colors text-left font-medium"
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-rose-600 hover:bg-rose-50 rounded-xl transition-colors text-left font-medium"
               >
-                <LogOut className="w-4 h-4 text-rose-500 dark:text-rose-400" />
+                <LogOut className="w-4 h-4 text-rose-500" />
                 <span>Sign Out</span>
               </button>
             </div>

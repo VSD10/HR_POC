@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Header } from './components/Header';
 import { DashboardView } from './views/DashboardView';
@@ -41,6 +41,12 @@ import { hrService } from '../services/hrService';
 export default function EmployeePortalApp() {
   const { user } = useAuth();
 
+  const currentUserId = user?.id || 'EMP001';
+  const currentUserName = user?.name || CURRENT_USER.name;
+  const currentUserEmail = user?.email || CURRENT_USER.email;
+  const currentUserAvatar = user?.avatar || user?.avatarUrl || ASSETS.avatar;
+  const currentUserDepartment = user?.department || CURRENT_USER.department;
+
   // Navigation State
   const [activeScreen, setActiveScreen] = useState<ScreenId>('dashboard');
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -50,8 +56,100 @@ export default function EmployeePortalApp() {
     if (user?.name) {
       CURRENT_USER.name = user.name;
       CURRENT_USER.email = user.email || CURRENT_USER.email;
+      CURRENT_USER.employeeId = user.id;
+      if (user.department) CURRENT_USER.department = user.department;
+      if (user.role) CURRENT_USER.role = user.role;
     }
   }, [user]);
+
+  // Core Data State - with partitioned user localStorage persistence
+  const [requests, setRequests] = useState<HrRequest[]>(() => {
+    if (typeof window !== 'undefined' && user?.id) {
+      try {
+        const cached = localStorage.getItem(`hr_employee_portal_requests_${user.id}`);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch {}
+    }
+    return INITIAL_REQUESTS;
+  });
+
+  // Load from Central Sync Server / Database on Mount or User Change
+  useEffect(() => {
+    async function loadRequestsFromDatabase() {
+      if (!user) return;
+      try {
+        // Try local storage cache for current user first
+        const cached = localStorage.getItem(`hr_employee_portal_requests_${user.id}`);
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              setRequests(parsed);
+            }
+          } catch {}
+        }
+
+        const serverReqs = await hrService.getRequests();
+        if (Array.isArray(serverReqs)) {
+          // Strictly filter only tickets belonging to the authenticated employee
+          const userSpecific = serverReqs.filter((r: any) => {
+            const empId = r.employeeId || r.employee?.id;
+            return empId === user.id || r.employee?.email === user.email || (!empId && r.employee?.name === user.name);
+          });
+
+          const mapped: HrRequest[] = userSpecific.map((r: any) => {
+            const cat = r.category === 'leave' ? 'Leave & Time'
+              : r.category === 'payroll' ? 'Payroll'
+              : r.category === 'benefits' ? 'Employee Info'
+              : r.category === 'documents' ? 'Documents'
+              : (r.category as any) || 'Leave & Time';
+
+            const status: any = (r.status === 'resolved' || r.statusUpper === 'RESOLVED')
+              ? 'RESOLVED'
+              : (r.status === 'in_review' || r.statusUpper === 'IN PROGRESS')
+              ? 'IN PROGRESS'
+              : 'SUBMITTED';
+
+            const prio = r.priority === 'high' ? 'High' : r.priority === 'urgent' ? 'Urgent' : r.priority === 'low' ? 'Low' : 'Medium';
+
+            return {
+              id: r.id,
+              employeeId: r.employeeId || r.employee?.id || user.id,
+              employee: r.employee,
+              assignedToId: r.assignedToId,
+              subject: r.subject || r.title || 'HR Inquiry',
+              category: cat,
+              status,
+              priority: prio,
+              lastUpdated: r.waitingTime || 'Recent',
+              createdDate: r.createdDate || (r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'Today'),
+              description: r.description || '',
+              assignedTo: r.assignedTo || (status === 'RESOLVED' ? 'Resolved by HR Operations' : 'Triage Queue (HR Operations)'),
+              timeline: Array.isArray(r.timeline) && r.timeline.length ? r.timeline : [
+                {
+                  date: r.createdDate || 'Today',
+                  title: 'Request Created',
+                  desc: 'Submitted through HR Service Desk self-service portal.',
+                  actor: r.employee?.name || user.name,
+                }
+              ],
+              comments: Array.isArray(r.comments) ? r.comments : [],
+              attachmentName: r.attachmentName
+            };
+          });
+
+          setRequests(mapped);
+          try { localStorage.setItem(`hr_employee_portal_requests_${user.id}`, JSON.stringify(mapped)); } catch {}
+        }
+      } catch (err) {
+        console.warn('Could not load user requests:', err);
+      }
+    }
+    loadRequestsFromDatabase();
+  }, [user?.id]);
 
   // Real-time live synchronization with central HR desk
   useEffect(() => {
@@ -59,6 +157,13 @@ export default function EmployeePortalApp() {
       if (event.type === 'REQUEST_CREATED') {
         const item = event.data?.request;
         if (item) {
+          const empId = item.employeeId || item.employee?.id;
+          const isBelongsToCurrentUser = empId === user?.id || item.employee?.email === user?.email || (!empId && item.employee?.name === user?.name);
+          if (!isBelongsToCurrentUser) {
+            // Private request isolation: ignore requests belonging to other employees
+            return;
+          }
+
           setRequests((prev) => {
             if (prev.some((r) => r.id === item.id || (r.id && item.id && r.id.toLowerCase() === item.id.toLowerCase()))) {
               return prev;
@@ -71,6 +176,9 @@ export default function EmployeePortalApp() {
 
             const newHrReq: HrRequest = {
               id: item.id,
+              employeeId: empId || user?.id,
+              employee: item.employee,
+              assignedToId: item.assignedToId,
               subject: item.subject || item.title || 'HR Inquiry',
               category: cat,
               status: 'SUBMITTED',
@@ -78,19 +186,21 @@ export default function EmployeePortalApp() {
               lastUpdated: 'Just now',
               createdDate: 'Today',
               description: item.description || '',
-              assignedTo: 'Triage Queue (HR Operations)',
+              assignedTo: item.assignedTo || 'Triage Queue (HR Operations)',
               timeline: item.timeline || [
                 {
                   date: 'Just now',
                   title: 'Request Created',
                   desc: 'Submitted through HR Service Desk self-service portal.',
-                  actor: item.employee?.name || CURRENT_USER.name,
+                  actor: item.employee?.name || currentUserName,
                 }
               ],
               comments: item.comments || []
             };
             const updatedList = [newHrReq, ...prev];
-            try { localStorage.setItem('hr_employee_portal_requests', JSON.stringify(updatedList)); } catch {}
+            if (user?.id) {
+              try { localStorage.setItem(`hr_employee_portal_requests_${user.id}`, JSON.stringify(updatedList)); } catch {}
+            }
             return updatedList;
           });
         }
@@ -115,6 +225,8 @@ export default function EmployeePortalApp() {
                 return {
                   ...r,
                   id: updated.id || r.id,
+                  assignedTo: updated.assignedTo || r.assignedTo,
+                  assignedToId: updated.assignedToId || r.assignedToId,
                   status: newStatus,
                   timeline: Array.isArray(updated.timeline) && updated.timeline.length ? updated.timeline : [
                     ...r.timeline,
@@ -122,7 +234,7 @@ export default function EmployeePortalApp() {
                       date: new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }),
                       title: 'Status Updated: ' + newStatus,
                       desc: updated.resolutionNotes || 'HR Operations verified and processed this ticket.',
-                      actor: 'HR Specialist'
+                      actor: updated.resolverName || 'HR Specialist'
                     }
                   ],
                   comments: Array.isArray(updated.comments) ? updated.comments : r.comments
@@ -130,115 +242,39 @@ export default function EmployeePortalApp() {
               }
               return r;
             });
-            try { localStorage.setItem('hr_employee_portal_requests', JSON.stringify(next)); } catch {}
+            if (user?.id) {
+              try { localStorage.setItem(`hr_employee_portal_requests_${user.id}`, JSON.stringify(next)); } catch {}
+            }
             return next;
           });
 
-          showToast(`🎉 HR Desk updated ticket ${updated.id} to ${newStatus}`);
+          showToast(`⚡ HR Desk updated ticket ${updated.id} to ${newStatus}`);
         }
       }
     });
     return unsubscribe;
-  }, []);
+  }, [user?.id, user?.email, user?.name, currentUserName]);
 
-  // Core Data State - with localStorage persistence
-  const [requests, setRequests] = useState<HrRequest[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const cached = localStorage.getItem('hr_employee_portal_requests');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-        }
-      } catch {}
-    }
-    return INITIAL_REQUESTS;
-  });
+  // Notifications State
+  const [notifications, setNotifications] = useState<NotificationItem[]>(
+    INITIAL_NOTIFICATIONS
+  );
 
-  // Load from Central Sync Server / Database on Mount
-  useEffect(() => {
-    async function loadRequestsFromDatabase() {
-      try {
-        const serverReqs = await hrService.getRequests();
-        if (Array.isArray(serverReqs)) {
-          const mapped: HrRequest[] = serverReqs.map((r: any) => {
-            const cat = r.category === 'leave' ? 'Leave & Time'
-              : r.category === 'payroll' ? 'Payroll'
-              : r.category === 'benefits' ? 'Employee Info'
-              : r.category === 'documents' ? 'Documents'
-              : (r.category as any) || 'Leave & Time';
+  // Leave Balances
+  const [leaveBalance, setLeaveBalance] = useState<LeaveBalance>(
+    INITIAL_LEAVE_BALANCE
+  );
 
-            const status: any = (r.status === 'resolved' || r.statusUpper === 'RESOLVED')
-              ? 'RESOLVED'
-              : (r.status === 'in_review' || r.statusUpper === 'IN PROGRESS')
-              ? 'IN PROGRESS'
-              : 'SUBMITTED';
-
-            const prio = r.priority === 'high' ? 'High' : r.priority === 'urgent' ? 'Urgent' : r.priority === 'low' ? 'Low' : 'Medium';
-
-            return {
-              id: r.id,
-              subject: r.subject || r.title || 'HR Inquiry',
-              category: cat,
-              status,
-              priority: prio,
-              lastUpdated: r.waitingTime || 'Recent',
-              createdDate: r.createdDate || (r.createdAt ? new Date(r.createdAt).toLocaleDateString() : 'Today'),
-              description: r.description || '',
-              assignedTo: r.assignedTo || (status === 'RESOLVED' ? 'Resolved by HR Operations' : 'Triage Queue (HR Operations)'),
-              timeline: Array.isArray(r.timeline) && r.timeline.length ? r.timeline : [
-                {
-                  date: r.createdDate || 'Today',
-                  title: 'Request Created',
-                  desc: 'Submitted through HR Service Desk self-service portal.',
-                  actor: r.employee?.name || CURRENT_USER.name,
-                }
-              ],
-              comments: Array.isArray(r.comments) ? r.comments : [],
-              attachmentName: r.attachmentName
-            };
-          });
-
-          setRequests(mapped);
-          try {
-            localStorage.setItem('hr_employee_portal_requests', JSON.stringify(mapped));
-          } catch {}
-        }
-      } catch (err) {
-        console.warn('Could not fetch initial requests from server:', err);
-      }
-    }
-    loadRequestsFromDatabase();
-  }, []);
-
-  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
-  const [leaveBalance, setLeaveBalance] = useState<LeaveBalance>(INITIAL_LEAVE_BALANCE);
+  // Policies State
   const [policies, setPolicies] = useState<PolicyItem[]>(POLICIES);
 
-  // Modal States
+  // Modal Control States
   const [selectedRequest, setSelectedRequest] = useState<HrRequest | null>(null);
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyItem | null>(null);
   const [showApplyLeaveModal, setShowApplyLeaveModal] = useState(false);
   const [showPayslipModal, setShowPayslipModal] = useState(false);
   const [showUpdateBankModal, setShowUpdateBankModal] = useState(false);
   const [showSearchModal, setShowSearchModal] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    try {
-      return localStorage.getItem('hr_sidebar_collapsed') === 'true';
-    } catch {
-      return false;
-    }
-  });
-
-  const handleToggleSidebarCollapse = () => {
-    setIsSidebarCollapsed((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem('hr_sidebar_collapsed', String(next));
-      } catch {}
-      return next;
-    });
-  };
 
   // Pre-fill state for Raise Request
   const [raiseRequestTopic, setRaiseRequestTopic] = useState<{
@@ -264,6 +300,15 @@ export default function EmployeePortalApp() {
     const reqId = newReqData.id || `REQ-${Math.floor(1000 + Math.random() * 9000)}`;
     const fullReq: HrRequest = {
       id: reqId,
+      employeeId: currentUserId,
+      employee: {
+        id: currentUserId,
+        name: currentUserName,
+        department: currentUserDepartment,
+        email: currentUserEmail,
+        avatar: currentUserAvatar,
+        title: user?.title || user?.role || CURRENT_USER.role,
+      },
       subject: newReqData.subject || 'Untitled Request',
       category: newReqData.category || 'Leave & Time',
       status: newReqData.status || 'SUBMITTED',
@@ -277,7 +322,7 @@ export default function EmployeePortalApp() {
           date: new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }),
           title: 'Request Created',
           desc: 'Submitted through HR Service Desk self-service portal.',
-          actor: user?.name || CURRENT_USER.name,
+          actor: currentUserName,
         },
       ],
       comments: [],
@@ -286,7 +331,9 @@ export default function EmployeePortalApp() {
 
     setRequests((prev) => {
       const updated = [fullReq, ...prev.filter(r => r.id !== fullReq.id)];
-      try { localStorage.setItem('hr_employee_portal_requests', JSON.stringify(updated)); } catch {}
+      if (user?.id) {
+        try { localStorage.setItem(`hr_employee_portal_requests_${user.id}`, JSON.stringify(updated)); } catch {}
+      }
       return updated;
     });
 
@@ -295,6 +342,7 @@ export default function EmployeePortalApp() {
       await hrService.createRequest({
         id: fullReq.id,
         title: fullReq.subject,
+        employeeId: currentUserId,
         category:
           fullReq.category === 'Leave & Time'
             ? 'leave'
@@ -314,11 +362,11 @@ export default function EmployeePortalApp() {
         timeline: fullReq.timeline,
         attachmentName: fullReq.attachmentName,
         employee: {
-          id: user?.id || CURRENT_USER.employeeId,
-          name: user?.name || CURRENT_USER.name,
-          department: CURRENT_USER.department,
-          email: user?.email || CURRENT_USER.email,
-          avatar: user?.avatarUrl || ASSETS.avatar,
+          id: currentUserId,
+          name: currentUserName,
+          department: currentUserDepartment,
+          email: currentUserEmail,
+          avatar: currentUserAvatar,
         },
       });
     } catch (err) {
@@ -343,16 +391,18 @@ export default function EmployeePortalApp() {
     setRequests((prev) => {
       const next = prev.map((r) => {
         if (r.id === requestId) {
+          const newComment = {
+            id: `comm-${Date.now()}`,
+            authorId: currentUserId,
+            author: currentUserName,
+            avatar: currentUserAvatar,
+            text: commentText,
+            time: 'Just now',
+            isHr: false,
+          };
           const updatedComments = [
-            ...r.comments,
-            {
-              id: `comm-${Date.now()}`,
-              author: user?.name || CURRENT_USER.name,
-              avatar: user?.avatarUrl || ASSETS.avatar,
-              text: commentText,
-              time: 'Just now',
-              isHr: false,
-            },
+            ...(r.comments || []),
+            newComment
           ];
           const updatedReq = {
             ...r,
@@ -366,8 +416,9 @@ export default function EmployeePortalApp() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              author: user?.name || CURRENT_USER.name,
-              avatar: user?.avatarUrl || ASSETS.avatar,
+              authorId: currentUserId,
+              author: currentUserName,
+              avatar: currentUserAvatar,
               text: commentText,
               isHr: false
             })
@@ -376,7 +427,9 @@ export default function EmployeePortalApp() {
         }
         return r;
       });
-      try { localStorage.setItem('hr_employee_portal_requests', JSON.stringify(next)); } catch {}
+      if (user?.id) {
+        try { localStorage.setItem(`hr_employee_portal_requests_${user.id}`, JSON.stringify(next)); } catch {}
+      }
       return next;
     });
     showToast('Response posted to ticket thread');
@@ -390,29 +443,37 @@ export default function EmployeePortalApp() {
     // Deduct leave balance
     setLeaveBalance((prev) => {
       const current = prev[leaveType];
-      const remaining = Math.max(0, current.remaining - daysCount);
       return {
         ...prev,
         [leaveType]: {
           ...current,
-          remaining,
+          remaining: Math.max(0, current.remaining - daysCount),
         },
       };
     });
 
-    handleAddRequest(newRequest);
+    handleAddRequest({
+      ...newRequest,
+      category: 'Leave & Time',
+      status: 'SUBMITTED',
+      priority: 'Medium',
+    });
+
     setShowApplyLeaveModal(false);
   };
 
-  const handleBankUpdateSubmit = (bankRequest: Partial<HrRequest>) => {
-    handleAddRequest(bankRequest);
+  const handleBankUpdateSubmit = (newRequest: Partial<HrRequest>) => {
+    handleAddRequest({
+      ...newRequest,
+      category: 'Employee Info',
+      status: 'SUBMITTED',
+      priority: 'Medium',
+    });
     setShowUpdateBankModal(false);
-    showToast('Bank details submitted for HR & Payroll validation');
   };
 
   const handleMarkAllNotificationsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    showToast('All notifications marked as read');
   };
 
   const handleMarkSingleNotificationRead = (id: string) => {
@@ -432,7 +493,7 @@ export default function EmployeePortalApp() {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[var(--background)] font-sans text-[var(--text-primary)] antialiased selection:bg-teal-500 selection:text-white p-2 sm:p-3 md:gap-3 gap-0 transition-colors duration-200">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-100 dark:bg-[#070b19] font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-teal-500 selection:text-white p-2.5 sm:p-3.5 md:gap-3.5 gap-0">
       {/* 1. SIDEBAR (Dedicated Left Column) */}
       <Sidebar
         activeScreen={activeScreen}
@@ -446,12 +507,10 @@ export default function EmployeePortalApp() {
         onOpenApplyLeave={() => setShowApplyLeaveModal(true)}
         onOpenPayslip={() => setShowPayslipModal(true)}
         onOpenBankUpdate={() => setShowUpdateBankModal(true)}
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={handleToggleSidebarCollapse}
       />
 
       {/* 2. MAIN WORKSPACE CONTAINER */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0 transition-all duration-300">
+      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* TOP HEADER */}
         <Header
           activeScreen={activeScreen}
@@ -462,7 +521,7 @@ export default function EmployeePortalApp() {
         />
 
         {/* SCROLLABLE MAIN CONTENT AREA */}
-        <main className={`flex-1 min-h-0 px-1 sm:px-2.5 ${activeScreen === 'ask-hr' ? 'overflow-hidden pb-1' : 'overflow-y-auto pb-5'}`}>
+        <main className="flex-1 overflow-y-auto px-1 sm:px-3 pb-6">
           {activeScreen === 'dashboard' && (
             <DashboardView
               requests={requests}
@@ -608,7 +667,7 @@ export default function EmployeePortalApp() {
           <span>{toastMessage}</span>
           <button
             onClick={() => setToastMessage(null)}
-            className="ml-2 text-slate-400 hover:text-white text-[11px]"
+            className="ml-2 text-slate-400 hover:text-white text-[11px] cursor-pointer"
           >
             ✕
           </button>
