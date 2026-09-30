@@ -1,0 +1,21 @@
+# Python byte code & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments & sensitive keys
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Local databases
+*.db
+*.sqlite3
+
+# Pytest & IDE
+.pytest_cache/
+.coverage
+htmlcov/

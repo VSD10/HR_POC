@@ -1,0 +1,6 @@
+{
+  "name": "HR Service Desk",
+  "description": "Modern corporate HR Service Desk with crystal-glass UI, instant AI assistant, request management, leave tracking, and employee self-service.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

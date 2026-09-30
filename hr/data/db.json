@@ -1,0 +1,3492 @@
+{
+  "metrics": {
+    "openRequests": {
+      "count": 8,
+      "changePercent": 0,
+      "comparisonText": "8 active"
+    },
+    "highPriority": {
+      "count": 5,
+      "requiresAttention": 5
+    },
+    "pendingHRActions": {
+      "count": 0,
+      "waitingOver24h": 0
+    },
+    "slaCompliance": {
+      "percent": 100,
+      "changePercent": 0,
+      "targetPercent": 92
+    },
+    "avgSla": "0m",
+    "resolvedOvernight": 7,
+    "aiTriagedToday": 10,
+    "aiAssistedCases": 0,
+    "draftsGenerated": 0
+  },
+  "velocity": {
+    "7D": {
+      "range": "7D",
+      "labels": [
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun",
+        "Mon",
+        "Tue"
+      ],
+      "incoming": [
+        6,
+        0,
+        3,
+        0,
+        0,
+        2,
+        1
+      ],
+      "resolved": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "openTotal": 8,
+      "receivedToday": 1,
+      "resolvedToday": 0
+    },
+    "30D": {
+      "range": "30D",
+      "labels": [
+        "Week 1",
+        "Week 2",
+        "Week 3",
+        "Week 4"
+      ],
+      "incoming": [
+        0,
+        0,
+        3,
+        12
+      ],
+      "resolved": [
+        0,
+        0,
+        3,
+        4
+      ],
+      "openTotal": 8,
+      "receivedToday": 1,
+      "resolvedToday": 0
+    },
+    "90D": {
+      "range": "90D",
+      "labels": [
+        "Jul",
+        "Aug",
+        "Sep"
+      ],
+      "incoming": [
+        0,
+        0,
+        15
+      ],
+      "resolved": [
+        0,
+        0,
+        7
+      ],
+      "openTotal": 8,
+      "receivedToday": 1,
+      "resolvedToday": 0
+    }
+  },
+  "requests": [
+    {
+      "id": "REQ-3847",
+      "title": "Casual Leave application (2 days)",
+      "subject": "Casual Leave application (2 days)",
+      "employeeId": "EMP001",
+      "employee": {
+        "id": "EMP001",
+        "name": "Alex Johnson",
+        "department": "Engineering",
+        "email": "alex.johnson@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "role": "Senior Staff Engineer",
+        "title": "Senior Staff Engineer"
+      },
+      "category": "leave",
+      "categoryDisplay": "Leave & Time",
+      "priority": "medium",
+      "priorityDisplay": "Medium",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-28T09:46:59.522Z",
+      "createdDate": "Sep 28, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "LEAVE Inquiry",
+        "autoRouted": true
+      },
+      "triage": {
+        "category": "leave",
+        "categoryDisplay": "Leave & Attendance",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.96,
+        "relevantPolicy": "Annual Paid Vacation & Earned Leave Policy",
+        "suggestedAction": "Review Calendar Overlap & Route for Supervisor Endorsement",
+        "reason": "Absence patterns matched against statutory eligibility and employee leave balance.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:46:59.522Z"
+      },
+      "description": "Applied for 2 days of Casual Leave from 2026-09-28 to 2026-09-29. Reason: jj",
+      "tags": [
+        "leave"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 28, 2026, 9:46 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Service Desk self-service portal.",
+          "actor": "Alex Johnson"
+        },
+        {
+          "date": "Sep 28, 2026, 7:04 PM",
+          "title": "Approved & Resolved",
+          "desc": "Approved and resolved directly by HR Operations Lead.",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790588869685",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "Subject: REQ-3847 – Casual Leave Application (2 days)\n\nHi Alex,\n\nThank you for submitting your casual leave request for 2 days from 2026-09-28 to 2026-09-29.\n\nBased on the Company Leave and Time Off Policy (leave_policy.pdf, Page 1), annual paid time off (PTO) is available to full-time permanent employees and:\n- Accrues monthly at a rate of 1.67 days per completed month of active service  \n- Must be requested and approved in advance, with all planned annual leave requests exceeding 3 consecutive days requiring at least 2 weeks’ notice via the HR portal\n\nSince your request is for 2 consecutive days, it falls within the standard PTO framework and does not require the 2-week advance notice rule that applies to longer leave periods. Your leave will be processed as annual paid time off (PTO), subject to confirmation that you have sufficient accrued leave balance and approval from your direct manager.\n\nNext steps:\n1. We will verify your current PTO balance in the HR system.\n2. Your manager will review and approve or adjust the request based on team and project needs.\n3. You will receive a confirmation update on this case (REQ-3847) via the HR portal within 2 business days.\n\nIf you need to update the reason for your leave or adjust the dates, please add a comment to this case in the HR portal, and we’ll incorporate the changes into the review.\n\nBest regards,  \nSarah Jenkins  \nHR Operations Lead  \nGlobalTech Enterprise",
+          "time": "Just now",
+          "isHr": true
+        },
+        {
+          "id": "c-1790589073867",
+          "author": "Alex Johnson",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "REQ-3847",
+          "time": "Just now",
+          "isHr": false
+        },
+        {
+          "id": "c-1790589073872",
+          "author": "Alex Johnson",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "REQ-3847",
+          "time": "Just now",
+          "isHr": false
+        },
+        {
+          "id": "c-1790673095501",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "Hi Alex Johnson,\n\nThank you for reaching out regarding your leave inquiry for Case REQ-3847. According to our Leave & Time Off Policy (Section 3.2), full-time employees accrue 1.67 PTO days per month. I have reviewed your balance and verified that your requested dates can be accommodated.\n\nPlease ensure your direct supervisor has also approved the calendar block in the portal. Feel free to reply if you need any adjustments!\n\nBest regards,\nSarah Jenkins\nHR Operations Lead",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "lastUpdated": "Just now",
+      "resolutionNotes": "Approved and resolved directly by HR Operations Lead.",
+      "resolverName": "Sarah Jenkins (HR Ops)",
+      "resolvedAt": "2026-09-28T19:04:34.141Z"
+    },
+    {
+      "id": "REQ-8967",
+      "title": "Formal complaint regarding workplace harassment during offsite",
+      "subject": "Formal complaint regarding workplace harassment during offsite",
+      "employeeId": "EMP001",
+      "employee": {
+        "id": "EMP001",
+        "name": "Alex Johnson",
+        "department": "Engineering",
+        "email": "alex.johnson@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "role": "Senior Staff Engineer",
+        "title": "Senior Staff Engineer"
+      },
+      "category": "other",
+      "categoryDisplay": "General Inquiry",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-28T09:33:37.887Z",
+      "createdDate": "Sep 28, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "OTHER Inquiry",
+        "autoRouted": true
+      },
+      "triage": {
+        "category": "employee_relations",
+        "categoryDisplay": "Employee Relations",
+        "priority": "CRITICAL",
+        "sensitivity": "HIGHLY_SENSITIVE",
+        "confidence": 0.97,
+        "relevantPolicy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+        "suggestedAction": "Human Review Required — Initiate Confidential People Partner Triage",
+        "reason": "Lexical matches for workplace conduct, workload disparity, and grievance resolution guidelines.",
+        "status": "NEEDS_REVIEW",
+        "analyzedAt": "2026-09-28T09:33:37.888Z"
+      },
+      "description": "I would like to report repeated hostile remarks and harassment during the team dinner.",
+      "tags": [
+        "other"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 28, 2026, 9:33 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Alex Johnson"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790588177077",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "Hi Alex,\n\nThank you for reaching out and for formally reporting the hostile remarks and harassment you experienced during the team dinner. I’m very sorry that you went through this, and I appreciate you taking the step to bring it to our attention.\n\nOur company is committed to maintaining a diverse, inclusive, and harassment-free workplace, and we have zero tolerance for any form of discrimination or harassment in all business dealings and work-related activities, including offsites and team events. As stated in our Employee Handbook and Code of Conduct (employee_handbook.pdf, p.1), any such behavior may result in disciplinary action up to and including termination.\n\nHere are the next steps and what you can expect:\n\n1. **Formal Review of Your Complaint**  \n   - We will open a formal review of Case ID REQ-8967 and gather more information about what occurred during the team dinner.  \n   - This may include speaking with you to better understand the details, reviewing any documentation you may have (messages, emails, notes), and, where appropriate, speaking with other attendees.\n\n2. **Confidentiality and Support**  \n   - We will handle your complaint as confidentially as possible and share details only with those who need to be involved in the review and resolution process.  \n   - You are encouraged to reach out to your manager or directly to People Operations if you have additional concerns, in line with our grievance and conflict escalation process (employee_handbook.pdf, p.3). If you prefer not to involve your manager, HR will continue to handle this directly.\n\n3. **Timeline**  \n   - Given the seriousness of your report, we are treating this as a high-priority matter.  \n   - You can expect an initial follow-up from HR within **2 business days** to schedule a time to speak with you and gather more detailed information.  \n   - After that conversation, we will provide you with an estimated timeline for the completion of the review and will keep you updated on progress.\n\n4. **Your Well-Being**  \n   - If this situation is impacting your ability to work or participate in team activities, please let us know. We can discuss options and any support you may need while the review is ongoing.\n\nIf you are comfortable, please reply with your availability over the next few days so we can speak with you directly and ensure we fully understand what happened and how best to support you.\n\nThank you again for bringing this forward, Alex. We take your concerns very seriously and are committed to addressing them promptly and appropriately.\n\nBest regards,  \nSarah Jenkins  \nHR Operations Lead  \nGlobalTech Enterprise",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "lastUpdated": "Just now"
+    },
+    {
+      "id": "REQ-7282",
+      "title": "David Chen Fiscal Audit Verification",
+      "subject": "David Chen Fiscal Audit Verification",
+      "employeeId": "EMP004",
+      "employee": {
+        "id": "EMP004",
+        "name": "David Chen",
+        "department": "Finance & Operations",
+        "email": "david.chen@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+        "role": "Financial Analyst",
+        "title": "Financial Analyst"
+      },
+      "category": "compliance",
+      "categoryDisplay": "HR Policies",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-25T11:31:40.091Z",
+      "createdDate": "Sep 25, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "DOCUMENTS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Fiscal Q3 end closing verification statement.",
+      "tags": [
+        "documents"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 25, 2026, 11:31 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "David Chen"
+        },
+        {
+          "date": "Sep 28, 2026, 9:33 AM",
+          "title": "Deliverable Dispatched: HR Communication",
+          "desc": "Sent \"Parental Leave Entitlement Schedule Notice\" to david.chen@enterprise.internal",
+          "actor": "HR Operations"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790588017871",
+          "author": "HR Operations",
+          "authorId": "HR001",
+          "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+          "text": "[Official HR Deliverable Sent]\n**Subject:** Parental Leave Confirmation & Absence Schedule\n\nDear Colleague,\n\nWe have reviewed your parental leave request under Global Parental & Caregiver Leave Guidelines. You are entitled to 16 weeks of paid parental leave.\n\nWarm regards,\nHR Operations\n\nNote: Flexible return cadence option is available on request.",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "assignedToId": "HR003",
+      "assignedTo": "Elena Rostova",
+      "resolutionNotes": "",
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "documents",
+        "categoryDisplay": "HR Documentation",
+        "priority": "HIGH",
+        "sensitivity": "SENSITIVE",
+        "confidence": 0.97,
+        "relevantPolicy": "Corporate Document Certification & Employment Verification Standards",
+        "suggestedAction": "Generate Official Employment Verification Deliverable",
+        "reason": "Direct match for employment verification letter templates and background verification.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.736Z",
+        "humanPriority": "HIGH",
+        "humanCategory": "compliance",
+        "overrideNotes": "Escalated by HR Operations Specialist for statutory policy compliance audit",
+        "overriddenAt": "2026-09-28T09:33:37.815Z"
+      }
+    },
+    {
+      "id": "REQ-7248",
+      "title": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "subject": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "employeeId": "EMP002",
+      "employee": {
+        "id": "EMP002",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+        "role": "Lead Full-Stack Engineer",
+        "title": "Lead Full-Stack Engineer"
+      },
+      "category": "documents",
+      "categoryDisplay": "Documents",
+      "priority": "medium",
+      "priorityDisplay": "Medium",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-25T11:31:40.060Z",
+      "createdDate": "Sep 25, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "DOCUMENTS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Domain cert renewal verification.",
+      "tags": [
+        "documents"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 25, 2026, 11:31 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Rupam Sharma"
+        },
+        {
+          "date": "Sep 28, 2026, 7:05 PM",
+          "title": "Approved & Resolved",
+          "desc": "Case verified and resolved per company policy.",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790622322579",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "According to the Leave Policy (Page 2):\n\nCompany Leave and Time Off Policy (Continued) 2. Sick Leave and Medical Absences Employees receive 10 paid sick days per calendar year. Sick leave is allocated in full on January 1st each year (or pro-rated upon start date). If an employee is absent due to illness for more than 3 consecutive working days, an official medical certificate signed by a licensed healthcare provider must be provided to People Operations upon return.",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "triage": {
+        "category": "documents",
+        "categoryDisplay": "HR Documentation",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.97,
+        "relevantPolicy": "Corporate Document Certification & Employment Verification Standards",
+        "suggestedAction": "Generate Official Employment Verification Deliverable",
+        "reason": "Direct match for employment verification letter templates and background verification.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.736Z"
+      },
+      "lastUpdated": "Just now",
+      "resolutionNotes": "Case verified and resolved per company policy.",
+      "resolverName": "Sarah Jenkins (HR Ops)",
+      "resolvedAt": "2026-09-28T19:05:29.540Z"
+    },
+    {
+      "id": "REQ-3724",
+      "title": "Alex Private Test Ticket - GPU Cluster Access",
+      "subject": "Alex Private Test Ticket - GPU Cluster Access",
+      "employeeId": "EMP001",
+      "employee": {
+        "id": "EMP001",
+        "name": "Alex Johnson",
+        "department": "Engineering",
+        "email": "alex.johnson@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+        "role": "Senior Staff Engineer",
+        "title": "Senior Staff Engineer"
+      },
+      "category": "benefits",
+      "categoryDisplay": "Benefits & Info",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-25T11:31:39.983Z",
+      "createdDate": "Sep 25, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "BENEFITS Inquiry",
+        "autoRouted": true
+      },
+      "description": "Need access to machine learning training nodes.",
+      "tags": [
+        "benefits"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 25, 2026, 11:31 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Alex Johnson"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790335900153",
+          "author": "Marcus Vance",
+          "authorId": "HR002",
+          "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+          "text": "Marcus Vance HR reply: reviewed GPU cluster authorization.",
+          "time": "Just now",
+          "isHr": true
+        },
+        {
+          "id": "c-1790335900169",
+          "author": "Alex Johnson",
+          "authorId": "EMP001",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+          "text": "Alex Johnson employee reply: thank you for checking the GPU nodes.",
+          "time": "Just now",
+          "isHr": false
+        }
+      ],
+      "lastUpdated": "Just now",
+      "assignedToId": "HR002",
+      "assignedTo": "Marcus Vance",
+      "resolutionNotes": "",
+      "triage": {
+        "category": "general_hr",
+        "categoryDisplay": "General HR",
+        "priority": "HIGH",
+        "sensitivity": "NORMAL",
+        "confidence": 0.94,
+        "relevantPolicy": "Corporate Employee Handbook & Code of Conduct",
+        "suggestedAction": "Review request and route to appropriate People Partner",
+        "reason": "Standard inquiry cross-referenced with enterprise HR knowledge base.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.736Z"
+      }
+    },
+    {
+      "id": "REQ-1058",
+      "title": "Experience letter and tenure certificate",
+      "subject": "Experience letter and tenure certificate",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering - Cloud Platform",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "role": "EMPLOYEE",
+        "title": "Lead Full-Stack Engineer"
+      },
+      "category": "documents",
+      "categoryDisplay": "Documents",
+      "priority": "medium",
+      "priorityDisplay": "Medium",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-23T10:33:41.122Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "DOCUMENTS Inquiry",
+        "autoRouted": true
+      },
+      "description": "wdwewew",
+      "tags": [
+        "documents"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 23, 2026, 10:33 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Service Desk self-service portal.",
+          "actor": "Rupam Sharma"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790163505703",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "Verification test comment from HR AI Copilot workspace.",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "documents",
+        "categoryDisplay": "HR Documentation",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.97,
+        "relevantPolicy": "Corporate Document Certification & Employment Verification Standards",
+        "suggestedAction": "Generate Official Employment Verification Deliverable",
+        "reason": "Direct match for employment verification letter templates and background verification.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.736Z"
+      }
+    },
+    {
+      "id": "REQ-1358",
+      "title": "Maternity / Parental leave return schedule",
+      "subject": "Maternity / Parental leave return schedule",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering - Cloud Platform",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "role": "EMPLOYEE",
+        "title": "Lead Full-Stack Engineer"
+      },
+      "category": "other",
+      "categoryDisplay": "General Inquiry",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-23T10:33:15.932Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "OTHER Inquiry",
+        "autoRouted": true
+      },
+      "description": "asdfghjkl;",
+      "tags": [
+        "other"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 23, 2026, 10:33 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Service Desk self-service portal.",
+          "actor": "Rupam Sharma"
+        }
+      ],
+      "comments": [],
+      "triage": {
+        "category": "leave",
+        "categoryDisplay": "Leave & Attendance",
+        "priority": "HIGH",
+        "sensitivity": "NORMAL",
+        "confidence": 0.96,
+        "relevantPolicy": "Global Parental & Caregiver Leave Guidelines",
+        "suggestedAction": "Review Calendar Overlap & Route for Supervisor Endorsement",
+        "reason": "Absence patterns matched against statutory eligibility and employee leave balance.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.736Z"
+      }
+    },
+    {
+      "id": "REQ-1062",
+      "title": "Casual Leave application for family event",
+      "subject": "Casual Leave application for family event",
+      "employee": {
+        "id": "EMP-20491",
+        "name": "Rupam Sharma",
+        "department": "Core Platform & AI Systems",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1We_fGu7ivsnlA9Sip2HUdvK_UW0DrH_HdC3JT5FMLT30mc7YMTBRoA6RZejOoDa-L9qu0bw0bVGaJ_KvvrYxKdIyccNkh1o0xBzT3gFiK7CeBRkAaH4a0U9ru2r6JsBB1APj0Ttd5eo5asFCWTCCXcdFtpYkHJOoK6UI5wKWjnHatdZyMQai7HlV53rP81t6-CuBcvlflzjLdw3CIxpZkZ-JJ06fPeSAinW0kCAO6Q1TUoyR19MEm581Y",
+        "avatarUrl": "https://lh3.googleusercontent.com/aida/AEtjO1We_fGu7ivsnlA9Sip2HUdvK_UW0DrH_HdC3JT5FMLT30mc7YMTBRoA6RZejOoDa-L9qu0bw0bVGaJ_KvvrYxKdIyccNkh1o0xBzT3gFiK7CeBRkAaH4a0U9ru2r6JsBB1APj0Ttd5eo5asFCWTCCXcdFtpYkHJOoK6UI5wKWjnHatdZyMQai7HlV53rP81t6-CuBcvlflzjLdw3CIxpZkZ-JJ06fPeSAinW0kCAO6Q1TUoyR19MEm581Y",
+        "role": "EMPLOYEE",
+        "title": "Lead Full-Stack Engineer"
+      },
+      "category": "leave",
+      "categoryDisplay": "Leave & Time",
+      "priority": "medium",
+      "priorityDisplay": "Medium",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-23T09:54:49.180Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "LEAVE Inquiry",
+        "autoRouted": true
+      },
+      "description": "testing",
+      "tags": [
+        "leave"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 23, 2026, 9:54 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Service Desk self-service portal.",
+          "actor": "Rupam Sharma"
+        },
+        {
+          "date": "Sep 23, 2026, 9:55 AM",
+          "title": "Approved & Resolved",
+          "desc": "Approved and resolved directly by HR Operations Lead.",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [],
+      "resolutionNotes": "Approved and resolved directly by HR Operations Lead.",
+      "resolverName": "Sarah Jenkins (HR Ops)",
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "leave",
+        "categoryDisplay": "Leave & Attendance",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.96,
+        "relevantPolicy": "Annual Paid Vacation & Earned Leave Policy",
+        "suggestedAction": "Review Calendar Overlap & Route for Supervisor Endorsement",
+        "reason": "Absence patterns matched against statutory eligibility and employee leave balance.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.736Z"
+      }
+    },
+    {
+      "id": "REQ-SYNC-9850",
+      "title": "Urgent Biometric Missed Punch Correction",
+      "subject": "Urgent Biometric Missed Punch Correction",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "department": "Core Platform & AI Systems",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "role": "EMPLOYEE",
+        "title": "Lead Full-Stack Engineer"
+      },
+      "category": "leave",
+      "categoryDisplay": "Leave & Time",
+      "priority": "high",
+      "priorityDisplay": "High",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-23T09:35:47.271Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "LEAVE Inquiry",
+        "autoRouted": true
+      },
+      "description": "Fingerprint scanner did not register clock-in on Monday 9 AM.",
+      "tags": [
+        "leave"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 23, 2026, 9:35 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Rupam Sharma"
+        },
+        {
+          "date": "Sep 23, 2026, 9:35 AM",
+          "title": "Approved & Resolved",
+          "desc": "Biometric logs verified against building security gate. Attendance regularized.",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790156148564",
+          "author": "Rupam Sharma",
+          "text": "Thank you Sarah, verified the attendance update in ESS portal!",
+          "time": "Just now",
+          "isHr": false
+        },
+        {
+          "id": "c-1790163457680",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "okk",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "resolutionNotes": "Biometric logs verified against building security gate. Attendance regularized.",
+      "resolverName": "Sarah Jenkins (HR Ops)",
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "compliance",
+        "categoryDisplay": "Compliance",
+        "priority": "CRITICAL",
+        "sensitivity": "NORMAL",
+        "confidence": 0.95,
+        "relevantPolicy": "Code of Business Conduct & Regulatory Compliance Standards",
+        "suggestedAction": "Execute Policy Compliance Review Checklist",
+        "reason": "Regulatory compliance term density triggers corporate oversight.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.737Z"
+      }
+    },
+    {
+      "id": "REQ-SSE-TEST",
+      "title": "SSE Test Request",
+      "subject": "SSE Test Request",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "email": "rupam.sharma@enterprise.org",
+        "role": "EMPLOYEE",
+        "title": "Lead Full-Stack Engineer",
+        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+      },
+      "category": "leave",
+      "priority": "high",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-23T09:15:52.769Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "LEAVE Inquiry",
+        "autoRouted": true
+      },
+      "description": "",
+      "tags": [
+        "leave"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 23, 2026, 9:15 AM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Employee"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1790164552564",
+          "author": "Sarah Jenkins (HR Ops)",
+          "text": "Hi Rupam,\n\nThank you for reaching out to HR and for submitting case REQ-SSE-TEST regarding your leave.\n\nI’m not seeing specific details in your request description, so I’ll outline the key leave options available under our current policies. If I’ve misunderstood the type of leave you’re seeking, please reply with a brief clarification (e.g., “annual leave,” “sick leave,” “parental leave,” or “unpaid personal leave”), and I’ll adjust the guidance and processing accordingly.\n\nBased on our Company Leave and Time Off Policy (leave_policy.pdf):\n\n1. **Annual Paid Time Off (PTO)** – Page 1  \n   - Full-time permanent employees are entitled to **20 business days of paid annual leave per calendar year**, accruing monthly at **1.67 days per completed month of active service**.  \n   - If your request is for **planned annual leave exceeding 3 consecutive days**, it must be **submitted through the HR portal at least 2 weeks in advance** and approved by your direct manager.  \n   - Up to **5 unused leave days** can be carried forward into the next calendar year and must be used by **March 31**; any additional carryover is forfeited without monetary compensation.\n\n2. **Sick Leave and Medical Absences** – Page 2  \n   - Employees receive **10 paid sick days per calendar year** (allocated in full on January 1, or pro-rated from your start date).  \n   - If you are ill for **more than 3 consecutive working days**, you must provide an **official medical certificate** from a licensed healthcare provider to People Operations upon your return.\n\n3. **Parental and Family Caregiver Leave** – Page 3  \n   - **Primary caregivers** are eligible for **16 weeks of 100% paid parental leave** following birth, adoption, or foster placement.  \n   - **Secondary caregivers** are eligible for **6 weeks of fully paid leave**.  \n   - You must have completed **at least 6 consecutive months of employment** to be eligible for paid parental leave.\n\n4. **Unpaid Personal Leave** – Page 3  \n   - You may request **unpaid leave of absence** for personal emergencies or educational sabbaticals for up to **90 calendar days**.  \n   - This requires **approval from your Department Director and the Head of HR**.\n\n---\n\n**Next Steps**\n\nTo move your case forward quickly, please reply with the following (or update your case in the HR portal):\n\n1. **Type of leave requested** (annual PTO, sick leave, parental leave, unpaid personal leave, or other).  \n2. **Requested dates** (start date and end date).  \n3. **Whether this is planned in advance or due to an urgent/emergency situation.**\n\nOnce we have these details:\n\n- We will **review your eligibility** under the relevant policy.\n- We will **coordinate with your manager** (and, if needed, your Department Director and Head of HR) for approval.\n- For standard annual leave requests submitted with sufficient notice, you can typically expect an update or decision **within 2–3 business days** of providing complete information.\n\nIf your situation is urgent (e.g., sudden illness or family emergency), please indicate that clearly so we can prioritize and respond as quickly as possible.\n\nThank you again, Rupam. We’re here to support you and ensure your leave is handled smoothly and in line with company policy.\n\nBest regards,  \n**Sarah Jenkins**  \nHR Operations Lead  \nGlobalTech Enterprise",
+          "time": "Just now",
+          "isHr": true
+        }
+      ],
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "general_hr",
+        "categoryDisplay": "General HR",
+        "priority": "HIGH",
+        "sensitivity": "NORMAL",
+        "confidence": 0.94,
+        "relevantPolicy": "Corporate Employee Handbook & Code of Conduct",
+        "suggestedAction": "Review request and route to appropriate People Partner",
+        "reason": "Standard inquiry cross-referenced with enterprise HR knowledge base.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.737Z"
+      }
+    },
+    {
+      "id": "REQ-9999",
+      "title": "Test Ticket from Node",
+      "subject": "Test Ticket from Node",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering",
+        "email": "rupam@test.com",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb"
+      },
+      "category": "Leave & Time",
+      "priority": "High",
+      "status": "open",
+      "statusUpper": "SUBMITTED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-23T08:48:54.465Z",
+      "createdDate": "Sep 23, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "LEAVE & TIME Inquiry",
+        "autoRouted": true
+      },
+      "description": "Testing ticket sync",
+      "tags": [
+        "Leave & Time"
+      ],
+      "timeline": [
+        {
+          "date": "Today",
+          "title": "Created",
+          "desc": "Test",
+          "actor": "Employee"
+        }
+      ],
+      "comments": [],
+      "triage": {
+        "category": "general_hr",
+        "categoryDisplay": "General HR",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.94,
+        "relevantPolicy": "Corporate Employee Handbook & Code of Conduct",
+        "suggestedAction": "Review request and route to appropriate People Partner",
+        "reason": "Standard inquiry cross-referenced with enterprise HR knowledge base.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.737Z"
+      }
+    },
+    {
+      "id": "REQ-1124",
+      "title": "Attendance regularization for biometric missed punch",
+      "subject": "Attendance regularization for biometric missed punch",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "department": "Product Engineering - Cloud Platform",
+        "email": "rupam.sharma@enterprise.org",
+        "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+      },
+      "category": "leave",
+      "priority": "medium",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-17T12:18:50.492Z",
+      "createdDate": "Sep 17, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "LEAVE Inquiry",
+        "autoRouted": true
+      },
+      "description": "wewe",
+      "tags": [
+        "leave"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 17, 2026, 12:18 PM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Service Desk self-service portal.",
+          "actor": "Rupam Sharma"
+        },
+        {
+          "date": "Sep 17, 2026, 12:19 PM",
+          "title": "Approved & Resolved",
+          "desc": "Approved and resolved directly by HR Operations Lead.",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [],
+      "resolutionNotes": "Approved and resolved directly by HR Operations Lead.",
+      "resolverName": "Sarah Jenkins (HR Ops)",
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "compliance",
+        "categoryDisplay": "Compliance",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.95,
+        "relevantPolicy": "Code of Business Conduct & Regulatory Compliance Standards",
+        "suggestedAction": "Execute Policy Compliance Review Checklist",
+        "reason": "Regulatory compliance term density triggers corporate oversight.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.737Z"
+      }
+    },
+    {
+      "id": "REQ-5325",
+      "title": "New HR Request",
+      "subject": "New HR Request",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Rupam Sharma",
+        "email": "rupam.sharma@enterprise.org",
+        "role": "EMPLOYEE",
+        "title": "Lead Full-Stack Engineer",
+        "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
+      },
+      "category": "other",
+      "priority": "medium",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-17T12:17:39.228Z",
+      "createdDate": "Sep 17, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "Autonomous Intake",
+        "autoRouted": true
+      },
+      "description": "",
+      "tags": [
+        "General"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 17, 2026, 12:17 PM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Self-Service Portal",
+          "actor": "Employee"
+        },
+        {
+          "date": "Sep 17, 2026, 12:17 PM",
+          "title": "Approved & Resolved",
+          "desc": "Approved by HR Director",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [],
+      "resolutionNotes": "Approved by HR Director",
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "general_hr",
+        "categoryDisplay": "General HR",
+        "priority": "MEDIUM",
+        "sensitivity": "NORMAL",
+        "confidence": 0.94,
+        "relevantPolicy": "Corporate Employee Handbook & Code of Conduct",
+        "suggestedAction": "Review request and route to appropriate People Partner",
+        "reason": "Standard inquiry cross-referenced with enterprise HR knowledge base.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.737Z"
+      }
+    },
+    {
+      "id": "REQ-1051",
+      "title": "asdfghjkl",
+      "subject": "asdfghjkl",
+      "employee": {
+        "id": "usr_emp_3",
+        "name": "Alex Johnson",
+        "department": "Product Engineering - Cloud Platform",
+        "email": "alex.johnson@enterprise.internal",
+        "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80"
+      },
+      "category": "benefits",
+      "priority": "high",
+      "status": "resolved",
+      "statusUpper": "RESOLVED",
+      "waitingTime": "Just now",
+      "createdAt": "2026-09-17T12:15:55.296Z",
+      "createdDate": "Sep 17, 2026",
+      "aiTriage": {
+        "confidence": 0.96,
+        "classification": "BENEFITS Inquiry",
+        "autoRouted": true
+      },
+      "description": "vvbvb",
+      "tags": [
+        "benefits"
+      ],
+      "timeline": [
+        {
+          "date": "Sep 17, 2026, 12:15 PM",
+          "title": "Request Created",
+          "desc": "Submitted through HR Service Desk self-service portal.",
+          "actor": "Alex Johnson"
+        },
+        {
+          "date": "Sep 17, 2026, 12:16 PM",
+          "title": "Approved & Resolved",
+          "desc": "Case reviewed and verified against internal HR handbook policies.",
+          "actor": "Sarah Jenkins (HR Ops)"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1789647386941",
+          "author": "Alex Johnson",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80",
+          "text": "REQ-1051",
+          "time": "Just now",
+          "isHr": false
+        },
+        {
+          "id": "c-1789647386959",
+          "author": "Alex Johnson",
+          "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80",
+          "text": "REQ-1051",
+          "time": "Just now",
+          "isHr": false
+        }
+      ],
+      "resolutionNotes": "okokokoko\n",
+      "resolverName": "Sarah Jenkins (HR Ops)",
+      "lastUpdated": "Just now",
+      "triage": {
+        "category": "general_hr",
+        "categoryDisplay": "General HR",
+        "priority": "HIGH",
+        "sensitivity": "NORMAL",
+        "confidence": 0.94,
+        "relevantPolicy": "Corporate Employee Handbook & Code of Conduct",
+        "suggestedAction": "Review request and route to appropriate People Partner",
+        "reason": "Standard inquiry cross-referenced with enterprise HR knowledge base.",
+        "status": "TRIAGED",
+        "analyzedAt": "2026-09-28T09:24:09.737Z"
+      }
+    }
+  ],
+  "triageQueue": [
+    {
+      "id": "TRG-1790679238452",
+      "requestId": "REQ-7124",
+      "title": "New HR Request",
+      "employeeName": "Sarah Jenkins",
+      "predictedCategory": "general_hr",
+      "confidenceScore": 0.94,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Standard inquiry cross-referenced with enterprise HR knowledge base.",
+      "suggestedAction": "Review request and route to appropriate People Partner",
+      "status": "TRIAGED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790588819523",
+      "requestId": "REQ-3847",
+      "title": "Casual Leave application (2 days)",
+      "employeeName": "Alex Johnson",
+      "predictedCategory": "leave",
+      "confidenceScore": 0.96,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Absence patterns matched against statutory eligibility and employee leave balance.",
+      "suggestedAction": "Review Calendar Overlap & Route for Supervisor Endorsement",
+      "status": "TRIAGED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790588017888",
+      "requestId": "REQ-8967",
+      "title": "Formal complaint regarding workplace harassment during offsite",
+      "employeeName": "Alex Johnson",
+      "predictedCategory": "employee_relations",
+      "confidenceScore": 0.97,
+      "urgencyScore": "CRITICAL",
+      "reasoning": "Lexical matches for workplace conduct, workload disparity, and grievance resolution guidelines.",
+      "suggestedAction": "Human Review Required — Initiate Confidential People Partner Triage",
+      "status": "NEEDS_REVIEW",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790335900091",
+      "requestId": "REQ-7282",
+      "title": "David Chen Fiscal Audit Verification",
+      "employeeName": "David Chen",
+      "predictedCategory": "compliance",
+      "confidenceScore": 0.96,
+      "urgencyScore": "HIGH",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Documents.",
+      "suggestedAction": "Route to Documents specialist queue.",
+      "status": "OVERRIDDEN",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790335900061",
+      "requestId": "REQ-7248",
+      "title": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "employeeName": "Rupam Sharma",
+      "predictedCategory": "documents",
+      "confidenceScore": 0.96,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Documents.",
+      "suggestedAction": "Route to Documents specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790335900008",
+      "requestId": "REQ-3724",
+      "title": "Alex Private Test Ticket - GPU Cluster Access",
+      "employeeName": "Alex Johnson",
+      "predictedCategory": "benefits",
+      "confidenceScore": 0.96,
+      "urgencyScore": "HIGH",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Benefits & Info.",
+      "suggestedAction": "Route to Benefits & Info specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790159621123",
+      "requestId": "REQ-1058",
+      "title": "Experience letter and tenure certificate",
+      "employeeName": "Rupam Sharma",
+      "predictedCategory": "documents",
+      "confidenceScore": 0.96,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Documents.",
+      "suggestedAction": "Route to Documents specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790159595957",
+      "requestId": "REQ-1358",
+      "title": "Maternity / Parental leave return schedule",
+      "employeeName": "Rupam Sharma",
+      "predictedCategory": "other",
+      "confidenceScore": 0.96,
+      "urgencyScore": "HIGH",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for General Inquiry.",
+      "suggestedAction": "Route to General Inquiry specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790157289181",
+      "requestId": "REQ-1062",
+      "title": "Casual Leave application for family event",
+      "employeeName": "Rupam Sharma",
+      "predictedCategory": "leave",
+      "confidenceScore": 0.96,
+      "urgencyScore": "MEDIUM",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Leave & Time.",
+      "suggestedAction": "Route to Leave & Time specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    },
+    {
+      "id": "TRG-1790156147301",
+      "requestId": "REQ-SYNC-9850",
+      "title": "Urgent Biometric Missed Punch Correction",
+      "employeeName": "Rupam Sharma",
+      "predictedCategory": "leave",
+      "confidenceScore": 0.96,
+      "urgencyScore": "HIGH",
+      "reasoning": "Matched enterprise knowledge base vocabulary and policy grounding for Leave & Time.",
+      "suggestedAction": "Route to Leave & Time specialist queue.",
+      "status": "AUTO_ROUTED",
+      "timestamp": "Just now"
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "DELIV-1790588017820",
+      "title": "Parental Leave Entitlement Schedule Notice",
+      "type": "HR Communication",
+      "status": "SENT",
+      "requestId": "REQ-7282",
+      "employeeName": "David Chen",
+      "department": "Finance & Operations",
+      "recipient": "david.chen@enterprise.internal",
+      "subject": "Parental Leave Confirmation & Absence Schedule",
+      "content": "Dear Colleague,\n\nWe have reviewed your parental leave request under Global Parental & Caregiver Leave Guidelines. You are entitled to 16 weeks of paid parental leave.\n\nWarm regards,\nHR Operations\n\nNote: Flexible return cadence option is available on request.",
+      "contentPreview": "Dear Colleague,\n\nWe have reviewed your parental leave request under Global Parental & Caregiver Leave Guidelines. You are entitled to 16 wee...",
+      "policySources": [
+        {
+          "document": "employee_handbook.pdf",
+          "page": 18,
+          "excerpt": "16 weeks fully paid parental leave for primary caregivers."
+        }
+      ],
+      "createdBy": "Sarah Jenkins (HR Ops)",
+      "createdAt": "2026-09-28T09:33:37.820Z",
+      "updatedAt": "2026-09-28T09:33:37.842Z"
+    },
+    {
+      "id": "DELIV-101",
+      "title": "Medical Leave Documentation Request & Entitlement Notice",
+      "type": "HR Communication",
+      "status": "SENT",
+      "requestId": "REQ-1042",
+      "employeeName": "Maya Patel",
+      "department": "Design & Product",
+      "recipient": "maya.patel@enterprise.internal",
+      "subject": "Regarding Medical Leave & Dependent Documentation (REQ-1042)",
+      "content": "Dear Maya,\n\nThank you for reaching out regarding your medical leave request and dependent documentation. Under Article 6 of the Corporate Health & Leave Policy, medical absences exceeding three consecutive days require an authorized medical practitioner certificate.\n\nPlease upload the official certificate through the Employee Self-Service Portal within 5 business days so we can finalize your coverage.\n\nWarm regards,\nSarah Jenkins\nHR Operations Team",
+      "contentPreview": "Dear Maya, Thank you for reaching out regarding your medical leave request and dependent documentation...",
+      "policySources": [
+        {
+          "document": "employee_handbook.pdf",
+          "page": 14,
+          "excerpt": "Medical absence exceeding 3 days requires a certified practitioner notice."
+        }
+      ],
+      "createdBy": "Sarah Jenkins (HR Ops)",
+      "createdAt": "2026-09-28T07:24:09.733Z",
+      "updatedAt": "2026-09-28T09:38:23.847Z"
+    },
+    {
+      "id": "DELIV-102",
+      "title": "Remote Work Abroad & Cross-Border Compliance Analysis",
+      "type": "Policy Analysis",
+      "status": "READY",
+      "requestId": "REQ-1037",
+      "employeeName": "Alex Johnson",
+      "department": "Engineering",
+      "recipient": "alex.johnson@enterprise.internal",
+      "subject": "Compliance Assessment: Overseas Remote Work Schedule",
+      "content": "### Policy Analysis: Remote Working Overseas (REQ-1037)\n\n**Case Overview:** Employee Alex Johnson requested 3 weeks of remote work from Spain during winter break.\n\n**Policy Evaluation:**\n- **Handbook Section 3.2 (International Remote Cadence):** Permits up to 20 business days per calendar year in eligible jurisdictions.\n- **Tax & Legal Risk:** Spain has a 30-day bilateral treaty grace period; 15 working days poses zero permanent establishment (PE) risk.\n- **Infrastructure Security:** Mandates hardware token VPN authentication.\n\n**Recommendation:** Approve remote work agreement with standard security stipulations.",
+      "contentPreview": "### Policy Analysis: Remote Working Overseas (REQ-1037)\n\nCase Overview: Employee Alex Johnson requested 3 weeks of remote work from Spain...",
+      "policySources": [
+        {
+          "document": "employee_handbook.pdf",
+          "page": 22,
+          "excerpt": "Employees may work remotely abroad for up to 20 days annually upon manager and HR compliance sign-off."
+        }
+      ],
+      "createdBy": "Sarah Jenkins (HR Ops)",
+      "createdAt": "2026-09-28T04:24:09.734Z",
+      "updatedAt": "2026-09-28T05:24:09.734Z"
+    },
+    {
+      "id": "DELIV-103",
+      "title": "Salary Revision Verification Letter for Home Loan",
+      "type": "Employee Notice",
+      "status": "SENT",
+      "requestId": "REQ-1029",
+      "employeeName": "Rupam Sharma",
+      "department": "Product Engineering",
+      "recipient": "rupam.sharma@enterprise.org",
+      "subject": "Official Employment & Compensation Verification Letter (REQ-1029)",
+      "content": "To Whom It May Concern,\n\nThis letter certifies that Rupam Sharma is employed on a permanent, full-time basis as Lead Full-Stack Engineer at Enterprise Technologies. Current base compensation and active standing have been verified by HR Operations.\n\nSincerely,\nSarah Jenkins\nHR Operations Lead",
+      "contentPreview": "To Whom It May Concern, This letter certifies that Rupam Sharma is employed on a permanent, full-time basis...",
+      "policySources": [],
+      "createdBy": "Sarah Jenkins (HR Ops)",
+      "createdAt": "2026-09-27T09:24:09.734Z",
+      "updatedAt": "2026-09-27T13:24:09.734Z"
+    },
+    {
+      "id": "DELIV-104",
+      "title": "Overtime Allocation & Workload Disparity Investigation Summary",
+      "type": "Case Summary",
+      "status": "NEEDS_REVIEW",
+      "requestId": "REQ-1014",
+      "employeeName": "David Chen",
+      "department": "Finance & Operations",
+      "recipient": "david.chen@enterprise.internal",
+      "subject": "Internal HR Case Summary: Workload Disparity Grievance",
+      "content": "### Confidential Investigation Summary: REQ-1014\n\n**Grievance:** Employee reported unequal overtime allocation during fiscal quarter-end close.\n\n**Findings:**\n1. Overtime records across the financial analysis team for Q3 show a 28% variance between team members.\n2. Workload scheduling was managed ad-hoc without rotation logs.\n\n**Proposed Remediation:**\n- Establish formalized rotation roster for month-end close.\n- HR Specialist Marcus Vance to facilitate a 1-on-1 alignment session.",
+      "contentPreview": "### Confidential Investigation Summary: REQ-1014\n\nGrievance: Employee reported unequal overtime allocation during fiscal quarter-end close...",
+      "policySources": [
+        {
+          "document": "employee_handbook.pdf",
+          "page": 8,
+          "excerpt": "Overtime and on-call schedules must be distributed equitably across qualified team members."
+        }
+      ],
+      "createdBy": "Marcus Vance (HR Ops)",
+      "createdAt": "2026-09-27T03:24:09.734Z",
+      "updatedAt": "2026-09-27T05:24:09.734Z"
+    }
+  ],
+  "reports": [
+    {
+      "id": "REP-2026-MUMHM6DK",
+      "name": "Quarterly SLA & Compliance Audit Package (Q3 2026)",
+      "standard": "SOC2 Type II / EEOC",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-29T09:42:04.232Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "QUARTERLY_SLA_AUDIT",
+      "integrityHash": "sha256:8bc0ad6e95c91fe6858ae48be77207b39716e126163c6741d13371ecd098b3b1",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 7,
+        "openCases": 7,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 6,
+        "slaBreached": 8,
+        "slaResolvedWithin": 6,
+        "slaResolvedBreached": 1,
+        "slaOpenWithin": 0,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 85.7,
+        "avgResolutionTimeHours": 12.7,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "During this reporting cycle, the HR Service Desk logged 14 enterprise cases. Overall SLA adherence reached 85.7% against the corporate benchmark of 92.0%. A total of 7 cases were finalized with an average turnaround velocity of 12.7 hours. 7 active cases require escalated triage oversight."
+      }
+    },
+    {
+      "id": "REP-2026-MULMJQNO",
+      "name": "Sensitive Case & Workplace Relations Log (Q3 2026)",
+      "standard": "EEOC Title VII / Harassment Audit",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T19:12:22.452Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "SENSITIVE_CASES",
+      "integrityHash": "sha256:7cf7d70ecbeff9ab6d875540c936000bf9dc519a5878a41be1a0547a0a925f1b",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 7,
+        "openCases": 7,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 6,
+        "slaResolvedBreached": 1,
+        "slaOpenWithin": 1,
+        "slaOpenBreached": 6,
+        "slaComplianceRate": 85.7,
+        "avgResolutionTimeHours": 12.7,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Sensitive case audit identified 1 confidential case classified under elevated privacy standards. 7 high-priority matters were handled with restricted compartmentalization under SOC2 Type II guidelines. Zero security breaches or unauthorized disclosures were logged."
+      }
+    },
+    {
+      "id": "REP-2026-MULM8JEK",
+      "name": "Employee Service Latency & Volume Ledger (Q3 2026)",
+      "standard": "Enterprise ITIL / SLA 24H",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T19:03:39.836Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "LATENCY_VOLUME",
+      "integrityHash": "sha256:2bb5643fab847dd4a0acd4b453cf39fc978c9bad8e4126dffe433adeb9eff9be",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Employee service latency analysis shows an average case handling time of 0 hours across 14 requests. The highest volume sector is \"Leave & Attendance\" accounting for 36% of all intake."
+      }
+    },
+    {
+      "id": "REP-2026-MULKZ8I2",
+      "name": "Policy Grounding & Citations Summary (Q3 2026)",
+      "standard": "ISO 27001 / Internal SOP",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:28:26.186Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "POLICY_GROUNDING",
+      "integrityHash": "sha256:88aa57b83d3177b648a108a689dbfe02d69444df4ec3bbbdca5eacd4cfbba7c0",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Policy grounding telemetry reveals that 6 distinct regulatory policies and standard operating procedures were invoked across 14 employee cases. Top cited framework: \"Corporate Employee Handbook & Code of Conduct\". Verification against official documentation remains at 100% confidence."
+      }
+    },
+    {
+      "id": "REP-2026-MULKP9G0",
+      "name": "Employee Service Latency & Volume Ledger (Q3 2026)",
+      "standard": "Enterprise ITIL / SLA 24H",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:20:40.848Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "LATENCY_VOLUME",
+      "integrityHash": "sha256:3a3622dac1d57129818488d5cc048205af6e7f50f65db77464c77a7eb2046744",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Employee service latency analysis shows an average case handling time of 0 hours across 14 requests. The highest volume sector is \"Leave & Attendance\" accounting for 36% of all intake."
+      }
+    },
+    {
+      "id": "REP-2026-MULKNTCF",
+      "name": "Quarterly SLA & Compliance Audit Package (Q3 2026)",
+      "standard": "SOC2 Type II / EEOC",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:19:33.327Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "QUARTERLY_SLA_AUDIT",
+      "integrityHash": "sha256:6241a7113fcca0087c893ec9c6dbdad7c621ac4342571535e995117cf2b05f5f",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "During this reporting cycle, the HR Service Desk logged 14 enterprise cases. Overall SLA adherence reached 100.0% against the corporate benchmark of 92.0%. A total of 5 cases were finalized with an average turnaround velocity of 0 hours. 7 active cases require escalated triage oversight."
+      }
+    },
+    {
+      "id": "REP-2026-MULKNEYY",
+      "name": "Sensitive Case & Workplace Relations Log (Q3 2026)",
+      "standard": "EEOC Title VII / Harassment Audit",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:19:14.698Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "SENSITIVE_CASES",
+      "integrityHash": "sha256:28bf199e3bf7eb3fe2005ab519b524fe27a8db41c1a6c6660fbe2e5cc3528615",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Sensitive case audit identified 1 confidential case classified under elevated privacy standards. 7 high-priority matters were handled with restricted compartmentalization under SOC2 Type II guidelines. Zero security breaches or unauthorized disclosures were logged."
+      }
+    },
+    {
+      "id": "REP-2026-MULKNAAJ",
+      "name": "Sensitive Case & Workplace Relations Log (Q3 2026)",
+      "standard": "EEOC Title VII / Harassment Audit",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:19:08.635Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "SENSITIVE_CASES",
+      "integrityHash": "sha256:4d62e84dab1fc1bacad7d8908bde497723714e421c282acb2271a81a9dd5d242",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Sensitive case audit identified 1 confidential case classified under elevated privacy standards. 7 high-priority matters were handled with restricted compartmentalization under SOC2 Type II guidelines. Zero security breaches or unauthorized disclosures were logged."
+      }
+    },
+    {
+      "id": "REP-2026-MULKMUD2",
+      "name": "Employee Service Latency & Volume Ledger (Q3 2026)",
+      "standard": "Enterprise ITIL / SLA 24H",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:18:47.990Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "LATENCY_VOLUME",
+      "integrityHash": "sha256:f0487b5a8c789d5f7b29ac96a2271599521707ef3c2b4dc38ff5c7cf3aa55c66",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Employee service latency analysis shows an average case handling time of 0 hours across 14 requests. The highest volume sector is \"Leave & Attendance\" accounting for 36% of all intake."
+      }
+    },
+    {
+      "id": "REP-2026-MULKMPYP",
+      "name": "Employee Service Latency & Volume Ledger (Q3 2026)",
+      "standard": "Enterprise ITIL / SLA 24H",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:18:42.289Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "LATENCY_VOLUME",
+      "integrityHash": "sha256:e5ad987a1499c3d3d4458d0a14814ee9db0a36ef632ffcdabd1af1c28c9438a1",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Employee service latency analysis shows an average case handling time of 0 hours across 14 requests. The highest volume sector is \"Leave & Attendance\" accounting for 36% of all intake."
+      }
+    },
+    {
+      "id": "REP-2026-MULKMA1J",
+      "name": "Policy Grounding & Citations Summary (Q3 2026)",
+      "standard": "ISO 27001 / Internal SOP",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:18:21.655Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "POLICY_GROUNDING",
+      "integrityHash": "sha256:4ad379877d00a3b8bc01945254394a2659406331ba30225b06b7e9c2a5caa328",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Policy grounding telemetry reveals that 6 distinct regulatory policies and standard operating procedures were invoked across 14 employee cases. Top cited framework: \"Corporate Employee Handbook & Code of Conduct\". Verification against official documentation remains at 100% confidence."
+      }
+    },
+    {
+      "id": "REP-2026-MULKM11K",
+      "name": "Policy Grounding & Citations Summary (Q3 2026)",
+      "standard": "ISO 27001 / Internal SOP",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:18:09.992Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "POLICY_GROUNDING",
+      "integrityHash": "sha256:3541bcaf64ab1a001e6880c7604c2254446c95543d626ab7fca541ae51012cfa",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Policy grounding telemetry reveals that 6 distinct regulatory policies and standard operating procedures were invoked across 14 employee cases. Top cited framework: \"Corporate Employee Handbook & Code of Conduct\". Verification against official documentation remains at 100% confidence."
+      }
+    },
+    {
+      "id": "REP-2026-MULKLPK5",
+      "name": "Quarterly SLA & Compliance Audit Package (Q3 2026)",
+      "standard": "SOC2 Type II / EEOC",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance",
+      "generatedAt": "2026-09-28T18:17:55.109Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "QUARTERLY_SLA_AUDIT",
+      "integrityHash": "sha256:128f54612b3ad3caf329d79e14fafde7c5bcd1f18d20a389554697cf57bfb7f7",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "During this reporting cycle, the HR Service Desk logged 14 enterprise cases. Overall SLA adherence reached 100.0% against the corporate benchmark of 92.0%. A total of 5 cases were finalized with an average turnaround velocity of 0 hours. 7 active cases require escalated triage oversight."
+      }
+    },
+    {
+      "id": "REP-2026-MULKA69B",
+      "name": "Policy Grounding & Citations Summary (2026-09-01 – 2026-09-28)",
+      "standard": "ISO 27001 / Internal SOP",
+      "periodStart": "2026-09-01T00:00:00.000Z",
+      "periodEnd": "2026-09-28T00:00:00.000Z",
+      "periodLabel": "2026-09-01 – 2026-09-28",
+      "generatedBy": "Sarah Jenkins (HR Ops)",
+      "generatedAt": "2026-09-28T18:08:56.879Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "POLICY_GROUNDING",
+      "integrityHash": "sha256:a7ab128a3c9ad266822ab3420e95b2db1d4f4f3e466fbbe809591e0791f3dc93",
+      "metrics": {
+        "totalCases": 12,
+        "resolvedCases": 5,
+        "openCases": 7,
+        "highPriorityCases": 6,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 12,
+        "slaMet": 5,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 0,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 4,
+            "percentage": 33
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 17
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 17
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 2,
+            "percentage": 17
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 8
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 8
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "Policy grounding telemetry reveals that 5 distinct regulatory policies and standard operating procedures were invoked across 12 employee cases. Top cited framework: \"Corporate Employee Handbook & Code of Conduct\". Verification against official documentation remains at 100% confidence."
+      }
+    },
+    {
+      "id": "REP-2026-MULKA697",
+      "name": "Quarterly SLA & Compliance Audit Package (Q3 2026)",
+      "standard": "SOC2 Type II / EEOC",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Sarah Jenkins (HR Ops)",
+      "generatedAt": "2026-09-28T18:08:56.875Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "QUARTERLY_SLA_AUDIT",
+      "integrityHash": "sha256:c8fa33efbfaecfc76d34df008ecc6f8686b53e27ce6ef6e304af3ee98eb7aa05",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "During this reporting cycle, the HR Service Desk logged 14 enterprise cases. Overall SLA adherence reached 100.0% against the corporate benchmark of 92.0%. A total of 5 cases were finalized with an average turnaround velocity of 0 hours. 7 active cases require escalated triage oversight."
+      }
+    },
+    {
+      "id": "REP-2026-MULK30IE",
+      "name": "Quarterly SLA & Compliance Audit Package (Q3 2026)",
+      "standard": "SOC2 Type II / EEOC",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Marcus Vance (Senior HR Specialist)",
+      "generatedAt": "2026-09-28T18:03:22.838Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "QUARTERLY_SLA_AUDIT",
+      "integrityHash": "sha256:475137817bacda180014c840da543e2790520581141a0eac60fefb09085b694b",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 7,
+        "sensitiveCases": 1,
+        "slaApplicableCases": 14,
+        "slaMet": 7,
+        "slaBreached": 7,
+        "slaResolvedWithin": 5,
+        "slaResolvedBreached": 0,
+        "slaOpenWithin": 2,
+        "slaOpenBreached": 7,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 0,
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "documents",
+            "categoryDisplay": "Documents & Verification",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 1,
+            "percentage": 7
+          },
+          {
+            "category": "Leave & Time",
+            "categoryDisplay": "General HR Operations",
+            "count": 1,
+            "percentage": 7
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Document Certification & Employment Verification Standards",
+            "count": 3
+          },
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 2
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 2
+          },
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy (Sec. 2.1)",
+            "count": 1
+          },
+          {
+            "policy": "Global Parental & Caregiver Leave Guidelines",
+            "count": 1
+          }
+        ],
+        "executiveSummary": "During this reporting cycle, the HR Service Desk logged 14 enterprise cases. Overall SLA adherence reached 100.0% against the corporate benchmark of 92.0%. A total of 5 cases were finalized with an average turnaround velocity of 0 hours. 7 active cases require escalated triage oversight."
+      }
+    },
+    {
+      "id": "REP-2026-Q3-SLA",
+      "name": "Quarterly SLA & Compliance Audit Package (Q3 2026)",
+      "standard": "SOC2 Type II / EEOC",
+      "periodStart": "2026-07-01T00:00:00.000Z",
+      "periodEnd": "2026-09-30T23:59:59.999Z",
+      "periodLabel": "Q3 2026",
+      "generatedBy": "Sarah Jenkins (HR Ops)",
+      "generatedAt": "2026-09-28T10:30:00.000Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "QUARTERLY_SLA_AUDIT",
+      "integrityHash": "sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
+      "metrics": {
+        "totalCases": 14,
+        "resolvedCases": 5,
+        "openCases": 9,
+        "highPriorityCases": 5,
+        "sensitiveCases": 3,
+        "slaApplicableCases": 14,
+        "slaMet": 12,
+        "slaBreached": 2,
+        "slaComplianceRate": 85.7,
+        "avgResolutionTimeHours": 3.2,
+        "executiveSummary": "During Q3 2026, the HR Service Desk handled 14 cases with 85.7% SLA compliance. 5 cases were resolved under standard operating parameters with average velocity of 3.2 hours.",
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 5,
+            "percentage": 36
+          },
+          {
+            "category": "other",
+            "categoryDisplay": "General HR Operations",
+            "count": 4,
+            "percentage": 29
+          },
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 3,
+            "percentage": 21
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 2,
+            "percentage": 14
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Annual Paid Vacation & Earned Leave Policy",
+            "count": 5
+          },
+          {
+            "policy": "Corporate Employee Handbook & Code of Conduct",
+            "count": 4
+          },
+          {
+            "policy": "Code of Business Conduct & Regulatory Compliance Standards",
+            "count": 3
+          },
+          {
+            "policy": "Group Medical Insurance Policy",
+            "count": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "REP-2026-Q2-POL",
+      "name": "Policy Grounding & Citations Utilization Summary (Q2 2026)",
+      "standard": "ISO 27001 / Internal SOP",
+      "periodStart": "2026-04-01T00:00:00.000Z",
+      "periodEnd": "2026-06-30T23:59:59.999Z",
+      "periodLabel": "Q2 2026",
+      "generatedBy": "Sarah Jenkins (HR Ops)",
+      "generatedAt": "2026-07-02T14:15:00.000Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "POLICY_GROUNDING",
+      "integrityHash": "sha256:4a8b83597b489e81b6bb81ef56385b2e3e570f0898516ee7130097ec89f2a419",
+      "metrics": {
+        "totalCases": 28,
+        "resolvedCases": 28,
+        "openCases": 0,
+        "highPriorityCases": 4,
+        "sensitiveCases": 2,
+        "slaApplicableCases": 28,
+        "slaMet": 27,
+        "slaBreached": 1,
+        "slaComplianceRate": 96.4,
+        "avgResolutionTimeHours": 2.1,
+        "executiveSummary": "Policy grounding audit across Q2 verified 96.4% grounding accuracy against authoritative policy documents with zero critical citation anomalies.",
+        "categoryDistribution": [
+          {
+            "category": "leave",
+            "categoryDisplay": "Leave & Attendance",
+            "count": 12,
+            "percentage": 43
+          },
+          {
+            "category": "payroll",
+            "categoryDisplay": "Payroll & Compensation",
+            "count": 8,
+            "percentage": 29
+          },
+          {
+            "category": "benefits",
+            "categoryDisplay": "Benefits & Healthcare",
+            "count": 8,
+            "percentage": 28
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Leave & Attendance Policy (Art. 6)",
+            "count": 12
+          },
+          {
+            "policy": "Compensation & Withholding Policy",
+            "count": 8
+          },
+          {
+            "policy": "Group Medical Insurance Policy",
+            "count": 8
+          }
+        ]
+      }
+    },
+    {
+      "id": "REP-2026-Q2-SEN",
+      "name": "Sensitive Case & Workplace Relations Investigation Log (Q2 2026)",
+      "standard": "EEOC Title VII / Harassment Audit",
+      "periodStart": "2026-04-01T00:00:00.000Z",
+      "periodEnd": "2026-06-30T23:59:59.999Z",
+      "periodLabel": "Q2 2026",
+      "generatedBy": "Sarah Jenkins (HR Ops)",
+      "generatedAt": "2026-07-05T09:00:00.000Z",
+      "status": "VERIFIED & SIGNED",
+      "reportType": "SENSITIVE_CASES",
+      "integrityHash": "sha256:91cef88177bc3312ee04aa554a8b19e099238475819028374650192837465019",
+      "metrics": {
+        "totalCases": 6,
+        "resolvedCases": 6,
+        "openCases": 0,
+        "highPriorityCases": 2,
+        "sensitiveCases": 6,
+        "slaApplicableCases": 6,
+        "slaMet": 6,
+        "slaBreached": 0,
+        "slaComplianceRate": 100,
+        "avgResolutionTimeHours": 1.8,
+        "executiveSummary": "All 6 sensitive workplace relation inquiries were resolved with 100% adherence to privacy enclaves and EEOC Title VII requirements.",
+        "categoryDistribution": [
+          {
+            "category": "compliance",
+            "categoryDisplay": "Regulatory Compliance",
+            "count": 4,
+            "percentage": 67
+          },
+          {
+            "category": "employee_relations",
+            "categoryDisplay": "Employee Relations",
+            "count": 2,
+            "percentage": 33
+          }
+        ],
+        "policyDistribution": [
+          {
+            "policy": "Anti-Harassment & Workplace Respect Policy",
+            "count": 4
+          },
+          {
+            "policy": "Code of Business Conduct",
+            "count": 2
+          }
+        ]
+      }
+    }
+  ],
+  "hrActions": [],
+  "insights": [
+    {
+      "id": "INS-CAT-LEAVE",
+      "type": "warning",
+      "icon": "trending_up",
+      "title": "Leave & Attendance Volume Spike",
+      "description": "Leave & Attendance tickets represent 36% of total case volume (5 of 14 cases). This exceeds the expected 25% threshold and may signal an operational bottleneck.",
+      "changeText": "36% of volume",
+      "impact": "HIGH",
+      "suggestedRemediation": "Review Leave & Attendance SOP and publish a policy clarification FAQ. Consider triggering an automated acknowledgment template for new Leave & Attendance submissions.",
+      "relatedCategory": "leave",
+      "relatedPolicy": "Leave & Attendance Policy (Art. 6)"
+    },
+    {
+      "id": "INS-CAT-OTHER",
+      "type": "warning",
+      "icon": "trending_up",
+      "title": "General HR Volume Spike",
+      "description": "General HR tickets represent 29% of total case volume (4 of 14 cases). This exceeds the expected 25% threshold and may signal an operational bottleneck.",
+      "changeText": "29% of volume",
+      "impact": "HIGH",
+      "suggestedRemediation": "Review General HR SOP and publish a policy clarification FAQ. Consider triggering an automated acknowledgment template for new General HR submissions.",
+      "relatedCategory": "other",
+      "relatedPolicy": "Employee Handbook"
+    },
+    {
+      "id": "INS-SLA-BREACH",
+      "type": "warning",
+      "icon": "alarm",
+      "title": "Resolution SLA Bottleneck Detected",
+      "description": "7 tickets have exceeded the standard 24-hour response SLA. 5 are high priority. Average wait time is ~114 hours.",
+      "changeText": "7 overdue (>24h)",
+      "impact": "CRITICAL",
+      "suggestedRemediation": "Assign dedicated HR specialists to overdue tickets immediately. Enable automated SLA escalation alerts in the request intake pipeline.",
+      "relatedCategory": "leave",
+      "relatedPolicy": "HR Operations Service Level Agreement (SLA) Standards"
+    },
+    {
+      "id": "INS-POLICY-GAP",
+      "type": "warning",
+      "icon": "rule",
+      "title": "Policy Grounding & Coverage Gaps",
+      "description": "7 active tickets lack verified grounding against official company policy documents. Resolving them without grounded citations introduces compliance variance.",
+      "changeText": "7 ungrounded",
+      "impact": "HIGH",
+      "suggestedRemediation": "Trigger an AI re-triage pass across unclassified tickets. Ensure every specialist response cites an authoritative section in the Employee Handbook.",
+      "relatedCategory": "compliance",
+      "relatedPolicy": "Code of Business Conduct & Knowledge Base Governance"
+    }
+  ],
+  "categoryVolumes": [
+    {
+      "category": "payroll",
+      "name": "Payroll & Compensation",
+      "count": 0,
+      "percentage": 0
+    },
+    {
+      "category": "benefits",
+      "name": "Health & Benefits",
+      "count": 2,
+      "percentage": 13
+    },
+    {
+      "category": "leave",
+      "name": "Leave & Attendance",
+      "count": 5,
+      "percentage": 33
+    },
+    {
+      "category": "documents",
+      "name": "Letters & Verification",
+      "count": 2,
+      "percentage": 13
+    },
+    {
+      "category": "compliance",
+      "name": "HR Policies",
+      "count": 1,
+      "percentage": 7
+    }
+  ],
+  "activities": [
+    {
+      "id": "ACT-1790679238452",
+      "actorType": "user",
+      "actorName": "Sarah Jenkins",
+      "actionText": "Sarah Jenkins submitted REQ-7124 (General Inquiry)",
+      "timeAgo": "Just now",
+      "subText": "New HR Request",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790622329541",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-7248 to RESOLVED",
+      "timeAgo": "Just now",
+      "subText": "Case verified and resolved per company policy.",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1790622274142",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-3847 to RESOLVED",
+      "timeAgo": "Just now",
+      "subText": "Approved and resolved directly by HR Operations Lead.",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1790588819523",
+      "actorType": "user",
+      "actorName": "Alex Johnson",
+      "actionText": "Alex Johnson submitted REQ-3847 (Leave & Time)",
+      "timeAgo": "Just now",
+      "subText": "Casual Leave application (2 days)",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790588017888",
+      "actorType": "user",
+      "actorName": "Alex Johnson",
+      "actionText": "Alex Johnson submitted REQ-8967 (General Inquiry)",
+      "timeAgo": "Just now",
+      "subText": "Formal complaint regarding workplace harassment during offsite",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900201",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-3724 to SUBMITTED",
+      "timeAgo": "Just now",
+      "subText": "Alex Private Test Ticket - GPU Cluster Access",
+      "tag": {
+        "text": "SUBMITTED",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900122",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-7282 to SUBMITTED",
+      "timeAgo": "Just now",
+      "subText": "David Chen Fiscal Audit Verification",
+      "tag": {
+        "text": "SUBMITTED",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900091",
+      "actorType": "user",
+      "actorName": "David Chen",
+      "actionText": "David Chen submitted REQ-7282 (Documents)",
+      "timeAgo": "Just now",
+      "subText": "David Chen Fiscal Audit Verification",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900061",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-7248 (Documents)",
+      "timeAgo": "Just now",
+      "subText": "Rupam Deployment Ticket - K8s Ingress SSL",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790335900008",
+      "actorType": "user",
+      "actorName": "Alex Johnson",
+      "actionText": "Alex Johnson submitted REQ-3724 (Benefits & Info)",
+      "timeAgo": "Just now",
+      "subText": "Alex Private Test Ticket - GPU Cluster Access",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790159621123",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-1058 (Documents)",
+      "timeAgo": "Just now",
+      "subText": "Experience letter and tenure certificate",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790159595957",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-1358 (General Inquiry)",
+      "timeAgo": "Just now",
+      "subText": "Maternity / Parental leave return schedule",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790157307940",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-1062 to RESOLVED",
+      "timeAgo": "Just now",
+      "subText": "Approved and resolved directly by HR Operations Lead.",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1790157289181",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-1062 (Leave & Time)",
+      "timeAgo": "Just now",
+      "subText": "Casual Leave application for family event",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790156147952",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR updated case REQ-SYNC-9850 to RESOLVED",
+      "timeAgo": "Just now",
+      "subText": "Biometric logs verified against building security gate. Attendance regularized.",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1790156147301",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-SYNC-9850 (Leave & Time)",
+      "timeAgo": "Just now",
+      "subText": "Urgent Biometric Missed Punch Correction",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790154952770",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-SSE-TEST (leave)",
+      "timeAgo": "Just now",
+      "subText": "SSE Test Request",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1790153334486",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-9999 (Leave & Time)",
+      "timeAgo": "Just now",
+      "subText": "Test Ticket from Node",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1789647540911",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR approved & resolved case REQ-1124",
+      "timeAgo": "Just now",
+      "subText": "Approved and resolved directly by HR Operations Lead.",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1789647530493",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-1124 (leave)",
+      "timeAgo": "Just now",
+      "subText": "Attendance regularization for biometric missed punch",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1789647478304",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR approved & resolved case REQ-5325",
+      "timeAgo": "Just now",
+      "subText": "Approved by HR Director",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1789647459228",
+      "actorType": "user",
+      "actorName": "Rupam Sharma",
+      "actionText": "Rupam Sharma submitted REQ-5325 (other)",
+      "timeAgo": "Just now",
+      "subText": "New HR Request",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-1789647402261",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR approved & resolved case REQ-1051",
+      "timeAgo": "Just now",
+      "subText": "okokokoko\n",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1789647373712",
+      "actorType": "user",
+      "actorName": "HR Operations",
+      "actionText": "HR approved & resolved case REQ-1051",
+      "timeAgo": "Just now",
+      "subText": "Case reviewed and verified against internal HR handbook policies.",
+      "tag": {
+        "text": "RESOLVED",
+        "color": "emerald"
+      }
+    },
+    {
+      "id": "ACT-1789647355314",
+      "actorType": "user",
+      "actorName": "Alex Johnson",
+      "actionText": "Alex Johnson submitted REQ-1051 (benefits)",
+      "timeAgo": "Just now",
+      "subText": "asdfghjkl",
+      "tag": {
+        "text": "New Ticket",
+        "color": "cyan"
+      }
+    },
+    {
+      "id": "ACT-INIT-1",
+      "actorType": "ai",
+      "actorName": "HR AI Engine",
+      "actionText": "Intake pipeline active & persistent storage connected",
+      "timeAgo": "Just now",
+      "subText": "Sync Server active on port 8000 with file database",
+      "tag": {
+        "text": "Online",
+        "color": "emerald"
+      }
+    }
+  ],
+  "users": {
+    "HR001": {
+      "id": "HR001",
+      "name": "Sarah Jenkins",
+      "email": "sarah.jenkins@enterprise.internal",
+      "role": "HR Operations Lead",
+      "title": "HR Operations Lead",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+      "avatarUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Xtd_6Zzb5GlqZHxkO20YhGWUIh5W6zeXIQMhT-wo_XWwgwVuROluO2YbW2xoNMM9EX4rSJ9HfXVhPfo0-FHKC9ypn5YpZDfKfjsev9tVACXOmHmujbKFBPnxdIa0mK0Il1qM1GRlo1u2Phyfe_WS_DSjxP_VA-_CcPCooGoexaXN5JJnUeX6ce0c_p78M6YXoqa2h8-dvIVVZUElaP5exk5NPsZxfpbZryLSyTPFga3mLVWeRTcUTS_B0",
+      "securityLevel": 3,
+      "tenure": "5 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "HR002": {
+      "id": "HR002",
+      "name": "Marcus Vance",
+      "email": "marcus.vance@enterprise.internal",
+      "role": "Senior HR Benefits & Leave Specialist",
+      "title": "Senior HR Benefits & Leave Specialist",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 2,
+      "tenure": "3 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "HR003": {
+      "id": "HR003",
+      "name": "Elena Rostova",
+      "email": "elena.rostova@enterprise.internal",
+      "role": "Payroll & Compliance Admin",
+      "title": "Payroll & Compliance Admin",
+      "department": "HR Operations",
+      "isHr": true,
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 2,
+      "tenure": "4 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP001": {
+      "id": "EMP001",
+      "name": "Alex Johnson",
+      "email": "alex.johnson@enterprise.internal",
+      "role": "Senior Staff Engineer",
+      "title": "Senior Staff Engineer",
+      "department": "Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "4 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP002": {
+      "id": "EMP002",
+      "name": "Rupam Sharma",
+      "email": "rupam.sharma@enterprise.org",
+      "role": "Lead Full-Stack Engineer",
+      "title": "Lead Full-Stack Engineer",
+      "department": "Product Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "2 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP003": {
+      "id": "EMP003",
+      "name": "Maya Patel",
+      "email": "maya.patel@enterprise.internal",
+      "role": "Product Manager",
+      "title": "Product Manager",
+      "department": "Design & Product",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "3 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "EMP004": {
+      "id": "EMP004",
+      "name": "David Chen",
+      "email": "david.chen@enterprise.internal",
+      "role": "Financial Analyst",
+      "title": "Financial Analyst",
+      "department": "Finance & Operations",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "1 year",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc"
+    },
+    "HR004": {
+      "id": "HR004",
+      "name": "Kavitha Iyer",
+      "email": "kavitha.iyer@enterprise.internal",
+      "role": "Recruiter",
+      "title": "Recruiter",
+      "department": "Talent Acquisition",
+      "isHr": true,
+      "avatar": "",
+      "avatarUrl": "",
+      "securityLevel": 2,
+      "tenure": "New",
+      "passwordHash": "25d962d403426699fe878bd8eba6fc9df321fac748aeb01f57106cf3036d0185"
+    }
+  }
+}
