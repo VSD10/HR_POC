@@ -88,6 +88,9 @@ export interface PolicyItem {
   tag?: string;
   featured?: boolean;
   documentName?: string;
+  documentUrl?: string;
+  downloadUrl?: string;
+  pageCount?: number;
 }
 
 export interface ChatMessage {

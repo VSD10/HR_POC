@@ -75,6 +75,12 @@ export default function App() {
   // Modal States
   const [selectedRequest, setSelectedRequest] = useState<HrRequest | null>(null);
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyItem | null>(null);
+  const [policyReaderMode, setPolicyReaderMode] = useState<'pdf' | 'clauses'>('pdf');
+
+  const handleSelectPolicy = (policy: PolicyItem, mode: 'pdf' | 'clauses' = 'pdf') => {
+    setSelectedPolicy(policy);
+    setPolicyReaderMode(mode);
+  };
   const [showApplyLeaveModal, setShowApplyLeaveModal] = useState(false);
   const [showPayslipModal, setShowPayslipModal] = useState(false);
   const [showUpdateBankModal, setShowUpdateBankModal] = useState(false);
@@ -672,7 +678,7 @@ export default function App() {
           {activeScreen === 'knowledge-hub' && (
             <KnowledgeHubView
               policies={policies}
-              onSelectPolicy={(pol) => setSelectedPolicy(pol)}
+              onSelectPolicy={handleSelectPolicy}
             />
           )}
 
@@ -736,6 +742,7 @@ export default function App() {
       {selectedPolicy && (
         <PolicyReaderModal
           policy={selectedPolicy}
+          initialMode={policyReaderMode}
           onClose={() => setSelectedPolicy(null)}
         />
       )}

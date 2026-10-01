@@ -3,7 +3,7 @@ import http from 'node:http';
 import crypto from 'node:crypto';
 import { parse as parseUrl } from 'node:url';
 import fs from 'node:fs';
-import path from 'node:path';
+import nodePath from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   aggregateAuditMetrics,
@@ -19,9 +19,9 @@ function hashPassword(password) {
 const DEFAULT_PASSWORD_HASH = hashPassword('SecretPassword123!');
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DB_DIR = path.join(__dirname, 'data');
-const DB_PATH = path.join(DB_DIR, 'db.json');
+const __dirname = nodePath.dirname(__filename);
+const DB_DIR = nodePath.join(__dirname, 'data');
+const DB_PATH = nodePath.join(DB_DIR, 'db.json');
 
 const PORT = 8000;
 
@@ -1338,10 +1338,10 @@ const server = http.createServer((req, res) => {
     // Policies & Documents: List dynamically from knowledge_base folders
     if ((path === '/api/v1/policies' || path === '/policies') && req.method === 'GET') {
       const kbDirs = [
-        path.join(__dirname, '..', 'rag_application-main', 'knowledge_base'),
-        path.join(__dirname, '..', 'resources'),
-        path.join(__dirname, 'backend', 'knowledge_base'),
-        path.join(__dirname, 'data', 'knowledge_base')
+        nodePath.join(__dirname, '..', 'rag_application-main', 'knowledge_base'),
+        nodePath.join(__dirname, '..', 'resources'),
+        nodePath.join(__dirname, 'backend', 'knowledge_base'),
+        nodePath.join(__dirname, 'data', 'knowledge_base')
       ];
 
       const discovered = new Map();
@@ -1352,7 +1352,7 @@ const server = http.createServer((req, res) => {
             const files = fs.readdirSync(kDir);
             for (const f of files) {
               if (f.toLowerCase().endsWith('.pdf') && !discovered.has(f)) {
-                discovered.set(f, path.join(kDir, f));
+                discovered.set(f, nodePath.join(kDir, f));
               }
             }
           }
@@ -1388,19 +1388,51 @@ const server = http.createServer((req, res) => {
           category: category,
           summary: `Official enterprise standard and corporate guidelines for ${baseTitle}.`,
           documentName: fileName,
-          documentUrl: `knowledge_base/${fileName}`,
+          documentUrl: `/policies/${fileName}`,
+          downloadUrl: `/api/v1/policies/${encodeURIComponent(fileName)}`,
           lastUpdated: lastUpdated,
-          pageCount: 4,
-          readTime: '4 min read',
+          pageCount: 6,
+          readTime: '5 min read',
           featured: lower.includes('handbook') || lower.includes('leave'),
           content: [
             `Official corporate guidelines and employee provisions outlined in ${baseTitle}.`,
-            `All permanent full-time and hybrid personnel are subject to the policies specified within this verified document.`
+            `All permanent full-time and hybrid personnel are subject to the policies specified within this verified document.`,
+            `Verified Sangharsh Docs enterprise release document synchronized across corporate knowledge base.`
           ]
         });
       }
 
       return sendJson(200, policyList);
+    }
+
+    // Policies & Documents: Direct PDF Document Streaming
+    if ((path.startsWith('/api/v1/policies/') || path.startsWith('/policies/')) && req.method === 'GET') {
+      const fileName = decodeURIComponent(path.split('/').pop() || '');
+      if (fileName.toLowerCase().endsWith('.pdf')) {
+        const kbDirs = [
+          nodePath.join(__dirname, '..', 'rag_application-main', 'knowledge_base'),
+          nodePath.join(__dirname, '..', 'resources'),
+          nodePath.join(__dirname, 'backend', 'knowledge_base'),
+          nodePath.join(__dirname, 'data', 'knowledge_base'),
+          nodePath.join(__dirname, 'frontend', 'public', 'policies')
+        ];
+        for (const kDir of kbDirs) {
+          const filePath = nodePath.join(kDir, fileName);
+          if (fs.existsSync(filePath)) {
+            const stat = fs.statSync(filePath);
+            res.writeHead(200, {
+              'Content-Type': 'application/pdf',
+              'Content-Length': stat.size,
+              'Content-Disposition': `inline; filename="${fileName}"`,
+              'Access-Control-Allow-Origin': '*',
+              'Cache-Control': 'public, max-age=3600'
+            });
+            fs.createReadStream(filePath).pipe(res);
+            return;
+          }
+        }
+        return sendJson(404, { error: `Policy document "${fileName}" not found in Sangharsh docs repository.` });
+      }
     }
 
 
