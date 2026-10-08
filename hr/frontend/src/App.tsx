@@ -16,6 +16,7 @@ import { HRProfileView } from './components/views/HRProfileAndReports';
 import { CommandPalette } from './components/modals/CommandPalette';
 import { NewActionModal } from './components/modals/NewActionModal';
 import { ReviewDrawer } from './components/modals/ReviewDrawer';
+import { ConnectMailModal } from './components/modals/ConnectMailModal';
 import { LoginView } from './components/auth/LoginView';
 import { EmployeePortal } from './components/views/EmployeePortal';
 import { SplitWorkflowView } from './components/views/SplitWorkflowView';
@@ -102,13 +103,15 @@ function HROperationsPortal() {
   const [selectedReviewItem, setSelectedReviewItem] = useState<RequestItem | null>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [isNewActionOpen, setIsNewActionOpen] = useState(false);
+  const [isConnectMailModalOpen, setIsConnectMailModalOpen] = useState(false);
+  const [mailStatus, setMailStatus] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Initial data loading
+  // Initial data loading & Live Mail Status
   useEffect(() => {
     async function loadData() {
       try {
-        const [m, reqs, tQ, delivs, acts, ins, cats, actLogs, vel] = await Promise.all([
+        const [m, reqs, tQ, delivs, acts, ins, cats, actLogs, vel, gStatus] = await Promise.all([
           hrService.getMetrics(),
           hrService.getRequests(),
           hrService.getTriageQueue(),
@@ -117,9 +120,11 @@ function HROperationsPortal() {
           hrService.getInsights(),
           hrService.getCategoryVolumes(),
           hrService.getActivities(),
-          hrService.getVelocity(activeVelocityRange)
+          hrService.getVelocity(activeVelocityRange),
+          hrService.getGmailStatus()
         ]);
         setMetrics(m);
+        if (gStatus) setMailStatus(gStatus);
         if (Array.isArray(reqs)) {
           const sanitized = reqs.map(sanitizeRequestItem);
           setRequests(sanitized);
@@ -137,6 +142,18 @@ function HROperationsPortal() {
       }
     }
     loadData();
+
+    // Check for Google OAuth callback parameters
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('gmail_connected') === 'true') {
+        const userId = urlParams.get('userId');
+        hrService.getGmailStatus(userId || undefined).then(st => {
+          if (st) setMailStatus(st);
+        });
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
   }, [activeVelocityRange]);
 
   // Real-time live synchronization across dual portals
@@ -366,6 +383,8 @@ function HROperationsPortal() {
           }}
           openRequestsCount={metrics.openRequests.count}
           pendingActionsCount={metrics.pendingHRActions.count}
+          onOpenConnectMail={() => setIsConnectMailModalOpen(true)}
+          mailStatus={mailStatus}
         />
 
         {/* Mobile Navigation Drawer */}
@@ -386,6 +405,8 @@ function HROperationsPortal() {
                 }}
                 openRequestsCount={metrics.openRequests.count}
                 pendingActionsCount={metrics.pendingHRActions.count}
+                onOpenConnectMail={() => setIsConnectMailModalOpen(true)}
+                mailStatus={mailStatus}
               />
             </div>
           </div>
@@ -403,6 +424,8 @@ function HROperationsPortal() {
             onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
             onOpenNewAction={() => setIsNewActionOpen(true)}
             onToggleMobileMenu={() => setMobileMenuOpen(prev => !prev)}
+            onOpenConnectMail={() => setIsConnectMailModalOpen(true)}
+            mailStatus={mailStatus}
           />
 
           {/* Active View Router */}
@@ -524,6 +547,13 @@ function HROperationsPortal() {
         onClose={() => setSelectedReviewItem(null)}
         onResolve={handleResolveRequest}
         onAddComment={handleAddComment}
+      />
+
+      <ConnectMailModal
+        isOpen={isConnectMailModalOpen}
+        onClose={() => setIsConnectMailModalOpen(false)}
+        gmailStatus={mailStatus}
+        onStatusChange={(newStatus) => setMailStatus(newStatus)}
       />
     </div>
   );

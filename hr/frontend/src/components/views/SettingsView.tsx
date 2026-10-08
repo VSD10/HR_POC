@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { hrService } from '../../services/hrService';
+import { ConnectMailModal } from '../modals/ConnectMailModal';
 
 export const SettingsView: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -9,6 +10,7 @@ export const SettingsView: React.FC = () => {
   const [enableSlackSync, setEnableSlackSync] = useState(true);
   const [enableEmailDigest, setEnableEmailDigest] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
 
   // Google Gmail Integration State
   const [gmailStatus, setGmailStatus] = useState<{
@@ -192,25 +194,34 @@ export const SettingsView: React.FC = () => {
                   </div>
                 </div>
 
-                <div>
+                <div className="flex items-center gap-2">
                   {gmailStatus?.connected ? (
-                    <button
-                      type="button"
-                      onClick={handleDisconnectGmail}
-                      disabled={isConnectingGmail}
-                      className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-medium transition-all cursor-pointer"
-                    >
-                      Disconnect
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setIsConnectModalOpen(true)}
+                        className="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">settings</span>
+                        Manage Mail
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDisconnectGmail}
+                        disabled={isConnectingGmail}
+                        className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-xs font-medium transition-all cursor-pointer"
+                      >
+                        Disconnect
+                      </button>
+                    </>
                   ) : (
                     <button
                       type="button"
-                      onClick={handleConnectGmail}
-                      disabled={isConnectingGmail}
-                      className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white text-xs font-semibold shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                      onClick={() => setIsConnectModalOpen(true)}
+                      className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-semibold shadow-md shadow-red-500/20 transition-all cursor-pointer flex items-center gap-1.5"
                     >
-                      <span className="material-symbols-outlined text-[16px]">sync</span>
-                      {isConnectingGmail ? 'Connecting...' : 'Connect Gmail'}
+                      <span className="material-symbols-outlined text-[16px]">mail</span>
+                      Connect HR Mail
                     </button>
                   )}
                 </div>
@@ -261,6 +272,13 @@ export const SettingsView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <ConnectMailModal
+        isOpen={isConnectModalOpen}
+        onClose={() => setIsConnectModalOpen(false)}
+        gmailStatus={gmailStatus}
+        onStatusChange={(st) => setGmailStatus(st)}
+      />
     </div>
   );
 };

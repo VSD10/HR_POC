@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Mail } from 'lucide-react';
 import { NavTab } from './Sidebar';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '../../context/AuthContext';
@@ -8,6 +9,8 @@ interface HeaderProps {
   onOpenCommandPalette: () => void;
   onOpenNewAction: () => void;
   onToggleMobileMenu?: () => void;
+  onOpenConnectMail?: () => void;
+  mailStatus?: any;
 }
 
 const tabTitles: Record<NavTab, { title: string; subtitle: string }> = {
@@ -60,7 +63,9 @@ const tabTitles: Record<NavTab, { title: string; subtitle: string }> = {
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   onOpenCommandPalette,
-  onToggleMobileMenu
+  onToggleMobileMenu,
+  onOpenConnectMail,
+  mailStatus
 }) => {
   const { user, logout, demoLogin } = useAuth();
   const current = tabTitles[activeTab] || tabTitles.dashboard;
@@ -99,6 +104,39 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right: Aligned navigation controls & profile */}
       <div className="flex items-center gap-2.5 sm:gap-3 flex-shrink-0">
+        {/* HR Mailbox Connection Button / Pill */}
+        {onOpenConnectMail && (
+          mailStatus?.connected ? (
+            <button
+              onClick={onOpenConnectMail}
+              className="inline-flex items-center gap-2 h-9 px-3 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-emerald-500/30 hover:border-emerald-400/50 text-white text-xs font-mono transition-all cursor-pointer shadow-sm group"
+              title={`Mailbox Connected: ${mailStatus.email || 'hr.specialist@enterprise.internal'} • Click to change or disconnect`}
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <Mail className="w-3.5 h-3.5 text-red-400 group-hover:scale-110 transition-transform shrink-0" />
+              <span className="truncate max-w-[120px] sm:max-w-[160px] text-white/90">
+                {mailStatus.email ? mailStatus.email.split('@')[0] : 'HR Mail'}
+              </span>
+              {mailStatus.accounts && mailStatus.accounts.length > 1 ? (
+                <span className="text-[9px] text-purple-300 bg-purple-500/20 border border-purple-500/30 px-1.5 py-0.5 rounded font-semibold hidden sm:inline">
+                  {mailStatus.accounts.length} mailboxes
+                </span>
+              ) : (
+                <span className="text-[10px] text-emerald-400 font-semibold hidden sm:inline">• Live</span>
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={onOpenConnectMail}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-pink-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-semibold shadow-md shadow-red-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              title="Connect your Google Workspace or corporate email to the portal"
+            >
+              <Mail className="w-3.5 h-3.5 animate-bounce" />
+              <span>Connect Mail</span>
+            </button>
+          )
+        )}
+
         {/* Quick Portal Switcher */}
         <button
           onClick={() => demoLogin('EMPLOYEE')}

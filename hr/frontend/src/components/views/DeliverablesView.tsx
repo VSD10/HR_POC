@@ -20,9 +20,23 @@ import {
   Filter,
   User,
   Paperclip,
-  CheckCheck
+  CheckCheck,
+  RotateCcw,
+  Heart,
+  Shield,
+  FileText,
+  Wand2,
+  Edit3,
+  LogIn,
+  KeyRound,
+  Unlink,
+  Link2,
+  Globe,
+  Users
 } from 'lucide-react';
+import { ConnectMailModal } from '../modals/ConnectMailModal';
 import { hrService } from '../../services/hrService';
+import { useAuth } from '../../context/AuthContext';
 import { DeliverableItem, RequestItem } from '../../types/hr';
 
 export interface DeliverablesViewProps {
@@ -38,11 +52,21 @@ export interface DeliverablesViewProps {
 type EmailFilterTab = 'all' | 'needs_triage' | 'draft_ready' | 'sent' | 'sensitive';
 
 export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
+  const { user } = useAuth();
   const [emails, setEmails] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [gmailStatus, setGmailStatus] = useState<any>(null);
   const [activeFilter, setActiveFilter] = useState<EmailFilterTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Email Connection Modal State
+  const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
+  const [connectTab, setConnectTab] = useState<'oauth' | 'custom'>('oauth');
+  const [customEmailInput, setCustomEmailInput] = useState('');
+  const [customNameInput, setCustomNameInput] = useState('');
+  const [isConnectingEmail, setIsConnectingEmail] = useState(false);
+  const [connectError, setConnectError] = useState('');
+  const [connectSuccess, setConnectSuccess] = useState('');
 
   // Selected Email Drawer State
   const [selectedEmail, setSelectedEmail] = useState<any | null>(null);
@@ -53,6 +77,9 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
   const [isDrafting, setIsDrafting] = useState(false);
   const [draftTone, setDraftTone] = useState<'professional' | 'empathetic' | 'concise'>('professional');
   const [editableBody, setEditableBody] = useState('');
+  const [customInstructions, setCustomInstructions] = useState('');
+  const [showCustomGuidance, setShowCustomGuidance] = useState(false);
+  const [regenerateSuccess, setRegenerateSuccess] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [sendSuccess, setSendSuccess] = useState(false);
 
@@ -62,7 +89,7 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
     try {
       const [emailList, status] = await Promise.all([
         hrService.getGmailEmails(),
-        hrService.getGmailStatus()
+        hrService.getGmailStatus(user?.id)
       ]);
       setEmails(emailList || []);
       setGmailStatus(status || null);
@@ -75,13 +102,17 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
 
   useEffect(() => {
     loadEmails();
-  }, []);
+  }, [user]);
 
   // Open & Inspect an Email
   const handleOpenEmail = async (email: any) => {
     setSelectedEmail(email);
     setEmailDraft(null);
     setEmailTriage(null);
+    setEditableBody('');
+    setCustomInstructions('');
+    setShowCustomGuidance(false);
+    setRegenerateSuccess(false);
     setSendSuccess(false);
     setLoadingDetail(true);
 
@@ -89,11 +120,93 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
       const detail = await hrService.getGmailEmailDetail(email.id);
       if (detail) {
         setSelectedEmail(detail);
+        if (detail.draft) {
+          setEmailDraft(detail.draft);
+          setEditableBody(detail.draft.draft_body || '');
+          if (detail.draft.tone) {
+            setDraftTone(detail.draft.tone as any);
+          }
+        }
+        if (detail.triage) {
+          setEmailTriage(detail.triage);
+        }
       }
     } catch (err) {
       console.warn('Could not load email detail:', err);
     } finally {
       setLoadingDetail(false);
+    }
+  };
+
+  // Connect via Google OAuth
+  const handleConnectGoogleOAuth = async () => {
+    setIsConnectingEmail(true);
+    setConnectError('');
+    try {
+      const data = await hrService.getGmailAuthUrl();
+      if (data?.auth_url) {
+        if (data.mode === 'live') {
+          window.location.href = data.auth_url;
+        } else {
+          // Demo sandbox flow
+          await fetch(data.auth_url);
+          const st = await hrService.getGmailStatus();
+          if (st) setGmailStatus(st);
+          setConnectSuccess('Connected to Sandbox Demo Inbox successfully!');
+          setTimeout(() => {
+            setIsConnectModalOpen(false);
+            setConnectSuccess('');
+            loadEmails();
+          }, 1200);
+        }
+      }
+    } catch (e: any) {
+      setConnectError('Failed to initiate Google OAuth: ' + (e?.message || 'Unknown error'));
+    } finally {
+      setIsConnectingEmail(false);
+    }
+  };
+
+  // Connect Custom / Direct Email
+  const handleConnectCustomEmail = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customEmailInput.trim() || !customEmailInput.includes('@')) {
+      setConnectError('Please enter a valid email address.');
+      return;
+    }
+    setIsConnectingEmail(true);
+    setConnectError('');
+    try {
+      const res = await hrService.connectCustomEmail(customEmailInput.trim(), customNameInput.trim() || undefined);
+      if (res) {
+        setGmailStatus(res);
+        setConnectSuccess(`Successfully connected ${res.email}!`);
+        setTimeout(() => {
+          setIsConnectModalOpen(false);
+          setConnectSuccess('');
+          loadEmails();
+        }, 1200);
+      } else {
+        setConnectError('Failed to connect email address.');
+      }
+    } catch (err: any) {
+      setConnectError('Error connecting email: ' + (err?.message || 'Server error'));
+    } finally {
+      setIsConnectingEmail(false);
+    }
+  };
+
+  // Disconnect Email
+  const handleDisconnectEmail = async () => {
+    setIsConnectingEmail(true);
+    try {
+      await hrService.disconnectGmail();
+      setGmailStatus({ connected: false, mode: 'none' });
+      loadEmails();
+    } catch (err) {
+      console.error('Failed to disconnect:', err);
+    } finally {
+      setIsConnectingEmail(false);
     }
   };
 
@@ -126,18 +239,33 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
     }
   };
 
-  // Generate Policy-Grounded RAG Draft
-  const handleGenerateDraft = async (tone = draftTone) => {
+  // Generate / Regenerate Policy-Grounded RAG Draft
+  const handleGenerateDraft = async (
+    tone = draftTone,
+    refinement?: string,
+    instructions?: string
+  ) => {
     if (!selectedEmail) return;
     setIsDrafting(true);
+    setRegenerateSuccess(false);
     try {
-      const draft = await hrService.generateGmailDraft(selectedEmail.id, { tone });
+      const guidance = instructions !== undefined ? instructions : customInstructions;
+      const effectiveRefinement = refinement || (emailDraft ? 'regenerate' : undefined);
+      const draft = await hrService.generateGmailDraft(selectedEmail.id, {
+        tone,
+        refinement: effectiveRefinement,
+        custom_instructions: guidance?.trim() ? guidance.trim() : undefined,
+      });
       if (draft) {
         setEmailDraft(draft);
         setEditableBody(draft.draft_body || '');
         setSelectedEmail((prev: any) => prev ? { ...prev, has_draft: true } : prev);
         setEmails(prev => prev.map(e => e.id === selectedEmail.id ? { ...e, has_draft: true } : e));
+        setRegenerateSuccess(true);
+        setTimeout(() => setRegenerateSuccess(false), 3500);
       }
+    } catch (err) {
+      console.error('Error generating grounded draft:', err);
     } finally {
       setIsDrafting(false);
     }
@@ -154,7 +282,7 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
         body: editableBody,
         thread_id: selectedEmail.thread_id,
         approved_by_hr: true
-      });
+      }, user?.id);
 
       if (res?.success) {
         setSendSuccess(true);
@@ -238,21 +366,52 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            {/* Live Connected Account Pill */}
-            <div className="px-3.5 py-2 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-bold text-xs shadow-md">
-                <Mail className="w-4 h-4" />
+            {/* Live Connected Account Pill / Connect HR Email Button */}
+            {gmailStatus?.connected ? (
+              <div className="px-3.5 py-2 rounded-2xl bg-white/[0.04] border border-white/10 backdrop-blur-md flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-red-600 to-rose-500 flex items-center justify-center text-white font-bold text-xs shadow-md">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1 font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    {gmailStatus.mode === 'live' ? 'Connected (Live OAuth)' : 'Connected (' + (gmailStatus.mode === 'custom' ? 'Custom' : 'Sandbox') + ')'}
+                  </span>
+                  <span className="text-xs text-white font-mono truncate max-w-[160px]" title={gmailStatus.email || 'hr.specialist@enterprise-solutions.internal'}>
+                    {gmailStatus.email || 'hr.specialist@enterprise-solutions.internal'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 pl-1.5 border-l border-white/10">
+                  <button
+                    onClick={() => {
+                      setCustomEmailInput(gmailStatus.email || '');
+                      setCustomNameInput(gmailStatus.display_name || '');
+                      setIsConnectModalOpen(true);
+                    }}
+                    className="px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-cyan-200 hover:text-white text-[10px] font-mono transition-all cursor-pointer"
+                    title="Change or re-authenticate email"
+                  >
+                    Change
+                  </button>
+                  <button
+                    onClick={handleDisconnectEmail}
+                    disabled={isConnectingEmail}
+                    className="p-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 text-[10px] font-mono transition-all cursor-pointer"
+                    title="Disconnect inbox"
+                  >
+                    <Unlink className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1 font-semibold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Connected &amp; Verified
-                </span>
-                <span className="text-xs text-white font-mono truncate max-w-[180px]" title={gmailStatus?.email || 'vsd2kwork@gmail.com'}>
-                  {gmailStatus?.email || 'vsd2kwork@gmail.com'}
-                </span>
-              </div>
-            </div>
+            ) : (
+              <button
+                onClick={() => setIsConnectModalOpen(true)}
+                className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-red-500/20 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <Mail className="w-4 h-4 animate-pulse" />
+                <span>Connect HR Email</span>
+              </button>
+            )}
 
             {/* Sync Button */}
             <button
@@ -305,6 +464,32 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
           <span className="text-[11px] font-mono text-emerald-300/80 mt-1 block">Delivered via Gmail API</span>
         </div>
       </div>
+
+      {/* Gmail API Not Enabled Warning Banner */}
+      {gmailStatus?.api_error && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-transparent border border-amber-500/30 text-amber-200 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+              <AlertTriangle className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="font-bold text-amber-300 text-sm">Action Required: Enable Gmail API in Google Cloud</p>
+              <p className="text-white/70 text-[11px] mt-0.5 max-w-xl">
+                Google authenticated your account, but the <strong>Gmail API</strong> service is not enabled yet in project <code>596466540442</code>. Click below to enable it in 1 click, then hit <em>Sync Inbox</em>.
+              </p>
+            </div>
+          </div>
+          <a
+            href={gmailStatus.api_enable_url || "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview?project=596466540442"}
+            target="_blank"
+            rel="noreferrer"
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-all flex items-center gap-1.5 shrink-0 shadow-md hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <span>Enable Gmail API</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      )}
 
       {/* Filter Tabs & Search Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -604,46 +789,160 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
             </div>
 
             {/* AI Policy-Grounded Response Draft Generator (RAG) */}
-            <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 space-y-3">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 space-y-3.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                 <div className="flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-cyan-400" />
                   <span className="text-xs font-bold text-cyan-200">Policy-Grounded Reply Synthesis (RAG)</span>
+                  {regenerateSuccess && (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-mono flex items-center gap-1 animate-fadeIn font-semibold">
+                      <Check className="w-3 h-3 text-emerald-400" />
+                      Regenerated!
+                    </span>
+                  )}
                 </div>
 
-                {/* Tone Switcher & Generator */}
-                <div className="flex items-center gap-2">
+                {/* Tone Switcher & Primary Action */}
+                <div className="flex flex-wrap items-center gap-2">
                   <div className="flex items-center p-0.5 rounded-lg bg-black/40 border border-white/10 text-[10px] font-mono">
                     <button
-                      onClick={() => { setDraftTone('professional'); handleGenerateDraft('professional'); }}
-                      className={`px-2 py-0.5 rounded-md cursor-pointer transition-all ${draftTone === 'professional' ? 'bg-cyan-500 text-white font-bold' : 'text-white/60 hover:text-white'}`}
+                      onClick={() => { setDraftTone('professional'); handleGenerateDraft('professional', undefined); }}
+                      disabled={isDrafting}
+                      className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${draftTone === 'professional' ? 'bg-cyan-500 text-white font-bold' : 'text-white/60 hover:text-white'}`}
+                      title="Formal corporate HR tone"
                     >
                       Professional
                     </button>
                     <button
-                      onClick={() => { setDraftTone('empathetic'); handleGenerateDraft('empathetic'); }}
-                      className={`px-2 py-0.5 rounded-md cursor-pointer transition-all ${draftTone === 'empathetic' ? 'bg-purple-500 text-white font-bold' : 'text-white/60 hover:text-white'}`}
+                      onClick={() => { setDraftTone('empathetic'); handleGenerateDraft('empathetic', undefined); }}
+                      disabled={isDrafting}
+                      className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${draftTone === 'empathetic' ? 'bg-purple-500 text-white font-bold' : 'text-white/60 hover:text-white'}`}
+                      title="Warm and supportive tone"
                     >
                       Empathetic
                     </button>
                     <button
-                      onClick={() => { setDraftTone('concise'); handleGenerateDraft('concise'); }}
-                      className={`px-2 py-0.5 rounded-md cursor-pointer transition-all ${draftTone === 'concise' ? 'bg-blue-500 text-white font-bold' : 'text-white/60 hover:text-white'}`}
+                      onClick={() => { setDraftTone('concise'); handleGenerateDraft('concise', undefined); }}
+                      disabled={isDrafting}
+                      className={`px-2.5 py-1 rounded-md cursor-pointer transition-all ${draftTone === 'concise' ? 'bg-blue-500 text-white font-bold' : 'text-white/60 hover:text-white'}`}
+                      title="Direct and action-oriented tone"
                     >
                       Concise
                     </button>
                   </div>
 
                   <button
-                    onClick={() => handleGenerateDraft(draftTone)}
+                    onClick={() => handleGenerateDraft(draftTone, emailDraft ? 'regenerate' : undefined)}
                     disabled={isDrafting}
-                    className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs transition-all cursor-pointer flex items-center gap-1.5"
+                    className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs transition-all cursor-pointer flex items-center gap-1.5 shadow-md hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={emailDraft ? "Regenerate a fresh grounded variation of this email" : "Generate policy-grounded draft response"}
                   >
                     <Sparkles className={`w-3.5 h-3.5 ${isDrafting ? 'animate-spin' : ''}`} />
                     <span>{isDrafting ? 'Synthesizing...' : (emailDraft ? 'Regenerate Draft' : 'Generate Grounded Draft')}</span>
                   </button>
                 </div>
               </div>
+
+              {/* Generation Options & Refinements Toolbar */}
+              <div className="flex flex-wrap items-center justify-between gap-2 p-2 rounded-xl bg-black/25 border border-white/10 text-xs">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-mono uppercase text-white/40 mr-1 flex items-center gap-1">
+                    <SlidersHorizontal className="w-3 h-3 text-cyan-400" />
+                    Refine Options:
+                  </span>
+                  <button
+                    onClick={() => handleGenerateDraft(draftTone, 'shorten')}
+                    disabled={isDrafting || !emailDraft}
+                    className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono text-cyan-200 hover:text-white flex items-center gap-1 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    title="Shorten and condense the email response"
+                  >
+                    <FileText className="w-2.5 h-2.5 text-cyan-400" />
+                    Shorten
+                  </button>
+                  <button
+                    onClick={() => { setDraftTone('empathetic'); handleGenerateDraft('empathetic', 'make_empathetic'); }}
+                    disabled={isDrafting || !emailDraft}
+                    className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono text-purple-200 hover:text-white flex items-center gap-1 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    title="Enhance warmth, empathy, and employee wellness focus"
+                  >
+                    <Heart className="w-2.5 h-2.5 text-purple-400" />
+                    More Empathetic
+                  </button>
+                  <button
+                    onClick={() => { setDraftTone('professional'); handleGenerateDraft('professional', 'make_professional'); }}
+                    disabled={isDrafting || !emailDraft}
+                    className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono text-blue-200 hover:text-white flex items-center gap-1 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    title="Adopt strict formal corporate HR compliance terminology"
+                  >
+                    <Shield className="w-2.5 h-2.5 text-blue-400" />
+                    Formal Compliance
+                  </button>
+                  <button
+                    onClick={() => handleGenerateDraft(draftTone, 'regenerate')}
+                    disabled={isDrafting || !emailDraft}
+                    className="px-2 py-0.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono text-amber-200 hover:text-white flex items-center gap-1 transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    title="Generate alternative phrasing and sentence structure"
+                  >
+                    <RotateCcw className={`w-2.5 h-2.5 text-amber-400 ${isDrafting ? 'animate-spin' : ''}`} />
+                    Fresh Variation
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => setShowCustomGuidance(prev => !prev)}
+                  className={`px-2.5 py-0.5 rounded-md text-[10px] font-mono flex items-center gap-1 transition-all cursor-pointer ${
+                    showCustomGuidance || customInstructions
+                      ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-500/40'
+                      : 'bg-white/5 text-white/60 hover:text-white border border-white/10'
+                  }`}
+                  title="Provide custom instructions to guide the AI draft"
+                >
+                  <Edit3 className="w-2.5 h-2.5" />
+                  <span>Custom Guidance {customInstructions ? '• Active' : ''}</span>
+                </button>
+              </div>
+
+              {/* Collapsible Custom HR Guidance Bar */}
+              {showCustomGuidance && (
+                <div className="p-2.5 rounded-xl bg-black/40 border border-cyan-500/30 space-y-2 animate-fadeIn">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-mono uppercase text-cyan-300/80 flex items-center gap-1">
+                      <Wand2 className="w-3 h-3 text-cyan-400" />
+                      Special HR Specialist Guidance / Policy Conditions:
+                    </label>
+                    {customInstructions && (
+                      <button
+                        onClick={() => setCustomInstructions('')}
+                        className="text-[10px] font-mono text-white/40 hover:text-red-400 transition-colors"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={customInstructions}
+                      onChange={(e) => setCustomInstructions(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          handleGenerateDraft(draftTone, emailDraft ? 'regenerate' : undefined, customInstructions);
+                        }
+                      }}
+                      placeholder="e.g. Note that travel receipts must be submitted before Nov 15th, or manager approval is required..."
+                      className="flex-1 px-3 py-1.5 rounded-lg bg-black/60 border border-white/15 text-white text-xs placeholder:text-white/30 focus:outline-none focus:border-cyan-400 font-sans"
+                    />
+                    <button
+                      onClick={() => handleGenerateDraft(draftTone, emailDraft ? 'regenerate' : undefined, customInstructions)}
+                      disabled={isDrafting}
+                      className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs transition-all cursor-pointer flex items-center gap-1 whitespace-nowrap shadow-sm disabled:opacity-50"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      <span>{emailDraft ? 'Regenerate with Guidance' : 'Apply & Generate'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Citations Preview */}
               {emailDraft?.citations && emailDraft.citations.length > 0 && (
@@ -679,7 +978,7 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-white/10">
                 <span className="text-[11px] text-white/50 flex items-center gap-1.5">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Authenticated sender: <strong>{gmailStatus?.email || 'vsd2kwork@gmail.com'}</strong></span>
+                  <span>Authenticated sender: <strong>{gmailStatus?.email || (gmailStatus?.connected ? 'hr.specialist@enterprise.internal' : 'No Email Connected (Connect Above)')}</strong></span>
                 </span>
 
                 <div className="flex items-center gap-3">
@@ -707,6 +1006,17 @@ export const DeliverablesView: React.FC<DeliverablesViewProps> = () => {
           </div>
         </div>
       )}
+
+      {/* Connect Email Modal */}
+      <ConnectMailModal
+        isOpen={isConnectModalOpen}
+        onClose={() => setIsConnectModalOpen(false)}
+        gmailStatus={gmailStatus}
+        onStatusChange={(st) => {
+          setGmailStatus(st);
+          loadEmails();
+        }}
+      />
     </div>
   );
 };

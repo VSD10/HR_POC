@@ -37,3 +37,7 @@ chroma_db/
 storage/
 gmail_tokens.json
 scratch_edge/
+
+# Nested duplicate frontends
+hr/employee_frontend/
+hr/employee_frontend-main/

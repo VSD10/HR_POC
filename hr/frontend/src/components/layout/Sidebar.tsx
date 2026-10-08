@@ -24,6 +24,8 @@ interface SidebarProps {
   openRequestsCount: number;
   pendingActionsCount: number;
   defaultCollapsed?: boolean;
+  onOpenConnectMail?: () => void;
+  mailStatus?: any;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -31,7 +33,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   openRequestsCount,
   pendingActionsCount,
-  defaultCollapsed = false
+  defaultCollapsed = false,
+  onOpenConnectMail,
+  mailStatus
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
 
@@ -247,16 +251,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {!isCollapsed && (
                 <>
                   <span className="text-sm">Deliverables</span>
-                  <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 border border-red-500/30 flex items-center gap-1 font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Gmail
-                  </span>
+                  {mailStatus?.connected ? (
+                    <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                      Live Mail
+                    </span>
+                  ) : (
+                    <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                      Connect
+                    </span>
+                  )}
                 </>
               )}
               {isCollapsed && (
                 <div className="absolute left-full ml-3 px-2.5 py-1 bg-[#0c1024] border border-red-500/30 rounded-lg text-xs text-white whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 shadow-lg flex items-center gap-1.5">
                   <span>Deliverables</span>
-                  <span className="text-[9px] font-mono text-emerald-400">• Gmail</span>
+                  <span className={`text-[9px] font-mono ${mailStatus?.connected ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    • {mailStatus?.connected ? 'Live' : 'Connect'}
+                  </span>
                 </div>
               )}
             </button>
@@ -459,6 +472,39 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           {!isCollapsed && <span className="text-[10px] font-mono text-cyan-300">99.8% SLA</span>}
         </div>
+
+        {/* Mailbox Status Capsule */}
+        {onOpenConnectMail && (
+          <div 
+            onClick={onOpenConnectMail}
+            className={`mt-1 rounded-xl border transition-all cursor-pointer flex items-center group ${
+              mailStatus?.connected
+                ? 'bg-emerald-500/10 border-emerald-500/30 hover:border-emerald-400/50'
+                : 'bg-red-500/10 border-red-500/30 hover:border-red-400/50 hover:bg-red-500/15'
+            } ${
+              isCollapsed ? 'w-10 h-10 justify-center mx-auto p-0' : 'p-2.5 justify-between'
+            }`}
+            title={mailStatus?.connected ? `Mailbox Connected: ${mailStatus.email} • Click to manage` : "Mailbox Disconnected • Click to connect"}
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="material-symbols-outlined text-[17px] text-red-400 group-hover:scale-110 transition-transform shrink-0">
+                mail
+              </span>
+              {!isCollapsed && (
+                <span className="text-[11px] font-mono truncate text-white/80 group-hover:text-white transition-colors">
+                  {mailStatus?.connected ? (mailStatus.email?.split('@')[0] || 'Inbox') : 'Connect Mail'}
+                </span>
+              )}
+            </div>
+            {!isCollapsed && (
+              <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-semibold shrink-0 ${
+                mailStatus?.connected ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'
+              }`}>
+                {mailStatus?.connected ? 'ACTIVE' : 'CONNECT'}
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </aside>
   );

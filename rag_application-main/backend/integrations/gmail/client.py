@@ -20,6 +20,7 @@ class GmailClient:
 
     def __init__(self):
         self.oauth = oauth_manager
+        self.last_api_error: Optional[Dict[str, Any]] = None
 
     def _get_headers(self) -> Dict[str, str]:
         """Gets authorized headers with auto-refreshed token."""
@@ -41,10 +42,33 @@ class GmailClient:
         try:
             res = requests.get(url, headers=self._get_headers(), params=params, timeout=15)
             if res.ok:
+                self.last_api_error = None
                 return res.json().get("messages", [])
-            logger.error(f"Gmail list_messages failed: {res.text}")
+
+            err_text = res.text
+            logger.error(f"Gmail list_messages failed: {err_text}")
+            enable_url = None
+            msg = "Failed to fetch Gmail inbox"
+            try:
+                err_data = res.json().get("error", {})
+                msg = err_data.get("message", msg)
+                for detail in err_data.get("details", []):
+                    if "activationUrl" in detail.get("metadata", {}):
+                        enable_url = detail["metadata"]["activationUrl"]
+                    for link in detail.get("links", []):
+                        if "activation" in link.get("description", "").lower() or "url" in link:
+                            enable_url = link.get("url")
+            except Exception:
+                pass
+
+            self.last_api_error = {
+                "status_code": res.status_code,
+                "message": msg,
+                "enable_url": enable_url or "https://console.developers.google.com/apis/api/gmail.googleapis.com/overview"
+            }
         except Exception as e:
             logger.error(f"Failed to query Gmail messages: {e}")
+            self.last_api_error = {"status_code": 500, "message": str(e), "enable_url": None}
         return []
 
     def get_message(self, message_id: str) -> Optional[Dict[str, Any]]:

@@ -839,28 +839,78 @@ export const hrService = {
     link.remove();
   },
 
-  async getGmailStatus(): Promise<{ connected: boolean; email?: string; display_name?: string; mode: string } | null> {
+  async getGmailStatus(userId?: string): Promise<any | null> {
     try {
-      const res = await fetch('/api/gmail/status');
+      const url = userId ? `/api/gmail/status?user_id=${encodeURIComponent(userId)}` : '/api/gmail/status';
+      const res = await fetch(url);
       if (res.ok) return await res.json();
     } catch {}
     return null;
   },
 
-  async getGmailAuthUrl(): Promise<{ auth_url: string; mode: string; message: string } | null> {
+  async getGmailAccounts(): Promise<any[]> {
     try {
-      const res = await fetch('/api/gmail/auth-url');
+      const res = await fetch('/api/gmail/accounts');
+      if (res.ok) return await res.json();
+    } catch {}
+    return [];
+  },
+
+  async switchGmailAccount(userId: string): Promise<any | null> {
+    try {
+      const res = await fetch('/api/gmail/switch-active', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId })
+      });
       if (res.ok) return await res.json();
     } catch {}
     return null;
   },
 
-  async disconnectGmail(): Promise<boolean> {
+  async getGmailAuthUrl(userId?: string, userName?: string): Promise<{ auth_url: string; mode: string; message: string } | null> {
     try {
-      const res = await fetch('/api/gmail/disconnect', { method: 'POST' });
+      const params = new URLSearchParams();
+      if (userId) params.set('user_id', userId);
+      if (userName) params.set('user_name', userName);
+      const url = `/api/gmail/auth-url${params.toString() ? `?${params.toString()}` : ''}`;
+      const res = await fetch(url);
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  },
+
+  async disconnectGmail(userId?: string): Promise<boolean> {
+    try {
+      const url = userId ? `/api/gmail/disconnect?user_id=${encodeURIComponent(userId)}` : '/api/gmail/disconnect';
+      const res = await fetch(url, { method: 'POST' });
       return res.ok;
     } catch {}
     return false;
+  },
+
+  async connectCustomEmail(email: string, displayName?: string, userId?: string, userName?: string): Promise<any | null> {
+    try {
+      const res = await fetch('/api/gmail/connect-custom', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, display_name: displayName, user_id: userId, user_name: userName })
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  },
+
+  async configureGmailOAuth(clientId: string, clientSecret: string, redirectUri?: string): Promise<any | null> {
+    try {
+      const res = await fetch('/api/gmail/configure-oauth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_id: clientId, client_secret: clientSecret, redirect_uri: redirectUri })
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
   },
 
   async getGmailEmails(category?: string, search?: string): Promise<any[]> {
@@ -902,9 +952,16 @@ export const hrService = {
     return null;
   },
 
-  async sendGmailReply(emailId: string, reply: { to: string; subject: string; body: string; thread_id?: string; approved_by_hr: boolean }): Promise<any | null> {
+  async sendGmailReply(
+    emailId: string,
+    reply: { to: string; subject: string; body: string; thread_id?: string; approved_by_hr: boolean },
+    userId?: string
+  ): Promise<any | null> {
     try {
-      const res = await fetch(`/api/gmail/emails/${emailId}/reply`, {
+      const url = userId
+        ? `/api/gmail/emails/${emailId}/reply?user_id=${encodeURIComponent(userId)}`
+        : `/api/gmail/emails/${emailId}/reply`;
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(reply)

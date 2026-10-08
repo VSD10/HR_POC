@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 
 
@@ -9,14 +9,51 @@ class GmailAuthResponse(BaseModel):
     message: str = Field(default="", description="Status explanation")
 
 
+class ConnectedAccountSummary(BaseModel):
+    """Summary of a connected HR mailbox account."""
+    user_id: str = Field(..., description="HR User ID or Identifier")
+    user_name: Optional[str] = Field(None, description="HR Specialist Name")
+    email: str = Field(..., description="Connected Gmail / Work email address")
+    display_name: str = Field(..., description="Display name for outgoing emails")
+    mode: str = Field(default="live", description="'live' | 'custom' | 'demo'")
+    connected_at: str = Field(..., description="ISO timestamp of connection")
+    is_active: bool = Field(default=False, description="Whether this is the currently active mailbox")
+
+
 class GmailStatusResponse(BaseModel):
     """Current connection state for Gmail."""
     connected: bool = Field(..., description="Whether a valid token is present")
     email: Optional[str] = Field(None, description="Authorized Gmail address")
     display_name: Optional[str] = Field(None, description="User's display name")
     connected_at: Optional[str] = Field(None, description="ISO timestamp of connection")
-    mode: str = Field(default="live", description="'live' (Google API) or 'demo' (sandbox)")
+    mode: str = Field(default="live", description="'live' (Google API) or 'demo' (sandbox) or 'custom'")
     scopes: List[str] = Field(default_factory=list, description="Authorized OAuth scopes")
+    is_oauth_configured: bool = Field(default=False, description="Whether Google Client ID and Secret are configured")
+    user_id: Optional[str] = Field(None, description="User ID associated with current status")
+    accounts: List[ConnectedAccountSummary] = Field(default_factory=list, description="All connected HR mailboxes in organization")
+    active_account_id: Optional[str] = Field(None, description="Currently selected active account ID")
+    api_error: Optional[str] = Field(None, description="Error message from Google API if requests fail")
+    api_enable_url: Optional[str] = Field(None, description="Google Cloud link to enable Gmail API")
+
+
+class ConfigureOAuthRequest(BaseModel):
+    """Payload to configure Google OAuth 2.0 client credentials via portal."""
+    client_id: str = Field(..., description="Google OAuth 2.0 Client ID")
+    client_secret: str = Field(..., description="Google OAuth 2.0 Client Secret")
+    redirect_uri: Optional[str] = Field(None, description="Google OAuth 2.0 Redirect URI")
+
+
+class ConnectCustomEmailRequest(BaseModel):
+    """Payload to connect a custom or developer email."""
+    email: str = Field(..., description="Email address to connect")
+    display_name: Optional[str] = Field(default="HR Specialist", description="Display name for authorized sender")
+    user_id: Optional[str] = Field(default=None, description="HR Specialist User ID (e.g. HR001)")
+    user_name: Optional[str] = Field(default=None, description="HR Specialist Name")
+
+
+class SwitchAccountRequest(BaseModel):
+    """Payload to switch active HR mailbox context."""
+    user_id: str = Field(..., description="Target HR User ID to activate")
 
 
 class EmailSender(BaseModel):
@@ -54,6 +91,8 @@ class EmailDetail(EmailSummary):
     headers: Dict[str, str] = Field(default_factory=dict, description="Key headers")
     in_reply_to: Optional[str] = Field(None, description="In-Reply-To Message-ID")
     references: Optional[str] = Field(None, description="References header")
+    draft: Optional[Any] = Field(None, description="Saved draft if generated")
+    triage: Optional[Any] = Field(None, description="Saved triage if completed")
 
 
 class PolicyCitation(BaseModel):

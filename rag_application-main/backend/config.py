@@ -159,6 +159,14 @@ class Settings(BaseSettings):
                 "Please update your .env file with valid Azure OpenAI embedding credentials."
             )
 
+    def is_azure_chat_configured(self) -> bool:
+        """Helper to check if Azure Chat LLM configuration is filled without throwing."""
+        try:
+            self.validate_azure_chat_config()
+            return True
+        except ConfigurationError:
+            return False
+
     def is_azure_configured(self) -> bool:
         """Helper to check if all Azure configurations are filled without throwing."""
         try:
