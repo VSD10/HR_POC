@@ -141,7 +141,7 @@ export const AskHrView: React.FC<AskHrViewProps> = ({
     }
   };
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const query = (textToSend || inputValue).trim();
     if (!query) return;
 
@@ -149,44 +149,53 @@ export const AskHrView: React.FC<AskHrViewProps> = ({
       id: 'user-' + Date.now(),
       sender: 'user',
       text: query,
-      timestamp: 'Just now',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
     setInputValue('');
     setIsTyping(true);
 
-    setTimeout(async () => {
-      setIsTyping(false);
-      
-      try {
-        const { hrService } = await import('../../services/hrService');
-        const historyPayload = messages.map(m => ({
-          role: m.sender,
-          content: m.text
-        }));
-        const response = await hrService.queryCopilot(query, historyPayload);
-        
-        const assistantMsg: ChatMessage = {
-          id: response.id,
-          sender: 'assistant',
-          text: response.text,
-          timestamp: response.timestamp,
-          sources: response.citations?.map(c => c.title) || [],
-        };
-        setMessages((prev) => [...prev, assistantMsg]);
-      } catch (err) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: 'bot-' + Date.now(),
-            sender: 'assistant',
-            text: "I am unable to retrieve a verified answer from the knowledge base right now. Please try again later.",
-            timestamp: 'Just now',
-          }
-        ]);
+    try {
+      const activeUserId = CURRENT_USER.id || (typeof window !== 'undefined' ? localStorage.getItem('hr_active_user_id') : null) || 'EMP002';
+      let sessionToken = (typeof window !== 'undefined' ? localStorage.getItem('hr_auth_token') : null);
+      if (sessionToken === 'undefined' || sessionToken === 'null' || !sessionToken) {
+        sessionToken = `token_${activeUserId}_${Date.now()}`;
       }
-    }, 650);
+      try {
+        localStorage.setItem('hr_auth_token', sessionToken);
+        localStorage.setItem('hr_active_user_id', activeUserId);
+      } catch {}
+
+      const { hrService } = await import('../../services/hrService');
+      const historyPayload = messages.map(m => ({
+        role: m.sender,
+        content: m.text
+      }));
+      const response = await hrService.queryCopilot(query, historyPayload, sessionToken);
+      
+      const assistantMsg: ChatMessage = {
+        id: response.id,
+        sender: 'assistant',
+        text: response.text,
+        timestamp: response.timestamp || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        sources: response.citations?.map(c => c.title) || [],
+      };
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: 'bot-' + Date.now(),
+          sender: 'assistant',
+          text: "I am unable to retrieve a verified answer from the service right now. Please check your connection and try again.",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          sources: [],
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const isInitialState = messages.length <= 1;

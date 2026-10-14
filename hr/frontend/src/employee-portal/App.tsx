@@ -47,6 +47,7 @@ export default function EmployeePortalApp() {
 
   // Sync authenticated user identity
   useEffect(() => {
+    const activeId = user?.id || CURRENT_USER.id || 'EMP002';
     if (user) {
       CURRENT_USER.employeeId = user.id;
       CURRENT_USER.id = user.id;
@@ -58,6 +59,10 @@ export default function EmployeePortalApp() {
         CURRENT_USER.avatar = user.avatarUrl || user.avatar;
       }
     }
+    try {
+      localStorage.setItem('hr_auth_token', `token_${activeId}_${Date.now()}`);
+      localStorage.setItem('hr_active_user_id', activeId);
+    } catch {}
   }, [user]);
 
   // Real-time live synchronization with central HR desk

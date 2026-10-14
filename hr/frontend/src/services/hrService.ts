@@ -998,13 +998,60 @@ export const hrService = {
     return null;
   },
 
-  async queryCopilot(prompt: string, history: Array<{ role: string; content: string }> = []): Promise<CopilotMessage> {
+  async queryCopilot(prompt: string, history: Array<{ role: string; content: string }> = [], customToken?: string): Promise<CopilotMessage> {
+    const isPersonalLeaveQuery = (text: string): boolean => {
+      const q = text.toLowerCase();
+      const isPersonal = (
+        /\bmy\s+(leave\s+balance|leaves?|balance|remaining\s+leaves?|casual\s+leaves?|sick\s+leaves?|annual\s+leaves?|earned\s+leaves?)\b/i.test(q) ||
+        /how\s+many\s+.*(leaves?|casual|sick|annual|earned).*do\s+i\s+have/i.test(q) ||
+        /how\s+many\s+.*(leaves?|casual|sick|annual|earned).*have\s+i\s+(used|taken)/i.test(q) ||
+        /leaves?\s+have\s+i\s+(used|taken)/i.test(q) ||
+        /how\s+many\s+(casual|sick|annual|earned|remaining)?\s*leaves?\s+(are\s+remaining|do\s+i\s+have\s+remaining|remaining)/i.test(q) ||
+        /what\s+is\s+my\s+(remaining\s+)?(annual|casual|sick|earned)?\s*leaves?/i.test(q) ||
+        /do\s+i\s+have\s+.*leaves?\s+(left|remaining)/i.test(q) ||
+        /check\s+my\s+leave\s+balance/i.test(q) ||
+        /how\s+many\s+sick\s+leaves\s+are\s+remaining/i.test(q) ||
+        /how\s+many\s+casual\s+leaves\s+are\s+remaining/i.test(q) ||
+        /how\s+many\s+annual\s+leaves\s+are\s+remaining/i.test(q)
+      );
+      const isGeneral = (
+        /\b(overall|company|allowed|does\s+the\s+company\s+allow|are\s+allowed|policy|policies|guidelines?|handbook|rules?|carry\s+forward|carried\s+forward|maternity|paternity|parental|bereavement|sabbatical)\b/i.test(q) &&
+        !/\b(my|do\s+i\s+have|have\s+i\s+used|have\s+i\s+taken|i\s+have)\b/i.test(q)
+      );
+      return isPersonal && !isGeneral;
+    };
+
+    const isCasualQuery = (text: string): boolean => {
+      const q = text.trim().toLowerCase();
+      const exact = ['hi', 'hello', 'hey', 'good morning', 'good afternoon', 'good evening', 'greetings', 'howdy', 'hola', 'sup', 'yo', 'how are you', 'how are you?', 'how are you doing', 'how are you doing?', 'how is it going', 'how is it going?', "how's it going", "how's it going?", 'thank you', 'thanks', 'thanks!', 'thank you!', 'thanks a lot', 'tell me a joke', 'tell a joke', 'joke', 'bye', 'goodbye'];
+      if (exact.includes(q)) return true;
+      return /^(hi|hello|hey|good\s+(morning|afternoon|evening)|how\s+are\s+you|tell\s+(me\s+)?a\s+joke|thank\s+you|thanks)[!.?]*$/i.test(q);
+    };
+
     try {
-      // 1. Query the RAG agent backend (port 8001 direct or port 8000 proxy)
+      let storedToken = typeof window !== 'undefined' ? (localStorage.getItem('hr_auth_token') || localStorage.getItem('hr_active_user_id')) : null;
+      if (storedToken === 'undefined' || storedToken === 'null') storedToken = null;
+      let activeUser = typeof window !== 'undefined' ? (localStorage.getItem('hr_active_user_id') || (window as any).__HR_ACTIVE_USER_ID) : null;
+      if (activeUser === 'undefined' || activeUser === 'null') activeUser = null;
+      const token = customToken || storedToken || (activeUser ? `token_${activeUser}` : 'token_EMP002');
+      const resolvedEmpId = activeUser || (token ? token.replace(/^token_/, '').split('_')[0] : 'EMP002');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Employee-Id': resolvedEmpId
+      };
+      if (token) {
+        headers['Authorization'] = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+      // 1. Query the Central HR / RAG backend
       let res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: prompt, history })
+        headers,
+        body: JSON.stringify({ question: prompt, history, employeeId: resolvedEmpId }),
+        signal: controller.signal
       }).catch((e) => {
         console.warn('Primary fetch failed:', e);
         return null;
@@ -1013,13 +1060,16 @@ export const hrService = {
       if (!res || !res.ok) {
         res = await fetch('/api/v1/chat', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: prompt, history })
+          headers,
+          body: JSON.stringify({ question: prompt, history }),
+          signal: controller.signal
         }).catch((e) => {
           console.warn('Fallback fetch failed:', e);
           return null;
         });
       }
+
+      clearTimeout(timeoutId);
 
       if (res && res.ok) {
         const data = await res.json();
@@ -1077,23 +1127,32 @@ export const hrService = {
         return assistantMsg;
       }
     } catch (err) {
-      console.warn('RAG backend query error, falling back to local simulation:', err);
+      console.warn('Backend query error:', err);
     }
 
-    // Local fallback if backend is unreachable
-    await delay(300);
-    let reply = `Based on the Enterprise HR Policy Library, here is the verified rule for "${prompt}":`;
-    let citations = [
-      { title: 'Leave Policy', section: 'leave_policy.pdf', page: 1 },
-      { title: 'Employee Handbook', section: 'employee_handbook.pdf', page: 2 }
-    ];
+    // Handled Fallback if network call fails
+    await delay(200);
+    let reply = "";
+    let citations: Array<{ title: string; section: string; page?: number }> = [];
 
-    if (prompt.toLowerCase().includes('leave') || prompt.toLowerCase().includes('pto')) {
-      reply = "According to the Company Leave and Time Off Policy (leave_policy.pdf, Page 1):\n\nFull-time permanent employees are entitled to 20 business days of paid annual leave (PTO) per calendar year, accruing monthly at 1.67 days. 10 paid sick days are also provided.";
-      citations = [{ title: 'Leave Policy', section: 'leave_policy.pdf', page: 1 }];
-    } else if (prompt.toLowerCase().includes('remote') || prompt.toLowerCase().includes('hybrid')) {
-      reply = "According to the Remote and Hybrid Work Policy (remote_work_policy.pdf, Page 2):\n\nEligible employees may work remotely up to 3 days per week (Tuesdays/Thursdays in office). Upon completing 90 days of service, employees receive a one-time $500 home office equipment stipend.";
-      citations = [{ title: 'Remote Work Policy', section: 'remote_work_policy.pdf', page: 2 }];
+    if (isPersonalLeaveQuery(prompt)) {
+      reply = "Unable to retrieve your leave balance at this time. Please ensure you are logged in to your employee account or contact HR support.";
+      citations = [];
+    } else if (isCasualQuery(prompt)) {
+      const qLower = prompt.toLowerCase();
+      if (qLower.includes("how are you")) {
+        reply = "I'm doing well, thank you for asking! How can I assist you with HR services today?";
+      } else if (qLower.includes("joke")) {
+        reply = "Why did the computer show up late to work? It had a hard drive!";
+      } else if (qLower.includes("thank")) {
+        reply = "You're very welcome! Please let me know if you need any more assistance.";
+      } else {
+        reply = "Hello! How can I assist you with HR services today?";
+      }
+      citations = [];
+    } else {
+      reply = "The available policy documents do not provide that information or the Policy RAG backend is temporarily unreachable. Please try again later.";
+      citations = [];
     }
 
     const assistantMsg: CopilotMessage = {
@@ -1103,8 +1162,8 @@ export const hrService = {
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       citations,
       suggestedActions: [
-        "Generate Official Resolution Addendum",
-        "Notify Employee via Email"
+        "Check Official Policy Repository",
+        "Contact HR Support Desk"
       ]
     };
     state.copilotMessages.push(assistantMsg);

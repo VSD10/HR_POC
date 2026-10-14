@@ -141,7 +141,7 @@ export const AskHrView: React.FC<AskHrViewProps> = ({
     }
   };
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const query = (textToSend || inputValue).trim();
     if (!query) return;
 
@@ -149,50 +149,70 @@ export const AskHrView: React.FC<AskHrViewProps> = ({
       id: 'user-' + Date.now(),
       sender: 'user',
       text: query,
-      timestamp: 'Just now',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
     setInputValue('');
     setIsTyping(true);
 
-    setTimeout(async () => {
-      setIsTyping(false);
-      
-      try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: query })
-        });
-        if (!res.ok) throw new Error('API failed');
-        const data = await res.json();
-        
-        const sources = data.sources && data.sources.length > 0 
-          ? data.sources.map((s: any) => s.document.replace('.pdf', '').replace(/_/g, ' ') + ' (Page ' + s.page + ')')
-          : [];
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-        const assistantMsg: ChatMessage = {
+    try {
+      let storedToken = typeof window !== 'undefined' ? (localStorage.getItem('hr_auth_token') || localStorage.getItem('hr_active_user_id')) : null;
+      if (storedToken === 'undefined' || storedToken === 'null') storedToken = null;
+      const empId = CURRENT_USER.id || (CURRENT_USER as any).employeeId || 'EMP002';
+      const token = storedToken || `token_${empId}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Employee-Id': empId
+      };
+      if (token) {
+        headers['Authorization'] = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+      }
+
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ question: query, employeeId: empId }),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) throw new Error('API failed');
+      const data = await res.json();
+      
+      const sources = data.sources && data.sources.length > 0 
+        ? data.sources.map((s: any) => s.document.replace('.pdf', '').replace(/_/g, ' ') + ' (Page ' + s.page + ')')
+        : [];
+
+      const assistantMsg: ChatMessage = {
+        id: 'bot-' + Date.now(),
+        sender: 'assistant',
+        text: data.answer || "No response received.",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        sources,
+      };
+
+      setMessages((prev) => [...prev, assistantMsg]);
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      setMessages((prev) => [
+        ...prev,
+        {
           id: 'bot-' + Date.now(),
           sender: 'assistant',
-          text: data.answer || "No response received.",
-          timestamp: 'Just now',
-          sources,
-        };
-
-        setMessages((prev) => [...prev, assistantMsg]);
-      } catch (err) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: 'bot-' + Date.now(),
-            sender: 'assistant',
-            text: "I am unable to retrieve a verified answer from the knowledge base right now. Please try again later.",
-            timestamp: 'Just now',
-          }
-        ]);
-      }
-    }, 50);
+          text: err?.name === 'AbortError'
+            ? "The request timed out. Please check your connection and try again."
+            : "I am unable to retrieve a verified answer right now. Please check your connection and try again.",
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          sources: [],
+        }
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const isInitialState = messages.length <= 1;

@@ -122,7 +122,7 @@ async def health():
         503: {"description": "Missing configuration or unindexed vector store"},
     },
 )
-async def chat_endpoint(request: ChatRequest) -> ChatResponse:
+async def chat_endpoint(request: ChatRequest, http_req: Request) -> ChatResponse:
     """
     Receives an employee question or conversational input alongside dialogue history,
     engages in natural multi-turn conversation, and provides grounded policy answers
@@ -130,7 +130,8 @@ async def chat_endpoint(request: ChatRequest) -> ChatResponse:
     """
     t0 = time.time()
     service = ChatService()
-    res = service.answer_question(request)
+    auth_header = http_req.headers.get("authorization")
+    res = service.answer_question(request, auth_header=auth_header)
     latency_ms = int((time.time() - t0) * 1000)
     model_name = "gpt-4o" if (res.sources and len(res.sources) > 0) else "pypdf-fallback"
     record_invocation_async(

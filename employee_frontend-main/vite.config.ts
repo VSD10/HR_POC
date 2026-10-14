@@ -43,8 +43,18 @@ export default defineConfig(() => {
     server: {
       proxy: {
         '/api/chat': {
-          target: 'http://127.0.0.1:8001',
+          target: 'http://127.0.0.1:8000',
           changeOrigin: true,
+          headers: {
+            'x-portal-origin': 'employee-portal-3000'
+          }
+        },
+        '/api/v1': {
+          target: 'http://127.0.0.1:8000',
+          changeOrigin: true,
+          headers: {
+            'x-portal-origin': 'employee-portal-3000'
+          }
         },
       },
       hmr: process.env.DISABLE_HMR !== 'true',

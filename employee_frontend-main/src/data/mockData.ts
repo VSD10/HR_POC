@@ -3,7 +3,8 @@ export { ASSETS };
 import { EmployeeProfile, HrRequest, HolidayItem, LeaveBalance, PolicyItem, NotificationItem } from '../types';
 
 export const CURRENT_USER: EmployeeProfile = {
-  id: 'EMP-20491',
+  id: 'EMP002',
+  employeeId: 'EMP-20491',
   name: 'Rupam Sharma',
   role: 'Lead Full-Stack Engineer',
   department: 'Core Platform & AI Systems',

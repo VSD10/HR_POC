@@ -23,7 +23,7 @@ export const CURRENT_USER: {
   ifsc: string;
   avatar?: string;
 } = {
-  id: 'EMP-84920',
+  id: 'EMP002',
   name: 'Rupam Sharma',
   role: 'Senior Software Engineer',
   department: 'Product Engineering - Cloud Platform',

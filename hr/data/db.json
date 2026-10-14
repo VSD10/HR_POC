@@ -28,34 +28,34 @@
     "7D": {
       "range": "7D",
       "labels": [
-        "Wed",
         "Thu",
         "Fri",
         "Sat",
         "Sun",
         "Mon",
-        "Tue"
+        "Tue",
+        "Wed"
       ],
       "incoming": [
-        1,
         10,
         0,
-        0,
-        0,
-        0,
-        1
-      ],
-      "resolved": [
-        4,
-        7,
         0,
         0,
         0,
         1,
         0
       ],
+      "resolved": [
+        7,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
       "openTotal": 7,
-      "receivedToday": 1,
+      "receivedToday": 0,
       "resolvedToday": 0
     },
     "30D": {
@@ -67,19 +67,19 @@
         "Week 4"
       ],
       "incoming": [
-        3,
-        11,
+        4,
+        10,
         0,
         12
       ],
       "resolved": [
-        3,
-        7,
+        4,
+        6,
         0,
         9
       ],
       "openTotal": 7,
-      "receivedToday": 1,
+      "receivedToday": 0,
       "resolvedToday": 0
     },
     "90D": {
@@ -100,7 +100,7 @@
         9
       ],
       "openTotal": 7,
-      "receivedToday": 1,
+      "receivedToday": 0,
       "resolvedToday": 0
     }
   },
@@ -4024,7 +4024,7 @@
       "type": "warning",
       "icon": "alarm",
       "title": "Resolution SLA Bottleneck Detected",
-      "description": "6 tickets have exceeded the standard 24-hour response SLA. 3 are high priority. Average wait time is ~353 hours.",
+      "description": "6 tickets have exceeded the standard 24-hour response SLA. 3 are high priority. Average wait time is ~374 hours.",
       "changeText": "6 overdue (>24h)",
       "impact": "CRITICAL",
       "suggestedRemediation": "Assign dedicated HR specialists to overdue tickets immediately. Enable automated SLA escalation alerts in the request intake pipeline.",
@@ -5331,10 +5331,301 @@
           "total": 18
         }
       }
+    },
+    "EMP-20491": {
+      "id": "EMP002",
+      "name": "Rupam Sharma",
+      "email": "rupam.sharma@enterprise.org",
+      "role": "Lead Full-Stack Engineer",
+      "title": "Lead Full-Stack Engineer",
+      "department": "Product Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "2 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc",
+      "status": "active",
+      "roles": [
+        "EMPLOYEE"
+      ],
+      "systemRole": "EMPLOYEE",
+      "leaveBalance": {
+        "casual": {
+          "remaining": 4,
+          "total": 12
+        },
+        "sick": {
+          "remaining": 6,
+          "total": 10
+        },
+        "earned": {
+          "remaining": 9,
+          "total": 18
+        },
+        "annual": {
+          "remaining": 9,
+          "total": 18
+        }
+      }
+    },
+    "EMP-84920": {
+      "id": "EMP002",
+      "name": "Rupam Sharma",
+      "email": "rupam.sharma@enterprise.org",
+      "role": "Lead Full-Stack Engineer",
+      "title": "Lead Full-Stack Engineer",
+      "department": "Product Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "2 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc",
+      "status": "active",
+      "roles": [
+        "EMPLOYEE"
+      ],
+      "systemRole": "EMPLOYEE",
+      "leaveBalance": {
+        "casual": {
+          "remaining": 4,
+          "total": 12
+        },
+        "sick": {
+          "remaining": 6,
+          "total": 10
+        },
+        "earned": {
+          "remaining": 9,
+          "total": 18
+        },
+        "annual": {
+          "remaining": 9,
+          "total": 18
+        }
+      }
+    },
+    "EMP-10001": {
+      "id": "EMP001",
+      "name": "Alex Johnson",
+      "email": "alex.johnson@enterprise.internal",
+      "role": "Senior Staff Engineer",
+      "title": "Senior Staff Engineer",
+      "department": "Engineering",
+      "isHr": false,
+      "avatar": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "avatarUrl": "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=160&q=80",
+      "securityLevel": 1,
+      "tenure": "4 years",
+      "passwordHash": "c0314a384e28d71878b07f7261d252b5da29af456b2d58d7aab1cf79d025abbc",
+      "status": "active",
+      "roles": [
+        "EMPLOYEE"
+      ],
+      "systemRole": "EMPLOYEE",
+      "leaveBalance": {
+        "casual": {
+          "remaining": 8,
+          "total": 12
+        },
+        "sick": {
+          "remaining": 6,
+          "total": 10
+        },
+        "earned": {
+          "remaining": 12,
+          "total": 18
+        },
+        "annual": {
+          "remaining": 12,
+          "total": 18
+        }
+      }
     }
   },
   "aiTelemetry": {
     "invocations": [
+      {
+        "id": "INV-MV7VWGWD",
+        "timestamp": "09:05:08 AM",
+        "isoDate": "2026-10-14T09:05:08.749Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7VKQ51",
+        "timestamp": "08:56:00 AM",
+        "isoDate": "2026-10-14T08:56:00.853Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7VITSQ",
+        "timestamp": "08:54:32 AM",
+        "isoDate": "2026-10-14T08:54:32.282Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7VGJRG",
+        "timestamp": "08:52:45 AM",
+        "isoDate": "2026-10-14T08:52:45.964Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7VFK0P",
+        "timestamp": "08:51:59 AM",
+        "isoDate": "2026-10-14T08:51:59.641Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7TXFD0",
+        "timestamp": "08:09:54 AM",
+        "isoDate": "2026-10-14T08:09:54.180Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7TU33A",
+        "timestamp": "08:07:18 AM",
+        "isoDate": "2026-10-14T08:07:18.310Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7RYPB0",
+        "timestamp": "07:14:54 AM",
+        "isoDate": "2026-10-14T07:14:54.492Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7RRVMM",
+        "timestamp": "07:09:36 AM",
+        "isoDate": "2026-10-14T07:09:36.094Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7RRKA7",
+        "timestamp": "07:09:21 AM",
+        "isoDate": "2026-10-14T07:09:21.391Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7RL544",
+        "timestamp": "07:04:21 AM",
+        "isoDate": "2026-10-14T07:04:21.796Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
+      {
+        "id": "INV-MV7R94OJ",
+        "timestamp": "06:55:01 AM",
+        "isoDate": "2026-10-14T06:55:01.363Z",
+        "service": "Test Bench",
+        "model": "gpt-4o",
+        "promptTokens": 20,
+        "completionTokens": 40,
+        "totalTokens": 60,
+        "latencyMs": 120,
+        "cost": 0.0007,
+        "status": "200_OK",
+        "queryPreview": "Live model test inquiry",
+        "citationCount": 1
+      },
       {
         "id": "INV-MV6LA72O",
         "timestamp": "11:20:07 AM",

@@ -72,66 +72,56 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const displayedRequests = requests.slice((page - 1) * pageSize, page * pageSize);
 
   // Quick prompt submission
-  const handleAiSubmit = (e?: React.FormEvent) => {
+  const handleAiSubmit = async (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
-    const q = aiQuery.trim();
+    const q = (overrideQuery !== undefined ? overrideQuery : aiQuery).trim();
     if (!q) return;
 
     setIsAsking(true);
-    setTimeout(() => {
-      setIsAsking(false);
-      let answer = '';
-      let source = 'Company People Policy Portal (HR-Handbook-v4.2)';
+    try {
+      const activeUserId = CURRENT_USER.id || (typeof window !== 'undefined' ? localStorage.getItem('hr_active_user_id') : null) || 'EMP002';
+      let sessionToken = (typeof window !== 'undefined' ? localStorage.getItem('hr_auth_token') : null);
+      if (sessionToken === 'undefined' || sessionToken === 'null' || !sessionToken) {
+        sessionToken = `token_${activeUserId}_${Date.now()}`;
+      }
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Employee-Id': activeUserId,
+        'Authorization': sessionToken.startsWith('Bearer ') ? sessionToken : `Bearer ${sessionToken}`
+      };
 
-      const lower = q.toLowerCase();
-      if (lower.includes('leave') || lower.includes('balance') || lower.includes('days')) {
-        answer = `You currently have 18 total available leave days valid thru Dec 2026: 8 Casual Leaves (out of 12), 6 Sick Leaves (out of 10), and 12 Earned Leaves (out of 18). You can submit a new leave request anytime from the Raise Request section.`;
-        source = 'Enterprise Leave Policy & Employee Records Database';
-      } else if (lower.includes('reimbursement') || lower.includes('expense')) {
-        answer = `Broadband & utility reimbursements can be filed up to ₹4,500/quarter under Quick Links > Payroll. Expense submissions are reimbursed along with your monthly payroll if submitted before the 20th of the month.`;
-        source = 'Travel & Expense Reimbursement Policy 2026 (Section 3.1)';
-      } else if (lower.includes('experience') || lower.includes('letter') || lower.includes('certificate')) {
-        answer = `You can request digitally signed Employment Verification or Experience Certificates instantly through "Raise Request" > "Documents".`;
-        source = 'Employee Self-Service Documentation Guidelines';
-      } else if (lower.includes('work from home') || lower.includes('hybrid') || lower.includes('remote')) {
-        answer = `Our Hybrid Workplace Guidelines 2026 mandate 2-3 days of in-office presence per week with flexible core hours from 10:30 AM to 4:30 PM. Eligible hybrid staff may also claim a one-time ergonomic setup allowance of ₹25,000.`;
-        source = 'Hybrid Workplace Guidelines 2026';
-      } else {
-        answer = `Here is what the HR policy states regarding "${q}": Full details can be accessed in our Knowledge Hub or submitted as a support ticket to your dedicated People Partner.`;
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ question: q, employeeId: activeUserId })
+      });
+      if (!res.ok) throw new Error('API failed');
+      const data = await res.json();
+      
+      let source = 'Company HR Handbook & Portal';
+      if (data.sources && data.sources.length > 0) {
+        source = data.sources[0].document.replace('.pdf', '').replace(/_/g, ' ') + ' (Page ' + data.sources[0].page + ')';
       }
 
       setAiAnswer({
         query: q,
-        answer,
+        answer: data.answer || "No response received.",
         source,
       });
-    }, 500);
+    } catch (err) {
+      setAiAnswer({
+        query: q,
+        answer: "I am unable to retrieve a verified answer from the knowledge base right now. Please try again later.",
+        source: "System Error",
+      });
+    } finally {
+      setIsAsking(false);
+    }
   };
 
   const handlePromptClick = (text: string) => {
     setAiQuery(text);
-    // trigger answer
-    setIsAsking(true);
-    setTimeout(() => {
-      setIsAsking(false);
-      let answer = '';
-      let source = 'Company HR Handbook & Portal';
-      if (text.includes('leaves')) {
-        answer = `You have 18 total available leave days: 8 Casual Leaves, 6 Sick Leaves, and 12 Earned Leaves valid through Dec 2026.`;
-        source = 'Enterprise Leave Policy (Section 2.4)';
-      } else if (text.includes('reimbursement')) {
-        answer = `All operational and utility reimbursements can be submitted under Quick Links > Payroll. Claims submitted prior to the 20th are paid in the current month's salary.`;
-        source = 'Financial Expense Policy 2026';
-      } else {
-        answer = `Employment Verification Letters and Experience Letters can be requested directly via "Raise Request" > "Documents" and are digitally issued within 2 business days.`;
-        source = 'Document Services Guidelines';
-      }
-      setAiAnswer({
-        query: text,
-        answer,
-        source,
-      });
-    }, 450);
+    handleAiSubmit(undefined, text);
   };
 
   // Find policies for the featured cards

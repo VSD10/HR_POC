@@ -78,10 +78,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
     setIsAsking(true);
     try {
+      let storedToken = typeof window !== 'undefined' ? (localStorage.getItem('hr_auth_token') || localStorage.getItem('hr_active_user_id')) : null;
+      if (storedToken === 'undefined' || storedToken === 'null') storedToken = null;
+      const empId = CURRENT_USER.id || (CURRENT_USER as any).employeeId || 'EMP002';
+      const token = storedToken || `token_${empId}`;
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        'X-Employee-Id': empId
+      };
+      if (token) {
+        headers['Authorization'] = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+      }
+
       const res = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q })
+        headers,
+        body: JSON.stringify({ question: q, employeeId: empId })
       });
       if (!res.ok) throw new Error('API failed');
       const data = await res.json();

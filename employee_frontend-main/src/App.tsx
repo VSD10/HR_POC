@@ -59,6 +59,21 @@ export default function App() {
   const [leaveBalance, setLeaveBalance] = useState<LeaveBalance>(INITIAL_LEAVE_BALANCE);
   const [policies, setPolicies] = useState<PolicyItem[]>(POLICIES);
 
+  // Initialize employee session token context
+  useEffect(() => {
+    try {
+      const empId = CURRENT_USER.id || 'EMP002';
+      let existingToken = localStorage.getItem('hr_auth_token');
+      if (!existingToken || existingToken === 'undefined' || existingToken === 'null' || !existingToken.startsWith('token_')) {
+        existingToken = `token_${empId}_${Date.now()}`;
+        localStorage.setItem('hr_auth_token', existingToken);
+      }
+      localStorage.setItem('hr_active_user_id', empId);
+      document.cookie = `hr_auth_token=${existingToken}; path=/`;
+      document.cookie = `hr_active_user_id=${empId}; path=/`;
+    } catch {}
+  }, []);
+
   // Modal States
   const [selectedRequest, setSelectedRequest] = useState<HrRequest | null>(null);
   const [selectedPolicy, setSelectedPolicy] = useState<PolicyItem | null>(null);

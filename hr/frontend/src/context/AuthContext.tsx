@@ -103,8 +103,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             securityLevel: profile.securityLevel || rosterMatch?.securityLevel || 1,
             tenure: profile.tenure || rosterMatch?.tenure || '1 year'
           };
+          const tok = storedToken || `token_${finalUser.id}_${Date.now()}`;
           setUser(finalUser);
-          setToken(storedToken || `token_${finalUser.id}`);
+          setToken(tok);
+          try {
+            localStorage.setItem('hr_auth_token', tok);
+            localStorage.setItem('hr_active_user_id', finalUser.id);
+          } catch {}
           applyThemeForUser(finalUser.isHr);
           setIsLoading(false);
           return;
@@ -120,8 +125,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           roles: computedRoles,
           userRoles: computedRoles
         };
+        const tok = storedToken || `token_${resolvedUser.id}_${Date.now()}`;
         setUser(finalResolved);
-        setToken(storedToken || `token_${resolvedUser.id}`);
+        setToken(tok);
+        try {
+          localStorage.setItem('hr_auth_token', tok);
+          localStorage.setItem('hr_active_user_id', resolvedUser.id);
+        } catch {}
         applyThemeForUser(resolvedUser.isHr);
       } else {
         localStorage.removeItem('hr_auth_token');
