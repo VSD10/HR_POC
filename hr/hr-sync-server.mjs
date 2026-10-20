@@ -662,6 +662,193 @@ function recalculateVelocity() {
   };
 }
 
+function calculateMetricsForUser(user, query = {}) {
+  const isGlobalAdmin = (query.scope === 'all' || query.portal === 'admin') && user && getUserRoles(user).includes('ADMIN');
+  const relevantRequests = isGlobalAdmin
+    ? (state.requests || [])
+    : (user ? (state.requests || []).filter(r => canUserAccessRequest(user, r, 'view')) : []);
+
+  const relevantTriageQueue = isGlobalAdmin
+    ? (state.triageQueue || [])
+    : (user ? (state.triageQueue || []).filter(t => {
+        const req = (state.requests || []).find(r => r.id === t.requestId || r.id === t.id);
+        return req ? canUserAccessRequest(user, req, 'view') : false;
+      }) : []);
+
+  const openCount = relevantRequests.filter(r => r.status !== 'resolved').length;
+  const highCount = relevantRequests.filter(r => r.status !== 'resolved' && (r.priority === 'high' || r.priority === 'Urgent')).length;
+  const resolvedCount = relevantRequests.filter(r => r.status === 'resolved').length;
+  const pendingActions = relevantRequests.filter(r => r.status === 'open' || r.status === 'in_review').length;
+
+  return {
+    openRequests: {
+      count: openCount,
+      changePercent: 0,
+      comparisonText: `${openCount} active`
+    },
+    highPriority: {
+      count: highCount,
+      requiresAttention: highCount
+    },
+    pendingHRActions: {
+      count: pendingActions,
+      waitingOver24h: 0
+    },
+    slaCompliance: {
+      percent: 100.0,
+      changePercent: 0,
+      targetPercent: 92.0
+    },
+    avgSla: "0m",
+    resolvedOvernight: resolvedCount,
+    aiTriagedToday: relevantTriageQueue.length,
+    aiAssistedCases: relevantRequests.filter(r => r.triage || r.aiTriage).length,
+    draftsGenerated: (state.deliverables || []).filter(d => d.status === 'READY' || d.status === 'NEEDS_REVIEW').length
+  };
+}
+
+function calculateVelocityForUser(user, range = '7D', query = {}) {
+  const isGlobalAdmin = (query.scope === 'all' || query.portal === 'admin') && user && getUserRoles(user).includes('ADMIN');
+  const requests = isGlobalAdmin
+    ? (state.requests || [])
+    : (user ? (state.requests || []).filter(r => canUserAccessRequest(user, r, 'view')) : []);
+
+  const openCount = requests.filter(r => r.status !== 'resolved').length;
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+
+  const receivedToday = requests.filter(r => {
+    if (!r.createdAt) return false;
+    try {
+      return new Date(r.createdAt).toISOString().split('T')[0] === todayStr;
+    } catch { return false; }
+  }).length;
+
+  const getResolvedDateStr = (r) => {
+    if (r.status !== 'resolved') return null;
+    if (r.resolvedAt) {
+      try {
+        const d = new Date(r.resolvedAt);
+        if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+      } catch { }
+    }
+    if (Array.isArray(r.timeline)) {
+      for (const ev of r.timeline) {
+        const t = (ev.title || '').toLowerCase();
+        const d = (ev.desc || '').toLowerCase();
+        if (t.includes('resolved') || t.includes('approved') || d.includes('resolved') || d.includes('approved')) {
+          if (ev.date) {
+            try {
+              const dt = new Date(ev.date);
+              if (!isNaN(dt.getTime())) return dt.toISOString().split('T')[0];
+            } catch { }
+          }
+        }
+      }
+    }
+    if (r.lastUpdated && r.lastUpdated !== 'Just now') {
+      try {
+        const dt = new Date(r.lastUpdated);
+        if (!isNaN(dt.getTime())) return dt.toISOString().split('T')[0];
+      } catch { }
+    }
+    if (r.createdAt) {
+      try {
+        const dt = new Date(r.createdAt);
+        if (!isNaN(dt.getTime())) return dt.toISOString().split('T')[0];
+      } catch { }
+    }
+    return null;
+  };
+
+  const resolvedToday = requests.filter(r => getResolvedDateStr(r) === todayStr).length;
+
+  const dayKeys = [];
+  const dayLabels = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const isoDate = d.toISOString().split('T')[0];
+    const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+    dayKeys.push(isoDate);
+    dayLabels.push(weekday);
+  }
+
+  const incoming7 = new Array(7).fill(0);
+  const resolved7 = new Array(7).fill(0);
+
+  for (const r of requests) {
+    if (r.createdAt) {
+      try {
+        const cDate = new Date(r.createdAt).toISOString().split('T')[0];
+        const idx = dayKeys.indexOf(cDate);
+        if (idx !== -1) incoming7[idx]++;
+      } catch { }
+    }
+    const rDate = getResolvedDateStr(r);
+    if (rDate) {
+      const idx = dayKeys.indexOf(rDate);
+      if (idx !== -1) resolved7[idx]++;
+    }
+  }
+
+  const velocity7D = {
+    range: '7D',
+    labels: dayLabels,
+    incoming: incoming7,
+    resolved: resolved7,
+    openTotal: openCount,
+    receivedToday,
+    resolvedToday
+  };
+
+  if (range === '7D') return velocity7D;
+
+  const nowMs = Date.now();
+  const weekBuckets = [
+    { start: nowMs - 28 * 86400000, end: nowMs - 21 * 86400000, label: 'Week 1' },
+    { start: nowMs - 21 * 86400000, end: nowMs - 14 * 86400000, label: 'Week 2' },
+    { start: nowMs - 14 * 86400000, end: nowMs - 7 * 86400000, label: 'Week 3' },
+    { start: nowMs - 7 * 86400000, end: nowMs + 86400000, label: 'Week 4' }
+  ];
+  const incoming30 = [0, 0, 0, 0];
+  const resolved30 = [0, 0, 0, 0];
+  for (const r of requests) {
+    const cTime = r.createdAt ? new Date(r.createdAt).getTime() : 0;
+    if (cTime) {
+      for (let i = 0; i < 4; i++) {
+        if (cTime >= weekBuckets[i].start && cTime < weekBuckets[i].end) {
+          incoming30[i]++;
+          break;
+        }
+      }
+    }
+    if (r.status === 'resolved') {
+      const rTime = r.resolvedAt ? new Date(r.resolvedAt).getTime() : cTime;
+      if (rTime) {
+        for (let i = 0; i < 4; i++) {
+          if (rTime >= weekBuckets[i].start && rTime < weekBuckets[i].end) {
+            resolved30[i]++;
+            break;
+          }
+        }
+      }
+    }
+  }
+  const velocity30D = {
+    range: '30D',
+    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+    incoming: incoming30,
+    resolved: resolved30,
+    openTotal: openCount,
+    receivedToday,
+    resolvedToday
+  };
+  if (range === '30D') return velocity30D;
+
+  return velocity7D;
+}
+
 function getResolvedTimestamp(r) {
   if (r.status !== 'resolved') return null;
   if (r.resolvedAt) {
@@ -1250,6 +1437,12 @@ function loadState() {
 
         // Ensure users have active status and HR001 is recognized as ADMIN
         if (loaded.users && typeof loaded.users === 'object') {
+          if (loaded.users.HR001) {
+            const rList = Array.isArray(loaded.users.HR001.roles) ? loaded.users.HR001.roles : ['HR_SPECIALIST'];
+            if (!rList.includes('ADMIN')) rList.push('ADMIN');
+            loaded.users.HR001.roles = rList;
+            loaded.users.HR001.systemRole = 'ADMIN';
+          }
           const defaultLeave = {
             casual: { remaining: 8, total: 12 },
             sick: { remaining: 6, total: 10 },
@@ -1270,7 +1463,69 @@ function loadState() {
               }
             }
           }
+
+          // Ensure every employee is assigned to exactly one active HR specialist
+          const hrCandidates = Object.values(loaded.users).filter(u =>
+            u && u.status !== 'inactive' && (u.isHr || (Array.isArray(u.roles) && u.roles.some(r => r.startsWith('HR_'))))
+          );
+
+          const getTargetHr = (empId) => {
+            if (empId === 'EMP001') return loaded.users.HR002 || loaded.users.HR001;
+            if (empId === 'EMP002') return loaded.users.HR001;
+            if (empId === 'EMP003') return loaded.users.HR003 || loaded.users.HR001;
+            if (empId === 'EMP004') return loaded.users.HR002 || loaded.users.HR001;
+            return loaded.users.HR001 || hrCandidates[0];
+          };
+
+          for (const u of Object.values(loaded.users)) {
+            if (u && !u.isHr && (!Array.isArray(u.roles) || (!u.roles.includes('ADMIN') && !u.roles.some(r => r.startsWith('HR_'))))) {
+              let targetHr = u.assignedHrId ? loaded.users[u.assignedHrId] : null;
+              if (!targetHr || targetHr.status === 'inactive' || (!targetHr.isHr && !Array.isArray(targetHr.roles))) {
+                targetHr = getTargetHr(u.id);
+              }
+              if (targetHr) {
+                u.assignedHrId = targetHr.id;
+                u.assignedHr = {
+                  id: targetHr.id,
+                  name: targetHr.name,
+                  email: targetHr.email,
+                  department: targetHr.department,
+                  title: targetHr.title || targetHr.role
+                };
+              }
+            }
+          }
         }
+
+        // Synchronize requests with employee assigned HR
+        if (Array.isArray(loaded.requests)) {
+          for (const req of loaded.requests) {
+            const empId = req.employeeId || req.employee?.id;
+            const emp = loaded.users?.[empId];
+            if (emp?.assignedHrId && emp?.assignedHr) {
+              req.assignedHrId = emp.assignedHrId;
+              req.assignedHr = emp.assignedHr;
+              req.assignedToId = emp.assignedHrId;
+              req.assignedTo = emp.assignedHr.name;
+            } else if (!req.assignedHrId) {
+              const fallbackHrId = req.assignedToId || 'HR001';
+              const fallbackHr = loaded.users?.[fallbackHrId] || loaded.users?.HR001;
+              if (fallbackHr) {
+                req.assignedHrId = fallbackHr.id;
+                req.assignedHr = {
+                  id: fallbackHr.id,
+                  name: fallbackHr.name,
+                  email: fallbackHr.email,
+                  department: fallbackHr.department
+                };
+                req.assignedToId = fallbackHr.id;
+                req.assignedTo = fallbackHr.name;
+              }
+            }
+          }
+        }
+
+        const assignmentHistory = Array.isArray(loaded.assignmentHistory) ? loaded.assignmentHistory : [];
 
         return {
           ...defaultState,
@@ -1282,7 +1537,8 @@ function loadState() {
           users: { ...defaultState.users, ...(loaded.users || {}) },
           roles,
           settings,
-          auditLogs
+          auditLogs,
+          assignmentHistory
         };
       }
     }
@@ -1609,7 +1865,12 @@ attachUserAliases(state.users);
 
 function findRosterUser(query) {
   if (!query) return null;
-  const q = String(query).trim().toLowerCase();
+  const rawQ = String(query).trim();
+  const q = rawQ.toLowerCase();
+  if (state.users && state.users[rawQ]) return state.users[rawQ];
+  if (state.users && state.users[q]) return state.users[q];
+  if (state.users && state.users[rawQ.toUpperCase()]) return state.users[rawQ.toUpperCase()];
+
   const all = Object.values(state.users || {});
   return all.find(u =>
     u && (
@@ -1621,19 +1882,78 @@ function findRosterUser(query) {
 }
 
 function getSessionUser(req, fallbackToDefault = false) {
+  const explicitUserId = req.headers['x-user-id'];
+  if (explicitUserId) {
+    const user = findRosterUser(explicitUserId);
+    if (user) return user;
+  }
+
   const auth = String(req.headers['authorization'] || '');
-  if (!auth) return null;
-  const tokenMatch = auth.match(/token_([A-Z0-9]+)/i);
+  if (!auth) return fallbackToDefault ? (state.users?.HR001 || state.users?.admin || null) : null;
+
+  // Extract from Bearer token: token_<userId> or token-<userId> or token_<userId>_<timestamp>
+  const tokenMatch = auth.match(/token[-_]([A-Za-z0-9]+)(?:_.*)?/i);
   if (tokenMatch) {
     const user = findRosterUser(tokenMatch[1]);
     if (user) return user;
   }
+  const cleanAuth = auth.replace(/^Bearer\s+/i, '').trim();
+  const directUser = findRosterUser(cleanAuth);
+  if (directUser) return directUser;
+
   for (const [id, u] of Object.entries(state.users || {})) {
-    if (u && (auth.includes(id) || (u.email && auth.toLowerCase().includes(u.email.toLowerCase())))) {
+    if (u && id && (auth.includes(id) || (u.email && auth.toLowerCase().includes(u.email.toLowerCase())))) {
       return u;
     }
   }
   return fallbackToDefault ? (state.users?.HR001 || state.users?.admin || null) : null;
+}
+
+function canUserAccessRequest(user, request, action = 'view') {
+  if (!request) return false;
+  if (!user) return false;
+
+  const roles = getUserRoles(user);
+
+  // 1. ADMIN has global platform access to all requests ONLY when explicitly acting in an admin view context
+  if (action === 'admin_view' && roles.includes('ADMIN')) {
+    return true;
+  }
+
+  const reqEmpId = String(request.employeeId || request.employee?.id || '').toLowerCase();
+  const userId = String(user.id || '').toLowerCase();
+
+  // 2. EMPLOYEE role: can only view or comment on their own requests, cannot manage or approve
+  if (roles.includes('EMPLOYEE') && !user.isHr && !roles.some(r => r.startsWith('HR_'))) {
+    if (action === 'manage') return false;
+    return reqEmpId === userId;
+  }
+
+  // 3. HR SPECIALIST / HR_LEAD / HR Staff: can view, manage, and comment ONLY on requests from employees assigned to them
+  if (user.isHr || roles.some(r => r.startsWith('HR_')) || roles.includes('ADMIN')) {
+    // Look up the employee's current assigned HR in state.users
+    const emp = findRosterUser(request.employeeId || request.employee?.id);
+    const assignedHrId = emp?.assignedHrId || request.assignedHrId || request.assignedToId;
+
+    if (assignedHrId && String(assignedHrId).toLowerCase() === userId) {
+      return true;
+    }
+
+    // Also check if assignedHr name or email matches user
+    const assignedHrStr = typeof request.assignedHr === 'object' && request.assignedHr !== null
+      ? String(request.assignedHr.name || request.assignedHr.id || '')
+      : String(request.assignedHr || '');
+    if (assignedHrStr && (
+      assignedHrStr.toLowerCase().includes(String(user.name || '').toLowerCase()) ||
+      assignedHrStr.toLowerCase().includes(userId)
+    )) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return false;
 }
 
 
@@ -1711,6 +2031,9 @@ function getUserRoles(user) {
     const sr = String(user.systemRole).trim().toUpperCase();
     if (sr === 'HR_ADMIN') set.add('ADMIN');
     else set.add(sr);
+  }
+  if (user.id === 'HR001' || user.id === 'ADM001' || user.id === 'ADM002' || user.id === 'ADM003') {
+    set.add('ADMIN');
   }
   if (user.isHr && !set.has('HR_LEAD') && !set.has('HR_SPECIALIST') && !set.has('ADMIN')) {
     set.add('HR_SPECIALIST');
@@ -1876,7 +2199,13 @@ const server = http.createServer((req, res) => {
     // Auth: Login
     if (path === '/api/v1/auth/login' && req.method === 'POST') {
       const { email, password, userId, role } = json;
-      const target = userId || email || (role === 'EMPLOYEE' ? 'EMP001' : 'HR001');
+      if (!userId && !email && !role) {
+        return sendJson(400, { error: 'Username, email, or employee ID is required.' });
+      }
+      const target = userId || email || (role === 'EMPLOYEE' ? 'EMP001' : (role ? 'HR001' : null));
+      if (!target) {
+        return sendJson(400, { error: 'Username, email, or employee ID is required.' });
+      }
       const foundUser = findRosterUser(target);
 
       if (!foundUser) {
@@ -1959,22 +2288,31 @@ const server = http.createServer((req, res) => {
       });
     }
 
-    // Users: List Roster
+    // Users: List Roster (with strict employee visibility per assigned HR)
     if (path === '/api/v1/users' && req.method === 'GET') {
+      const authUser = getSessionUser(req, false);
+      if (authUser && !getUserRoles(authUser).includes('ADMIN') && (authUser.isHr || getUserRoles(authUser).some(r => r.startsWith('HR_')))) {
+        // HR user sees only their assigned employees plus active HR colleagues
+        const assignedEmployeesAndHr = Object.values(state.users || {}).filter(u =>
+          u && (u.isHr || getUserRoles(u).includes('ADMIN') || String(u.assignedHrId || '').toLowerCase() === String(authUser.id).toLowerCase())
+        );
+        return sendJson(200, assignedEmployeesAndHr);
+      }
       return sendJson(200, Object.values(state.users || {}));
     }
 
-    // Dashboard: Metrics
+    // Dashboard: Metrics (Strictly scoped to authenticated user's assigned requests)
     if (path === '/api/v1/dashboard/metrics' && req.method === 'GET') {
-      recalculateMetrics();
-      return sendJson(200, state.metrics);
+      const authUser = getSessionUser(req, false);
+      const metrics = calculateMetricsForUser(authUser, parsed.query);
+      return sendJson(200, metrics);
     }
 
-    // Dashboard: Velocity
+    // Dashboard: Velocity (Strictly scoped to authenticated user's assigned requests)
     if (path === '/api/v1/dashboard/velocity' && req.method === 'GET') {
-      recalculateVelocity();
+      const authUser = getSessionUser(req, false);
       const range = (parsed.query.range || '7D').toString();
-      const dataset = state.velocity[range] || state.velocity['7D'];
+      const dataset = calculateVelocityForUser(authUser, range, parsed.query);
       return sendJson(200, dataset);
     }
 
@@ -2156,10 +2494,62 @@ const server = http.createServer((req, res) => {
       return sendJson(200, myDeliverables);
     }
 
-    // Requests: List (Support Search & Filter with flexible categories)
+    // Requests: Cleanup all previous requests (Database & In-Memory sanitization)
+    if ((path === '/api/v1/admin/cleanup-requests' || path === '/api/v1/requests/cleanup' || (path === '/api/v1/requests' && req.method === 'DELETE')) && (req.method === 'POST' || req.method === 'DELETE')) {
+      const authUser = getSessionUser(req, false);
+      const roles = authUser ? getUserRoles(authUser) : [];
+      const isAllowed = !authUser || authUser.isHr || roles.some(r => r.startsWith('HR_') || r === 'ADMIN');
+      if (!isAllowed) {
+        return sendJson(403, { error: 'Forbidden: Insufficient privileges to clean up requests.' });
+      }
+
+      const countBefore = state.requests.length;
+      state.requests = [];
+      state.triageQueue = [];
+      recalculateMetrics();
+      recalculateVelocity();
+      recalculateCategoryVolumes();
+      recalculateInsights();
+      persistState();
+
+      console.log(`[HR Sync Server] Cleaned up ${countBefore} requests and triage queue items.`);
+
+      broadcastEvent('REQUESTS_CLEANED', {
+        message: 'All previous requests and triage queue items cleaned up.',
+        countRemoved: countBefore,
+        metrics: state.metrics
+      });
+
+      return sendJson(200, {
+        success: true,
+        message: `Successfully cleaned up ${countBefore} previous requests. Database is now clean.`,
+        requestsCount: 0,
+        triageCount: 0
+      });
+    }
+
+    // Requests: List (Support Search & Filter with flexible categories and strict access control)
     if (path === '/api/v1/requests' && req.method === 'GET') {
-      const { category, priority, search, status } = parsed.query;
+      const { category, priority, search, status, scope } = parsed.query;
       let filtered = [...state.requests];
+      const authUser = getSessionUser(req, false);
+
+      // Access control enforcement
+      if (authUser) {
+        const uRoles = getUserRoles(authUser);
+        if (scope === 'all' && uRoles.includes('ADMIN')) {
+          // Admin can see all requests across the organization ONLY when explicitly requested with scope=all
+        } else if (authUser.isHr || uRoles.some(r => r.startsWith('HR_')) || uRoles.includes('ADMIN')) {
+          // HR specialist (and HR admin in regular view) can ONLY see requests from their assigned employees
+          filtered = filtered.filter(r => canUserAccessRequest(authUser, r, 'view'));
+        } else if (uRoles.includes('EMPLOYEE')) {
+          // Employee can ONLY see their own requests
+          filtered = filtered.filter(r => canUserAccessRequest(authUser, r, 'view'));
+        }
+      } else {
+        filtered = [];
+      }
+
       if (category && category !== 'all') {
         const normFilterCat = normalizeCategory(category);
         filtered = filtered.filter(r => normalizeCategory(r.category) === normFilterCat);
@@ -2176,7 +2566,6 @@ const server = http.createServer((req, res) => {
         });
       }
       if (parsed.query.employeeId) {
-        const authUser = getSessionUser(req, false);
         if (authUser) {
           const uRoles = getUserRoles(authUser);
           const isHrOrAdmin = uRoles.some(r => ['HR_LEAD', 'HR_SPECIALIST', 'HR_ADMIN', 'ADMIN'].includes(r));
@@ -2248,12 +2637,41 @@ const server = http.createServer((req, res) => {
         ? extractLeaveDetails(json)
         : null;
 
+      // Automatically associate request with the employee's currently assigned HR specialist
+      const rosterEmp = findRosterUser(enrichedEmployee.id);
+      let assignedHr = null;
+      if (rosterEmp?.assignedHrId) {
+        const aHr = findRosterUser(rosterEmp.assignedHrId);
+        if (aHr) {
+          assignedHr = {
+            id: aHr.id,
+            name: aHr.name,
+            email: aHr.email,
+            department: aHr.department,
+            title: aHr.title || aHr.role
+          };
+        }
+      }
+      if (!assignedHr) {
+        const defaultHr = state.users.HR001 || state.users.HR002;
+        assignedHr = {
+          id: defaultHr.id,
+          name: defaultHr.name,
+          email: defaultHr.email,
+          department: defaultHr.department
+        };
+      }
+
       const item = {
         id: newId,
         title: json.title || json.subject || 'New HR Request',
         subject: json.subject || json.title || 'New HR Request',
         employeeId: enrichedEmployee.id,
         employee: enrichedEmployee,
+        assignedHrId: assignedHr.id,
+        assignedHr: assignedHr.name || assignedHr,
+        assignedToId: assignedHr.id,
+        assignedTo: assignedHr.name || assignedHr,
         category: normCat,
         categoryDisplay: getCategoryDisplay(normCat),
         priority: normPrio,
@@ -2284,7 +2702,7 @@ const server = http.createServer((req, res) => {
           {
             date: new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }),
             title: 'Request Created',
-            desc: 'Submitted through HR Self-Service Portal',
+            desc: `Submitted through HR Self-Service Portal (Assigned to ${assignedHr.name})`,
             actor: enrichedEmployee.name
           }
         ],
@@ -2358,6 +2776,15 @@ const server = http.createServer((req, res) => {
         (r.id && targetId && r.id.toLowerCase() === targetId.toLowerCase())
       );
       if (reqItem) {
+        const authUser = getSessionUser(req, false);
+        if (!authUser) {
+          return sendJson(401, { error: 'Authentication required. Missing or invalid Authorization token.' });
+        }
+        if (!canUserAccessRequest(authUser, reqItem, 'view')) {
+          return sendJson(403, {
+            error: 'Forbidden: You do not have permission to access requests for this employee. Access is restricted to the assigned HR specialist or Administrator.'
+          });
+        }
         return sendJson(200, reqItem);
       }
       return sendJson(404, { error: `Request ${targetId} not found` });
@@ -2373,6 +2800,15 @@ const server = http.createServer((req, res) => {
 
       if (reqIndex >= 0) {
         const current = state.requests[reqIndex];
+        const authUser = getSessionUser(req, false);
+        if (!authUser) {
+          return sendJson(401, { error: 'Authentication required. Missing or invalid Authorization token.' });
+        }
+        if (!canUserAccessRequest(authUser, current, 'manage')) {
+          return sendJson(403, {
+            error: 'Forbidden: You are not authorized to manage, approve, or reject requests for this employee. Access is restricted to the assigned HR specialist.'
+          });
+        }
         const normStat = normalizeStatus(json.status || json.statusUpper || current.status);
 
         const isLeaveRequest = (current.category || '').toLowerCase() === 'leave' ||
@@ -2487,11 +2923,20 @@ const server = http.createServer((req, res) => {
           });
         }
 
-        if (json.assignedToId !== undefined) {
-          const hrAssignee = findRosterUser(json.assignedToId);
-          if (!hrAssignee || !hrAssignee.isHr) {
-            return sendJson(400, { error: `Invalid HR assignee ID "${json.assignedToId}". Assignee must be an active HR specialist.` });
+        if (json.assignedToId !== undefined || json.assignedHrId !== undefined) {
+          const targetHrId = json.assignedHrId || json.assignedToId;
+          const hrAssignee = findRosterUser(targetHrId);
+          if (!hrAssignee || !hrAssignee.isHr || hrAssignee.status === 'inactive') {
+            return sendJson(400, { error: `Invalid HR assignee ID "${targetHrId}". Assignee must be an active HR specialist.` });
           }
+          current.assignedHrId = hrAssignee.id;
+          current.assignedHr = {
+            id: hrAssignee.id,
+            name: hrAssignee.name,
+            email: hrAssignee.email,
+            department: hrAssignee.department,
+            title: hrAssignee.title || hrAssignee.role
+          };
           current.assignedToId = hrAssignee.id;
           current.assignedTo = hrAssignee.name;
         }
@@ -2499,6 +2944,8 @@ const server = http.createServer((req, res) => {
         const updated = {
           ...current,
           ...json,
+          assignedHrId: current.assignedHrId,
+          assignedHr: current.assignedHr,
           assignedToId: current.assignedToId,
           assignedTo: current.assignedTo,
           status: normStat.status,
@@ -2571,13 +3018,23 @@ const server = http.createServer((req, res) => {
       const reqIndex = state.requests.findIndex(r => r.id === targetId || r.id.toLowerCase() === targetId.toLowerCase());
       if (reqIndex >= 0) {
         const current = state.requests[reqIndex];
+        const commentText = (json.text || '').trim();
+        if (!commentText) {
+          return sendJson(400, { error: 'Comment text cannot be empty.' });
+        }
 
+        const sessionUser = getSessionUser(req, false);
         let authorName = json.author || 'User';
         let authorAvatar = json.avatar || undefined;
         let isHr = !!json.isHr;
         let authorId = json.authorId;
 
-        if (json.authorId) {
+        if (sessionUser) {
+          authorName = sessionUser.name;
+          authorAvatar = sessionUser.avatar || sessionUser.avatarUrl;
+          isHr = !!sessionUser.isHr;
+          authorId = sessionUser.id;
+        } else if (json.authorId) {
           const u = findRosterUser(json.authorId);
           if (u) {
             authorName = u.name;
@@ -2587,13 +3044,20 @@ const server = http.createServer((req, res) => {
           }
         }
 
+        const callerUser = sessionUser || (authorId ? findRosterUser(authorId) : null);
+        if (callerUser && !canUserAccessRequest(callerUser, current, 'comment')) {
+          return sendJson(403, { error: 'Forbidden: You are not authorized to comment on this request.' });
+        }
+
         const newComment = {
           id: `c-${Date.now()}`,
           author: authorName,
           authorId: authorId,
           avatar: authorAvatar,
-          text: json.text || '',
+          text: commentText,
           time: 'Just now',
+          timestamp: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
           isHr: isHr
         };
         current.comments = [...(current.comments || []), newComment];
@@ -2618,7 +3082,19 @@ const server = http.createServer((req, res) => {
 
     // Triage Queue (Support both /api/v1/triage/queue and /api/v1/ai/triage/queue)
     if ((path === '/api/v1/triage/queue' || path === '/api/v1/ai/triage/queue') && req.method === 'GET') {
-      return sendJson(200, state.triageQueue);
+      const authUser = getSessionUser(req, false);
+      const isGlobalAdmin = (parsed.query?.scope === 'all' || parsed.query?.portal === 'admin') && authUser && getUserRoles(authUser).includes('ADMIN');
+      if (isGlobalAdmin) {
+        return sendJson(200, state.triageQueue);
+      }
+      if (!authUser) {
+        return sendJson(200, []);
+      }
+      const filteredQueue = (state.triageQueue || []).filter(t => {
+        const reqItem = (state.requests || []).find(r => r.id === t.requestId || r.id === t.id);
+        return reqItem ? canUserAccessRequest(authUser, reqItem, 'view') : false;
+      });
+      return sendJson(200, filteredQueue);
     }
 
     // Triage: Get single request triage metadata
@@ -3192,7 +3668,9 @@ const server = http.createServer((req, res) => {
         avatar: u.avatar || '',
         avatarUrl: u.avatarUrl || u.avatar || '',
         isHr: !!u.isHr,
-        title: u.title || u.role
+        title: u.title || u.role,
+        assignedHrId: u.assignedHrId,
+        assignedHr: u.assignedHr
       }));
 
       const { search, role, status, department } = parsed.query || {};
@@ -3220,6 +3698,17 @@ const server = http.createServer((req, res) => {
       }
 
       return sendJson(200, list);
+    }
+
+    // Single User Getter
+    if ((path.startsWith('/api/v1/users/') || path.startsWith('/api/v1/admin/users/')) && req.method === 'GET') {
+      const parts = path.split('/').filter(Boolean);
+      const targetId = parts[parts.length - 1];
+      const user = findRosterUser(targetId);
+      if (!user) {
+        return sendJson(404, { error: `User "${targetId}" not found` });
+      }
+      return sendJson(200, user);
     }
 
     // 3. Admin Create User
@@ -3421,7 +3910,7 @@ const server = http.createServer((req, res) => {
     }
 
     // 8. Admin Settings Get
-    if (path === '/api/v1/admin/settings' && req.method === 'GET') {
+    if ((path === '/api/v1/admin/settings' || path === '/api/v1/settings') && req.method === 'GET') {
       const admin = verifyAdminAuthorization(req, res, sendJson);
       if (!admin) return;
 
@@ -3429,7 +3918,7 @@ const server = http.createServer((req, res) => {
     }
 
     // 9. Admin Settings Update
-    if (path === '/api/v1/admin/settings' && req.method === 'PATCH') {
+    if ((path === '/api/v1/admin/settings' || path === '/api/v1/settings') && req.method === 'PATCH') {
       const admin = verifyAdminAuthorization(req, res, sendJson);
       if (!admin) return;
 
@@ -3504,6 +3993,219 @@ const server = http.createServer((req, res) => {
         limit,
         totalPages: Math.ceil(total / limit) || 1
       });
+    }
+
+    // 11. Admin Assign / Reassign Employee to HR Specialist
+    if ((path === '/api/v1/admin/assign-hr' || path === '/api/v1/admin/assignments') && req.method === 'POST') {
+      const admin = verifyAdminAuthorization(req, res, sendJson);
+      if (!admin) return;
+
+      const { employeeId, hrId, reason } = json || {};
+      if (!employeeId || !hrId) {
+        return sendJson(400, { error: 'Both employeeId and hrId are required for assignment.' });
+      }
+
+      const employee = findRosterUser(employeeId);
+      if (!employee) {
+        return sendJson(404, { error: `Employee "${employeeId}" not found in roster.` });
+      }
+
+      const newHr = findRosterUser(hrId);
+      if (!newHr) {
+        return sendJson(404, { error: `Target HR specialist "${hrId}" not found in roster.` });
+      }
+
+      if (!newHr.isHr && !getUserRoles(newHr).some(r => r.startsWith('HR_'))) {
+        return sendJson(400, { error: `Selected user "${newHr.name}" does not possess an HR specialist role.` });
+      }
+
+      if (newHr.status === 'inactive') {
+        return sendJson(400, { error: `Cannot assign employee to inactive HR account "${newHr.name}".` });
+      }
+
+      const previousHrId = employee.assignedHrId || null;
+      const previousHrName = employee.assignedHr?.name || (previousHrId ? findRosterUser(previousHrId)?.name : 'Unassigned');
+
+      // Update employee assignment record
+      employee.assignedHrId = newHr.id;
+      employee.assignedHr = {
+        id: newHr.id,
+        name: newHr.name,
+        email: newHr.email,
+        department: newHr.department,
+        title: newHr.title || newHr.role
+      };
+
+      // Transfer access for all existing requests of this employee
+      const empRequests = state.requests.filter(r =>
+        (r.employeeId && r.employeeId.toLowerCase() === employee.id.toLowerCase()) ||
+        (r.employee?.id && r.employee.id.toLowerCase() === employee.id.toLowerCase())
+      );
+
+      for (const r of empRequests) {
+        r.assignedHrId = newHr.id;
+        r.assignedHr = employee.assignedHr;
+        r.assignedToId = newHr.id;
+        r.assignedTo = newHr.name;
+        if (r.status !== 'resolved') {
+          if (!Array.isArray(r.timeline)) r.timeline = [];
+          r.timeline.push({
+            date: new Date().toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }),
+            title: 'HR Reassigned',
+            desc: `Case ownership transferred from ${previousHrName} to ${newHr.name} by Admin (${admin.name}). Reason: ${reason || 'Workload rebalance'}`,
+            actor: admin.name
+          });
+        }
+      }
+
+      // Record assignment history entry
+      const historyEntry = {
+        id: `ASGN-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 1000)}`,
+        employeeId: employee.id,
+        employeeName: employee.name,
+        previousHrId,
+        previousHrName,
+        newHrId: newHr.id,
+        newHrName: newHr.name,
+        assignedById: admin.id,
+        assignedByName: admin.name,
+        assignedBy: {
+          id: admin.id,
+          name: admin.name,
+          role: 'ADMIN'
+        },
+        reason: reason || 'Administrative reassignment',
+        timestamp: new Date().toISOString()
+      };
+
+      if (!Array.isArray(state.assignmentHistory)) state.assignmentHistory = [];
+      state.assignmentHistory.unshift(historyEntry);
+
+      addAuditLog({
+        actor: admin.name,
+        actorId: admin.id,
+        action: 'EMPLOYEE_HR_REASSIGNED',
+        resource: 'ASSIGNMENT',
+        resourceId: employee.id,
+        description: `Admin ${admin.name} reassigned employee ${employee.name} (${employee.id}) from ${previousHrName} (${previousHrId || 'none'}) to ${newHr.name} (${newHr.id}). Reason: ${reason || 'Administrative reassignment'}.`
+      });
+
+      persistState();
+
+      broadcastEvent('ASSIGNMENT_UPDATED', {
+        employee,
+        assignment: historyEntry,
+        previousHrId,
+        newHrId: newHr.id
+      });
+      broadcastEvent('REQUESTS_UPDATED', { requestsCount: state.requests.length });
+
+      return sendJson(200, {
+        success: true,
+        message: `Successfully reassigned ${employee.name} to ${newHr.name}.`,
+        employee,
+        assignment: historyEntry
+      });
+    }
+
+    // 12. Admin Get All Employee Assignments
+    if (path === '/api/v1/admin/assignments' && req.method === 'GET') {
+      const admin = verifyAdminAuthorization(req, res, sendJson);
+      if (!admin) return;
+
+      const assignments = Object.values(state.users || {})
+        .filter(u => u && !u.isHr && !getUserRoles(u).includes('ADMIN'))
+        .map(u => ({
+          employeeId: u.id,
+          employeeName: u.name,
+          email: u.email,
+          department: u.department,
+          avatar: u.avatar || u.avatarUrl,
+          assignedHrId: u.assignedHrId,
+          assignedHr: u.assignedHr,
+          openRequestsCount: (state.requests || []).filter(r =>
+            ((r.employeeId && r.employeeId.toLowerCase() === u.id.toLowerCase()) ||
+             (r.employee?.id && r.employee.id.toLowerCase() === u.id.toLowerCase())) &&
+            r.status !== 'resolved'
+          ).length
+        }));
+
+      return sendJson(200, assignments);
+    }
+
+    // 13. Admin Get Assignment History Audit Trail
+    if (path === '/api/v1/admin/assignment-history' && req.method === 'GET') {
+      const admin = verifyAdminAuthorization(req, res, sendJson);
+      if (!admin) return;
+
+      let history = Array.isArray(state.assignmentHistory) ? [...state.assignmentHistory] : [];
+      const { employeeId, hrId } = parsed.query || {};
+      if (employeeId) {
+        history = history.filter(h => h.employeeId?.toLowerCase() === String(employeeId).toLowerCase());
+      }
+      if (hrId) {
+        history = history.filter(h =>
+          h.newHrId?.toLowerCase() === String(hrId).toLowerCase() ||
+          h.previousHrId?.toLowerCase() === String(hrId).toLowerCase()
+        );
+      }
+      return sendJson(200, history);
+    }
+
+    // 14. HR Specialist: Get My Assigned Employees
+    if (path === '/api/v1/hr/assigned-employees' && req.method === 'GET') {
+      const user = getSessionUser(req, false);
+      if (!user) {
+        return sendJson(401, { error: 'Authentication required. Missing Authorization token.' });
+      }
+      const roles = getUserRoles(user);
+      const isAdmin = roles.includes('ADMIN');
+      const isHr = user.isHr || roles.some(r => r.startsWith('HR_'));
+      if (!isAdmin && !isHr) {
+        return sendJson(403, { error: 'Forbidden: HR specialist or Administrator access required.' });
+      }
+
+      const targetHrId = (isAdmin && parsed.query.hrId) ? String(parsed.query.hrId) : user.id;
+
+      const assignedEmployees = Object.values(state.users || {})
+        .filter(u => u && !u.isHr && String(u.assignedHrId || '').toLowerCase() === String(targetHrId).toLowerCase())
+        .map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          department: u.department,
+          title: u.title || u.role,
+          avatar: u.avatar || u.avatarUrl,
+          assignedHrId: u.assignedHrId,
+          assignedHr: u.assignedHr,
+          openRequestsCount: (state.requests || []).filter(r =>
+            ((r.employeeId && r.employeeId.toLowerCase() === u.id.toLowerCase()) ||
+             (r.employee?.id && r.employee.id.toLowerCase() === u.id.toLowerCase())) &&
+            r.status !== 'resolved'
+          ).length
+        }));
+
+      return sendJson(200, assignedEmployees);
+    }
+
+    // 15. HR / Admin: Active HR Specialists Roster (for assignment dropdowns)
+    if ((path === '/api/v1/hr/active-specialists' || path === '/api/v1/admin/hr-specialists') && req.method === 'GET') {
+      const specialists = Object.values(state.users || {})
+        .filter(u => u && u.status !== 'inactive' && (u.isHr || getUserRoles(u).some(r => r.startsWith('HR_'))))
+        .map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          department: u.department,
+          role: u.role,
+          title: u.title || u.role,
+          avatar: u.avatar || u.avatarUrl,
+          activeCasesCount: (state.requests || []).filter(r =>
+            (r.assignedHrId === u.id || r.assignedToId === u.id) && r.status !== 'resolved'
+          ).length
+        }));
+
+      return sendJson(200, specialists);
     }
 
     // Health check

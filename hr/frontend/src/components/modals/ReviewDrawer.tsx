@@ -276,6 +276,11 @@ export const ReviewDrawer: React.FC<ReviewDrawerProps> = ({
                 </span>
                 <span className="text-[11px] font-mono text-white/50">
                   • Submitted by <strong className="text-white/90">{empName}</strong> ({empDept}) • {empEmail}
+                  {(item.assignedHr || (item as any).assignedTo) && (
+                    <span className="ml-2 px-2 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-sans font-medium">
+                      Dedicated HR: {item.assignedHr || (item as any).assignedTo}
+                    </span>
+                  )}
                 </span>
               </div>
               <div className="text-xs sm:text-sm text-white/95 font-light leading-relaxed whitespace-pre-line bg-white/[0.02] p-3 rounded-xl border border-white/5">

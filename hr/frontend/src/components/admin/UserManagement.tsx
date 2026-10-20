@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { adminService } from '../../services/adminService';
-import { AdminUser } from '../../types/admin';
+import { AdminUser, HrAssignmentRecord } from '../../types/admin';
 import { AdminDataTable, Column } from './AdminDataTable';
 import { SearchFilterBar, FilterGroup } from './SearchFilterBar';
 import { AdminModal } from './AdminModal';
@@ -19,7 +19,10 @@ import {
   RefreshCw,
   Loader2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  History,
+  UserCog,
+  ArrowRight
 } from 'lucide-react';
 
 export const UserManagement: React.FC = () => {
@@ -41,6 +44,19 @@ export const UserManagement: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+
+  // HR Assignment States
+  const [hrSpecialists, setHrSpecialists] = useState<any[]>([]);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [employeeToAssign, setEmployeeToAssign] = useState<AdminUser | null>(null);
+  const [targetHrId, setTargetHrId] = useState<string>('');
+  const [reassignReason, setReassignReason] = useState<string>('');
+  const [isSavingAssignment, setIsSavingAssignment] = useState(false);
+
+  // Assignment History States
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [assignmentHistoryList, setAssignmentHistoryList] = useState<HrAssignmentRecord[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // Deactivate Confirm State
   const [userToDeactivate, setUserToDeactivate] = useState<AdminUser | null>(null);
@@ -275,6 +291,58 @@ export const UserManagement: React.FC = () => {
     }
   };
 
+  // Handlers for HR Assignment
+  const openAssignModal = async (emp: AdminUser) => {
+    setEmployeeToAssign(emp);
+    setTargetHrId(emp.assignedHrId || '');
+    setReassignReason('');
+    setIsAssignModalOpen(true);
+    try {
+      const specialists = await adminService.getActiveHrSpecialists();
+      setHrSpecialists(specialists);
+      if (!emp.assignedHrId && specialists.length > 0) {
+        setTargetHrId(specialists[0].id);
+      }
+    } catch (err) {
+      console.error('Failed to load HR specialists', err);
+    }
+  };
+
+  const handleAssignSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!employeeToAssign || !targetHrId) return;
+
+    setIsSavingAssignment(true);
+    try {
+      await adminService.assignEmployeeHr({
+        employeeId: employeeToAssign.id,
+        hrId: targetHrId,
+        reason: reassignReason || 'Administrative reassignment'
+      });
+      showToast(`Employee ${employeeToAssign.name} reassigned to new HR specialist successfully.`, 'success');
+      setIsAssignModalOpen(false);
+      setEmployeeToAssign(null);
+      fetchUsers();
+    } catch (err: any) {
+      showToast(err.message || 'Failed to reassign HR specialist', 'error');
+    } finally {
+      setIsSavingAssignment(false);
+    }
+  };
+
+  const openHistoryModal = async () => {
+    setIsHistoryModalOpen(true);
+    setIsLoadingHistory(true);
+    try {
+      const history = await adminService.getAssignmentHistory();
+      setAssignmentHistoryList(history);
+    } catch (err: any) {
+      showToast(err.message || 'Failed to load assignment history', 'error');
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
   // Table Columns Definition
   const columns: Column<AdminUser>[] = [
     {
@@ -349,6 +417,36 @@ export const UserManagement: React.FC = () => {
                 </span>
               );
             })}
+          </div>
+        );
+      }
+    },
+    {
+      key: 'assignedHr',
+      header: 'Assigned HR Specialist',
+      sortable: true,
+      render: (u) => {
+        const isEmployee = (u.role === 'EMPLOYEE' || u.systemRole === 'EMPLOYEE' || (Array.isArray(u.roles) && u.roles.includes('EMPLOYEE')));
+        if (!isEmployee) {
+          return <span className="text-slate-500 text-xs italic">—</span>;
+        }
+        return (
+          <div className="flex items-center gap-2">
+            <span className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-medium flex items-center gap-1.5">
+              <UserCog className="w-3.5 h-3.5 text-indigo-400" />
+              {typeof u.assignedHr === 'object' && u.assignedHr ? (u.assignedHr as any).name : (u.assignedHr || 'Unassigned')}
+            </span>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                openAssignModal(u);
+              }}
+              className="px-2 py-0.5 rounded-md bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30 hover:border-violet-500/50 transition-colors text-[10px] font-semibold cursor-pointer"
+              title="Change assigned HR"
+            >
+              Reassign
+            </button>
           </div>
         );
       }
@@ -449,6 +547,15 @@ export const UserManagement: React.FC = () => {
         filters={filterGroups}
         actions={
           <>
+            <button
+              type="button"
+              onClick={openHistoryModal}
+              className="h-10 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-slate-700/60 dark:border-white/10 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-2 cursor-pointer shadow-sm transition-all"
+              title="View HR Assignment Audit Log"
+            >
+              <History className="w-3.5 h-3.5 text-violet-400" />
+              <span>Assignment History</span>
+            </button>
             <button
               type="button"
               onClick={fetchUsers}
@@ -852,6 +959,150 @@ export const UserManagement: React.FC = () => {
         variant="danger"
         isLoading={isDeactivating}
       />
+
+      {/* ---------------------------------------------------- */}
+      {/* REASSIGN HR MODAL */}
+      {/* ---------------------------------------------------- */}
+      <AdminModal
+        isOpen={isAssignModalOpen}
+        onClose={() => !isSavingAssignment && setIsAssignModalOpen(false)}
+        title="Reassign Dedicated HR Specialist"
+        subtitle={`Select an active HR specialist for employee ${employeeToAssign?.name || ''} (${employeeToAssign?.id || ''})`}
+        size="md"
+        footer={
+          <>
+            <button
+              type="button"
+              onClick={() => setIsAssignModalOpen(false)}
+              disabled={isSavingAssignment}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleAssignSubmit}
+              disabled={isSavingAssignment || !targetHrId}
+              className="px-5 py-2 rounded-xl text-xs font-bold bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-950/50 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {isSavingAssignment && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>Confirm Reassignment</span>
+            </button>
+          </>
+        }
+      >
+        <form onSubmit={handleAssignSubmit} className="space-y-4">
+          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-200 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-400" />
+            <div>
+              <p className="font-semibold text-amber-300 mb-0.5">Strict Access Transfer Notice</p>
+              <p className="text-slate-300 text-[11px] leading-relaxed">
+                Reassigning this employee immediately transfers all active ticket management and request review access to the new HR specialist. The previous HR specialist immediately loses visibility into this employee's requests and data.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-mono text-slate-400 block mb-1">CURRENT DEDICATED HR</label>
+            <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-slate-300 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-slate-400" />
+              <span>{typeof employeeToAssign?.assignedHr === 'object' && employeeToAssign.assignedHr ? (employeeToAssign.assignedHr as any).name : (employeeToAssign?.assignedHr || 'Currently Unassigned')}</span>
+              {employeeToAssign?.assignedHrId && (
+                <span className="text-[10px] text-slate-500">({employeeToAssign.assignedHrId})</span>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-mono text-slate-400 block mb-1">SELECT NEW HR SPECIALIST *</label>
+            <select
+              value={targetHrId}
+              onChange={(e) => setTargetHrId(e.target.value)}
+              className="w-full h-11 px-3 rounded-xl bg-slate-900 border border-white/20 focus:border-violet-500 text-xs text-white outline-none cursor-pointer"
+            >
+              <option value="" disabled>Select an active HR Specialist</option>
+              {hrSpecialists.map((hr) => (
+                <option key={hr.id} value={hr.id}>
+                  {hr.name} ({hr.id}) — {hr.role}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-mono text-slate-400 block mb-1">REASON / AUDIT NOTE</label>
+            <textarea
+              rows={2}
+              value={reassignReason}
+              onChange={(e) => setReassignReason(e.target.value)}
+              placeholder="e.g. Workload balancing, department rotation, personnel shift..."
+              className="w-full p-3 rounded-xl bg-white/5 border border-white/15 focus:border-violet-500 text-xs text-white outline-none resize-none"
+            />
+          </div>
+        </form>
+      </AdminModal>
+
+      {/* ---------------------------------------------------- */}
+      {/* ASSIGNMENT HISTORY AUDIT TRAIL MODAL */}
+      {/* ---------------------------------------------------- */}
+      <AdminModal
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+        title="Employee-to-HR Assignment Audit Trail"
+        subtitle="Complete chronological history of HR specialist assignments and reassignments"
+        size="lg"
+        footer={
+          <button
+            type="button"
+            onClick={() => setIsHistoryModalOpen(false)}
+            className="px-4 py-2 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white cursor-pointer"
+          >
+            Close
+          </button>
+        }
+      >
+        <div className="space-y-3">
+          {isLoadingHistory ? (
+            <div className="py-12 flex flex-col items-center justify-center gap-3 text-slate-400">
+              <Loader2 className="w-6 h-6 animate-spin text-violet-400" />
+              <p className="text-xs font-mono">Loading assignment audit logs...</p>
+            </div>
+          ) : assignmentHistoryList.length === 0 ? (
+            <div className="py-10 text-center text-slate-400 text-xs">
+              No reassignment records logged yet. Initial system state is active.
+            </div>
+          ) : (
+            <div className="max-h-[60vh] overflow-y-auto space-y-2 pr-1">
+              {assignmentHistoryList.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-3.5 rounded-xl bg-white/[0.02] border border-white/10 hover:border-violet-500/30 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <span className="font-semibold text-white text-xs">
+                      {item.employeeName} <span className="font-mono text-slate-400 text-[10px]">({item.employeeId})</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-400">
+                      {new Date(item.timestamp).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs py-1.5 px-2.5 rounded-lg bg-black/30 border border-white/5 font-mono mb-2">
+                    <span className="text-slate-400">{item.previousHrName || item.previousHrId || 'None'}</span>
+                    <ArrowRight className="w-3.5 h-3.5 text-violet-400 flex-shrink-0" />
+                    <span className="text-violet-300 font-bold">{item.newHrName || item.newHrId}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-[11px] text-slate-400">
+                    <span>Assigned By: <strong className="text-slate-200">{item.assignedByName || (typeof item.assignedBy === 'object' ? item.assignedBy?.name : item.assignedBy) || 'Administrator'}</strong></span>
+                    {item.reason && <span className="italic text-slate-400">"{item.reason}"</span>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </AdminModal>
     </div>
   );
 };

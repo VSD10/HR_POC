@@ -44,6 +44,23 @@ let state = {
 // Simulate network delay in mock mode for realistic enterprise UI feedback
 const delay = (ms = 180) => new Promise(resolve => setTimeout(resolve, ms));
 
+export function getAuthHeaders(): HeadersInit {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json'
+  };
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('hr_auth_token') || localStorage.getItem('hr_active_user_id');
+    const activeUserId = localStorage.getItem('hr_active_user_id');
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    if (activeUserId) {
+      headers['x-user-id'] = activeUserId;
+    }
+  }
+  return headers;
+}
+
 type SyncListener = (event: { type: string; data: any }) => void;
 const syncListeners = new Set<SyncListener>();
 
@@ -66,19 +83,35 @@ if (typeof window !== 'undefined') {
       es.addEventListener('REQUEST_CREATED', (e: MessageEvent) => {
         try {
           const payload = JSON.parse(e.data);
+          const currentUserId = typeof window !== 'undefined' ? (localStorage.getItem('hr_active_user_id') || '').toLowerCase() : '';
+          const currentPortal = typeof window !== 'undefined' ? (localStorage.getItem('hr_active_portal') || '') : '';
+          const isAdminPortal = currentPortal === 'admin';
+
           if (payload.request) {
             const req = payload.request;
-            if (!state.requests.some(r => r.id === req.id || (r.id && req.id && r.id.toLowerCase() === req.id.toLowerCase()))) {
-              state.requests.unshift(req);
+            const reqHrId = String(req.assignedHrId || req.assignedToId || '').toLowerCase();
+            const reqEmpId = String(req.employeeId || req.employee?.id || '').toLowerCase();
+            const isAssignedToMe = (reqHrId && reqHrId === currentUserId) || (reqEmpId && reqEmpId === currentUserId);
+
+            if (isAdminPortal || isAssignedToMe) {
+              if (!state.requests.some(r => r.id === req.id || (r.id && req.id && r.id.toLowerCase() === req.id.toLowerCase()))) {
+                state.requests.unshift(req);
+              }
             }
           }
-          if (payload.triageItem && !state.triageQueue.some(t => t.id === payload.triageItem.id)) {
-            state.triageQueue.unshift(payload.triageItem);
+          if (payload.triageItem) {
+            const reqHrId = String(payload.request?.assignedHrId || payload.request?.assignedToId || '').toLowerCase();
+            if (isAdminPortal || !reqHrId || reqHrId === currentUserId) {
+              if (!state.triageQueue.some(t => t.id === payload.triageItem.id)) {
+                state.triageQueue.unshift(payload.triageItem);
+              }
+            }
           }
           if (payload.activity && !state.activities.some(a => a.id === payload.activity.id)) {
             state.activities.unshift(payload.activity);
           }
-          if (payload.metrics) state.metrics = payload.metrics;
+          // Re-fetch strictly user-scoped metrics instead of adopting global counts
+          hrService.getMetrics().catch(() => {});
           if (payload.categoryVolumes) state.categoryVolumes = payload.categoryVolumes;
           syncListeners.forEach(fn => fn({ type: 'REQUEST_CREATED', data: payload }));
         } catch (err) {
@@ -89,23 +122,62 @@ if (typeof window !== 'undefined') {
       es.addEventListener('REQUEST_UPDATED', (e: MessageEvent) => {
         try {
           const payload = JSON.parse(e.data);
+          const currentUserId = typeof window !== 'undefined' ? (localStorage.getItem('hr_active_user_id') || '').toLowerCase() : '';
+          const currentPortal = typeof window !== 'undefined' ? (localStorage.getItem('hr_active_portal') || '') : '';
+          const isAdminPortal = currentPortal === 'admin';
+
           if (payload.request) {
             const req = payload.request;
+            const reqHrId = String(req.assignedHrId || req.assignedToId || '').toLowerCase();
+            const reqEmpId = String(req.employeeId || req.employee?.id || '').toLowerCase();
+            const isAssignedToMe = (reqHrId && reqHrId === currentUserId) || (reqEmpId && reqEmpId === currentUserId);
+
             const idx = state.requests.findIndex(r => r.id === req.id || (r.id && req.id && r.id.toLowerCase() === req.id.toLowerCase()));
-            if (idx >= 0) {
-              state.requests[idx] = { ...state.requests[idx], ...req };
-            } else {
-              state.requests.unshift(req);
+            if (isAdminPortal || isAssignedToMe) {
+              if (idx >= 0) {
+                state.requests[idx] = { ...state.requests[idx], ...req };
+              } else {
+                state.requests.unshift(req);
+              }
+            } else if (idx >= 0) {
+              state.requests.splice(idx, 1);
             }
           }
           if (payload.activity && !state.activities.some(a => a.id === payload.activity.id)) {
             state.activities.unshift(payload.activity);
           }
-          if (payload.metrics) state.metrics = payload.metrics;
+          // Re-fetch user-scoped metrics
+          hrService.getMetrics().catch(() => {});
           if (payload.categoryVolumes) state.categoryVolumes = payload.categoryVolumes;
           syncListeners.forEach(fn => fn({ type: 'REQUEST_UPDATED', data: payload }));
         } catch (err) {
           console.warn('[HR Live Sync] Error handling REQUEST_UPDATED:', err);
+        }
+      });
+
+      es.addEventListener('REQUESTS_CLEANED', (e: MessageEvent) => {
+        try {
+          const payload = JSON.parse(e.data);
+          state.requests = [];
+          state.triageQueue = [];
+          state.metrics = {
+            ...initialMetrics,
+            openRequests: { count: 0, changePercent: 0, comparisonText: "0 open" },
+            highPriority: { count: 0, requiresAttention: 0 },
+            pendingHRActions: { count: 0, waitingOver24h: 0 },
+            resolvedOvernight: 0,
+            aiTriagedToday: 0
+          };
+          if (typeof window !== 'undefined') {
+            try {
+              localStorage.removeItem('hr_admin_requests');
+              const uid = localStorage.getItem('hr_active_user_id');
+              if (uid) localStorage.removeItem(`hr_requests_${uid}`);
+            } catch {}
+          }
+          syncListeners.forEach(fn => fn({ type: 'REQUESTS_CLEANED', data: payload }));
+        } catch (err) {
+          console.warn('[HR Live Sync] Error handling REQUESTS_CLEANED:', err);
         }
       });
 
@@ -205,7 +277,9 @@ export const hrService = {
 
   async getMetrics(): Promise<DashboardMetrics> {
     try {
-      const res = await fetch('http://localhost:8000/api/v1/dashboard/metrics');
+      const res = await fetch('http://localhost:8000/api/v1/dashboard/metrics', {
+        headers: getAuthHeaders()
+      });
       if (res.ok) {
         const data = await res.json();
         state.metrics = data;
@@ -222,7 +296,9 @@ export const hrService = {
 
   async getVelocity(range: '7D' | '30D' | '90D'): Promise<VelocityData> {
     try {
-      const res = await fetch(`http://localhost:8000/api/v1/dashboard/velocity?range=${range}`);
+      const res = await fetch(`http://localhost:8000/api/v1/dashboard/velocity?range=${range}`, {
+        headers: getAuthHeaders()
+      });
       if (res.ok) {
         return await res.json();
       }
@@ -242,7 +318,9 @@ export const hrService = {
       if (priority && priority !== 'all') params.append('priority', priority);
       if (search) params.append('search', search);
 
-      const res = await fetch(`http://localhost:8000/api/v1/requests?${params.toString()}`);
+      const res = await fetch(`http://localhost:8000/api/v1/requests?${params.toString()}`, {
+        headers: getAuthHeaders()
+      });
       if (res.ok) {
         const data = await res.json();
         state.requests = data;
@@ -354,9 +432,13 @@ export const hrService = {
   async reviewRequest(id: string, notes: string, status: 'resolved' | 'in_review' = 'resolved'): Promise<RequestItem> {
     const statusUpper = status === 'resolved' ? 'RESOLVED' : 'IN PROGRESS';
     try {
+      const token = typeof window !== 'undefined' ? (localStorage.getItem('hr_auth_token') || localStorage.getItem('hr_active_user_id')) : null;
       const res = await fetch(`http://localhost:8000/api/v1/requests/${encodeURIComponent(id)}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           status,
           statusUpper,
@@ -411,7 +493,9 @@ export const hrService = {
 
   async getTriageQueue(): Promise<AITriageItem[]> {
     try {
-      const res = await fetch('http://localhost:8000/api/v1/triage/queue');
+      const res = await fetch('http://localhost:8000/api/v1/triage/queue', {
+        headers: getAuthHeaders()
+      });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -421,6 +505,31 @@ export const hrService = {
       }
     } catch {}
     return [...state.triageQueue];
+  },
+
+  async cleanupAllRequests(): Promise<{ success: boolean; message: string }> {
+    try {
+      const res = await fetch('http://localhost:8000/api/v1/requests/cleanup', {
+        method: 'POST',
+        headers: getAuthHeaders()
+      });
+      if (res.ok) {
+        state.requests = [];
+        state.triageQueue = [];
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.removeItem('hr_admin_requests');
+            const uid = localStorage.getItem('hr_active_user_id');
+            if (uid) localStorage.removeItem(`hr_requests_${uid}`);
+          } catch {}
+        }
+        return await res.json();
+      }
+    } catch {}
+
+    state.requests = [];
+    state.triageQueue = [];
+    return { success: true, message: 'Requests cleaned up successfully' };
   },
 
   async overrideTriage(triageId: string, newCategory: any): Promise<void> {
@@ -1119,9 +1228,13 @@ export const hrService = {
     avatar?: string
   ): Promise<RequestComment> {
     try {
+      const token = typeof window !== 'undefined' ? (localStorage.getItem('hr_auth_token') || localStorage.getItem('hr_active_user_id')) : null;
       const res = await fetch(`http://localhost:8000/api/v1/requests/${encodeURIComponent(requestId)}/comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           author,
           text,
@@ -1463,5 +1576,39 @@ ${userQuery || 'Analyze this request and recommend appropriate action.'}`;
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(blobUrl);
+  },
+
+  async getSystemSettings(): Promise<any> {
+    try {
+      const cached = localStorage.getItem('hr_system_settings');
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    try {
+      const res = await fetch('http://localhost:8000/api/v1/admin/settings', {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('hr_auth_token') || 'token_HR001'}`
+        }
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+    return null;
+  },
+
+  async saveSystemSettings(settings: any): Promise<any> {
+    try {
+      localStorage.setItem('hr_system_settings', JSON.stringify(settings));
+    } catch {}
+    try {
+      const res = await fetch('http://localhost:8000/api/v1/admin/settings', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('hr_auth_token') || 'token_HR001'}`
+        },
+        body: JSON.stringify(settings)
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+    return { success: true, settings };
   }
 };

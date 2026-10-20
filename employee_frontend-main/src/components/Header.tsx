@@ -22,6 +22,7 @@ interface HeaderProps {
   onToggleMobileMenu?: () => void;
   onOpenMobileSidebar?: () => void;
   unreadCount: number;
+  assignedHr?: string;
 }
 
 const screenTitleMap: Record<ScreenId, string> = {
@@ -45,6 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMobileMenu,
   onOpenMobileSidebar,
   unreadCount,
+  assignedHr,
 }) => {
   const active = activeScreen || currentScreen || 'dashboard';
   const handleNavigate = onNavigate || onSelectScreen || (() => {});
@@ -134,6 +136,13 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </button>
 
+        {assignedHr && (
+          <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 rounded-xl bg-teal-500/10 border border-teal-500/20 text-teal-700 dark:text-teal-300 text-xs font-medium">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse" />
+            <span>Dedicated HR: <strong className="font-semibold">{assignedHr}</strong></span>
+          </div>
+        )}
+
         <div className="h-6 w-px bg-slate-200/70 dark:bg-white/15 mx-0.5 sm:mx-1"></div>
 
         {/* Profile Chip */}
@@ -171,6 +180,12 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="inline-block mt-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 bg-teal-50 dark:bg-teal-500/20 text-teal-700 dark:text-teal-300 rounded-full border border-teal-200/50 dark:border-teal-500/30">
                   ID: {CURRENT_USER.employeeId}
                 </span>
+                {assignedHr && (
+                  <div className="mt-2 pt-2 border-t border-white/40 dark:border-white/10 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500 dark:text-slate-400">Dedicated HR:</span>
+                    <span className="font-semibold text-teal-700 dark:text-teal-300">{assignedHr}</span>
+                  </div>
+                )}
               </div>
 
               <button

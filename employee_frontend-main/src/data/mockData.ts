@@ -3,10 +3,11 @@ export { ASSETS };
 import { EmployeeProfile, HrRequest, HolidayItem, LeaveBalance, PolicyItem, NotificationItem } from '../types';
 
 export const CURRENT_USER: EmployeeProfile = {
-  id: 'EMP-20491',
+  id: 'EMP002',
+  employeeId: 'EMP002',
   name: 'Rupam Sharma',
   role: 'Lead Full-Stack Engineer',
-  department: 'Core Platform & AI Systems',
+  department: 'Product Engineering',
   avatar: ASSETS.avatar,
   email: 'rupam.sharma@enterprise.org',
   workLocation: 'Bengaluru Tech Park / Hybrid',

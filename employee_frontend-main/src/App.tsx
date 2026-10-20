@@ -58,6 +58,7 @@ export default function App() {
   const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS);
   const [leaveBalance, setLeaveBalance] = useState<LeaveBalance>(INITIAL_LEAVE_BALANCE);
   const [policies, setPolicies] = useState<PolicyItem[]>(POLICIES);
+  const [assignedHr, setAssignedHr] = useState<string>('Sarah Jenkins (HR Ops)');
 
   // Modal States
   const [selectedRequest, setSelectedRequest] = useState<HrRequest | null>(null);
@@ -107,11 +108,22 @@ export default function App() {
   useEffect(() => {
     async function loadRequestsFromDatabase() {
       try {
-        const res = await fetch('http://localhost:8000/api/v1/requests');
+        const res = await fetch(`http://localhost:8000/api/v1/requests?employeeId=${encodeURIComponent(CURRENT_USER.id)}`);
         if (res.ok) {
           const serverReqs = await res.json();
           if (Array.isArray(serverReqs)) {
-            const mapped: HrRequest[] = serverReqs.map((r: any) => {
+            // Strictly display only tickets belonging to the authenticated user
+            const myRawReqs = serverReqs.filter((r: any) => {
+              const uid = String(CURRENT_USER.id).toLowerCase();
+              const uEmail = String(CURRENT_USER.email || '').toLowerCase();
+              return (
+                (r.employeeId && String(r.employeeId).toLowerCase() === uid) ||
+                (r.employee?.id && String(r.employee.id).toLowerCase() === uid) ||
+                (r.employee?.email && String(r.employee.email).toLowerCase() === uEmail)
+              );
+            });
+
+            const mapped: HrRequest[] = myRawReqs.map((r: any) => {
               const cat = (r.category === 'leave' || r.category?.toLowerCase() === 'leave') ? 'Leave & Time'
                 : (r.category === 'payroll' || r.category?.toLowerCase() === 'payroll') ? 'Payroll'
                 : (r.category === 'benefits' || r.category?.toLowerCase() === 'benefits' || r.category === 'Employee Info') ? 'Employee Info'
@@ -156,6 +168,18 @@ export default function App() {
             } catch {}
           }
         }
+
+        // Also fetch live leave balance for the user
+        const balRes = await fetch(`http://localhost:8000/api/v1/users/${encodeURIComponent(CURRENT_USER.id)}`);
+        if (balRes.ok) {
+          const userData = await balRes.json();
+          if (userData?.leaveBalance) {
+            setLeaveBalance(userData.leaveBalance);
+          }
+          if (userData?.assignedHr) {
+            setAssignedHr(userData.assignedHr);
+          }
+        }
       } catch (err) {
         console.warn('Could not fetch initial requests from server:', err);
       }
@@ -179,11 +203,40 @@ export default function App() {
           console.log('[Employee Portal] Connected to Central HR Sync Stream');
         };
 
+        es.addEventListener('LEAVE_BALANCE_UPDATED', (e: MessageEvent) => {
+          try {
+            const payload = JSON.parse(e.data);
+            if (payload.employeeId === CURRENT_USER.id && payload.leaveBalance) {
+              setLeaveBalance(payload.leaveBalance);
+              showToast('✨ Leave balance updated by HR Operations.');
+            }
+          } catch {}
+        });
+
+        es.addEventListener('ASSIGNMENT_UPDATED', (e: MessageEvent) => {
+          try {
+            const payload = JSON.parse(e.data);
+            if (payload.employeeId === CURRENT_USER.id) {
+              const newHr = payload.newHrName || payload.newHrId;
+              setAssignedHr(newHr);
+              showToast(`✨ Dedicated HR Specialist reassigned to ${newHr}.`);
+            }
+          } catch {}
+        });
+
         es.addEventListener('REQUEST_UPDATED', (e: MessageEvent) => {
           try {
             const payload = JSON.parse(e.data);
             const updated = payload.request;
             if (updated) {
+              const uid = String(CURRENT_USER.id).toLowerCase();
+              const uEmail = String(CURRENT_USER.email || '').toLowerCase();
+              const isMine = (updated.employeeId && String(updated.employeeId).toLowerCase() === uid) ||
+                             (updated.employee?.id && String(updated.employee.id).toLowerCase() === uid) ||
+                             (updated.employee?.email && String(updated.employee.email).toLowerCase() === uEmail);
+
+              if (!isMine) return;
+
               const newStatus: any = (updated.status === 'resolved' || updated.statusUpper === 'RESOLVED')
                 ? 'RESOLVED'
                 : (updated.status === 'in_review' || updated.statusUpper === 'IN PROGRESS')
@@ -227,6 +280,14 @@ export default function App() {
             const payload = JSON.parse(e.data);
             const item = payload.request;
             if (item) {
+              const uid = String(CURRENT_USER.id).toLowerCase();
+              const uEmail = String(CURRENT_USER.email || '').toLowerCase();
+              const isMine = (item.employeeId && String(item.employeeId).toLowerCase() === uid) ||
+                             (item.employee?.id && String(item.employee.id).toLowerCase() === uid) ||
+                             (item.employee?.email && String(item.employee.email).toLowerCase() === uEmail);
+
+              if (!isMine) return;
+
               setRequests((prev) => {
                 if (prev.some((r) => r.id === item.id || (r.id && item.id && r.id.toLowerCase() === item.id.toLowerCase()))) {
                   return prev;
@@ -338,6 +399,7 @@ export default function App() {
           id: fullReq.id,
           title: fullReq.subject,
           subject: fullReq.subject,
+          employeeId: CURRENT_USER.id,
           category: fullReq.category,
           priority: fullReq.priority,
           status: 'open',
@@ -416,6 +478,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           author: CURRENT_USER.name,
+          authorId: CURRENT_USER.id,
           avatar: ASSETS.avatar,
           text: commentText,
           isHr: false
@@ -541,6 +604,7 @@ export default function App() {
         <Header
           activeScreen={activeScreen}
           unreadCount={unreadCount}
+          assignedHr={assignedHr}
           onOpenSearch={() => setShowSearchModal(true)}
           onOpenMobileSidebar={() => setIsMobileSidebarOpen(true)}
           onNavigate={(screen) => setActiveScreen(screen)}

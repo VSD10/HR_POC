@@ -23,13 +23,20 @@ export const SettingsView: React.FC = () => {
 
   useEffect(() => {
     let mounted = true;
-    const fetchStatus = async () => {
+    const fetchStatusAndSettings = async () => {
       const st = await hrService.getGmailStatus();
       if (mounted && st) {
         setGmailStatus(st);
       }
+      const savedSettings = await hrService.getSystemSettings();
+      if (mounted && savedSettings) {
+        if (savedSettings.modelTemp !== undefined) setModelTemp(String(savedSettings.modelTemp));
+        if (savedSettings.autoRouteThreshold !== undefined) setAutoRouteThreshold(String(savedSettings.autoRouteThreshold));
+        if (savedSettings.enableSlackSync !== undefined) setEnableSlackSync(Boolean(savedSettings.enableSlackSync));
+        if (savedSettings.enableEmailDigest !== undefined) setEnableEmailDigest(Boolean(savedSettings.enableEmailDigest));
+      }
     };
-    fetchStatus();
+    fetchStatusAndSettings();
     return () => { mounted = false; };
   }, []);
 
@@ -65,8 +72,14 @@ export const SettingsView: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setSaved(true);
+    await hrService.saveSystemSettings({
+      modelTemp,
+      autoRouteThreshold,
+      enableSlackSync,
+      enableEmailDigest
+    });
     setTimeout(() => setSaved(false), 2000);
   };
 

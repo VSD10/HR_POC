@@ -160,10 +160,17 @@ export const AskHrView: React.FC<AskHrViewProps> = ({
       setIsTyping(false);
       
       try {
+        const historyPayload = messages
+          .filter((m) => m.text && !m.text.startsWith('New conversation started'))
+          .map((m) => ({
+            role: m.sender === 'user' ? 'user' : 'assistant',
+            content: m.text,
+          }));
+
         const res = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: query })
+          body: JSON.stringify({ question: query, history: historyPayload })
         });
         if (!res.ok) throw new Error('API failed');
         const data = await res.json();

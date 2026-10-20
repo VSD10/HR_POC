@@ -35,6 +35,50 @@ export interface AdminUser {
   title?: string;
   securityLevel?: number;
   tenure?: string;
+  assignedHrId?: string;
+  assignedHr?: {
+    id: string;
+    name: string;
+    email?: string;
+    department?: string;
+    title?: string;
+  };
+}
+
+export interface HrAssignmentRecord {
+  id: string;
+  employeeId: string;
+  employeeName: string;
+  previousHrId: string | null;
+  previousHrName: string | null;
+  newHrId: string;
+  newHrName: string;
+  assignedById?: string;
+  assignedByName?: string;
+  assignedBy?: {
+    id: string;
+    name: string;
+    role?: string;
+  } | string;
+  reason?: string;
+  timestamp: string;
+}
+
+export interface EmployeeAssignmentItem {
+  employeeId: string;
+  employeeName: string;
+  email: string;
+  department: string;
+  avatar?: string;
+  assignedHrId?: string;
+  assignedHr?: {
+    id: string;
+    name: string;
+    email?: string;
+    department?: string;
+    title?: string;
+  };
+  openRequestsCount?: number;
 }
 
 export interface AdminRole {
@@ -96,6 +140,7 @@ export interface AuditLogResponse {
 export type AdminTab = 
   | 'dashboard' 
   | 'users' 
+  | 'assignments'
   | 'roles' 
   | 'settings' 
   | 'audit-logs' 

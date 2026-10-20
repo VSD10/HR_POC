@@ -187,5 +187,83 @@ export const adminService = {
       console.error('[adminService] getAdminAuditLogs error:', err);
       throw err;
     }
+  },
+
+  /**
+   * Assign or reassign an employee to a specific HR specialist
+   */
+  async assignEmployeeHr(
+    employeeIdOrPayload: string | { employeeId: string; hrId: string; reason?: string },
+    hrId?: string,
+    reason?: string
+  ): Promise<{ success: boolean; message: string; employee: any; assignment: any }> {
+    try {
+      const payload = typeof employeeIdOrPayload === 'object'
+        ? employeeIdOrPayload
+        : { employeeId: employeeIdOrPayload, hrId: hrId!, reason };
+      return await request<{ success: boolean; message: string; employee: any; assignment: any }>('/admin/assign-hr', {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      });
+    } catch (err: any) {
+      console.error('[adminService] assignEmployeeHr error:', err);
+      throw err;
+    }
+  },
+
+  /**
+   * Fetch all employee assignments across the organization
+   */
+  async getEmployeeAssignments(): Promise<any[]> {
+    try {
+      return await request<any[]>('/admin/assignments');
+    } catch (err: any) {
+      console.error('[adminService] getEmployeeAssignments error:', err);
+      throw err;
+    }
+  },
+
+  /**
+   * Fetch assignment history audit trail
+   */
+  async getAssignmentHistory(params?: { employeeId?: string; hrId?: string }): Promise<any[]> {
+    try {
+      const query = new URLSearchParams();
+      if (params?.employeeId) query.append('employeeId', params.employeeId);
+      if (params?.hrId) query.append('hrId', params.hrId);
+      const qs = query.toString();
+      return await request<any[]>(`/admin/assignment-history${qs ? `?${qs}` : ''}`);
+    } catch (err: any) {
+      console.error('[adminService] getAssignmentHistory error:', err);
+      throw err;
+    }
+  },
+
+  /**
+   * Fetch active HR specialists roster for dropdowns
+   */
+  async getActiveHrSpecialists(): Promise<any[]> {
+    try {
+      return await request<any[]>('/hr/active-specialists');
+    } catch (err: any) {
+      console.error('[adminService] getActiveHrSpecialists error:', err);
+      throw err;
+    }
+  },
+
+  /**
+   * Fetch employees assigned to current HR specialist
+   */
+  async getAssignedEmployees(hrId?: string): Promise<any[]> {
+    try {
+      const query = new URLSearchParams();
+      if (hrId) query.append('hrId', hrId);
+      const qs = query.toString();
+      return await request<any[]>(`/hr/assigned-employees${qs ? `?${qs}` : ''}`);
+    } catch (err: any) {
+      console.error('[adminService] getAssignedEmployees error:', err);
+      throw err;
+    }
   }
 };
+

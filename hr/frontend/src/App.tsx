@@ -50,6 +50,7 @@ import {
 } from './services/mockData';
 
 function HROperationsPortal() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [metrics, setMetrics] = useState<DashboardMetrics>(initialMetrics);
   const [velocity, setVelocity] = useState<VelocityData>(velocityDataset['7D']);
@@ -80,20 +81,7 @@ function HROperationsPortal() {
     };
   };
 
-  const [requests, setRequests] = useState<RequestItem[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const cached = localStorage.getItem('hr_admin_requests');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            return parsed.map(sanitizeRequestItem);
-          }
-        }
-      } catch {}
-    }
-    return initialRequests.map(sanitizeRequestItem);
-  });
+  const [requests, setRequests] = useState<RequestItem[]>([]);
   const [triageQueue, setTriageQueue] = useState<AITriageItem[]>(initialTriageQueue);
   const [deliverables, setDeliverables] = useState<DeliverableItem[]>(initialDeliverables);
   const [hrActions, setHRActions] = useState<HRActionItem[]>(initialHRActions);
@@ -109,7 +97,16 @@ function HROperationsPortal() {
   const [mailStatus, setMailStatus] = useState<any>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Initial data loading & Live Mail Status
+  // Clean stale legacy global request cache from localStorage on load
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        localStorage.removeItem('hr_admin_requests');
+      } catch {}
+    }
+  }, []);
+
+  // Initial data loading & Live Mail Status scoped to active user
   useEffect(() => {
     async function loadData() {
       try {
@@ -130,14 +127,15 @@ function HROperationsPortal() {
         if (Array.isArray(reqs)) {
           const sanitized = reqs.map(sanitizeRequestItem);
           setRequests(sanitized);
-          try { localStorage.setItem('hr_admin_requests', JSON.stringify(sanitized)); } catch {}
+        } else {
+          setRequests([]);
         }
-        setTriageQueue(tQ);
-        setDeliverables(delivs);
-        setHRActions(acts);
-        setInsights(ins);
-        setCategories(cats);
-        setActivities(actLogs);
+        setTriageQueue(tQ || []);
+        setDeliverables(delivs || []);
+        setHRActions(acts || []);
+        setInsights(ins || []);
+        setCategories(cats || []);
+        setActivities(actLogs || []);
         if (vel) setVelocity(vel);
       } catch (err) {
         console.warn('Using local fallback state:', err);
@@ -156,12 +154,26 @@ function HROperationsPortal() {
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
-  }, [activeVelocityRange]);
+  }, [user?.id, activeVelocityRange]);
 
   // Real-time live synchronization across dual portals
   useEffect(() => {
     const unsubscribe = hrService.subscribe(async (event) => {
       try {
+        if (event.type === 'REQUESTS_CLEANED') {
+          setRequests([]);
+          setTriageQueue([]);
+          setMetrics({
+            ...initialMetrics,
+            openRequests: { count: 0, changePercent: 0, comparisonText: '0 active' },
+            highPriority: { count: 0, requiresAttention: 0 },
+            pendingHRActions: { count: 0, waitingOver24h: 0 },
+            resolvedOvernight: 0,
+            aiTriagedToday: 0
+          });
+          return;
+        }
+
         const [m, reqs, tQ, delivs, actLogs, cats, vel, ins] = await Promise.all([
           hrService.getMetrics(),
           hrService.getRequests(),
@@ -176,7 +188,6 @@ function HROperationsPortal() {
         if (Array.isArray(reqs)) {
           const sanitized = reqs.map(sanitizeRequestItem);
           setRequests(sanitized);
-          try { localStorage.setItem('hr_admin_requests', JSON.stringify(sanitized)); } catch {}
         }
         if (Array.isArray(tQ)) setTriageQueue(tQ);
         if (Array.isArray(delivs)) setDeliverables(delivs);
@@ -189,7 +200,7 @@ function HROperationsPortal() {
       }
     });
     return unsubscribe;
-  }, [activeVelocityRange]);
+  }, [user?.id, activeVelocityRange]);
 
   // Keyboard shortcut listener for Alt+T (Quick Triage) and Cmd+K
   useEffect(() => {
@@ -216,11 +227,7 @@ function HROperationsPortal() {
   // Create new request
   const handleCreateRequest = async (newReq: Partial<RequestItem>) => {
     const created = await hrService.createRequest(newReq);
-    setRequests(prev => {
-      const next = [created, ...prev.filter(r => r.id !== created.id)];
-      try { localStorage.setItem('hr_admin_requests', JSON.stringify(next)); } catch {}
-      return next;
-    });
+    setRequests(prev => [created, ...prev.filter(r => r.id !== created.id)]);
     const updatedMetrics = await hrService.getMetrics();
     setMetrics(updatedMetrics);
     const updatedActivities = await hrService.getActivities();
@@ -232,15 +239,13 @@ function HROperationsPortal() {
   // Resolve / Review request
   const handleResolveRequest = async (id: string, notes: string) => {
     await hrService.reviewRequest(id, notes, 'resolved');
-    setRequests(prev => {
-      const next = prev.map(r => 
+    setRequests(prev =>
+      prev.map(r => 
         r.id === id || (r.id && id && r.id.toLowerCase() === id.toLowerCase())
           ? { ...r, status: 'resolved' as const, resolutionNotes: notes } 
           : r
-      );
-      try { localStorage.setItem('hr_admin_requests', JSON.stringify(next)); } catch {}
-      return next;
-    });
+      )
+    );
     const updatedMetrics = await hrService.getMetrics();
     setMetrics(updatedMetrics);
     const updatedActivities = await hrService.getActivities();
@@ -251,9 +256,10 @@ function HROperationsPortal() {
 
   // Add comment / reply to request thread
   const handleAddComment = async (id: string, text: string) => {
-    const newComment = await hrService.addComment(id, text, 'Sarah Jenkins (HR Ops)', true);
-    setRequests(prev => {
-      const next = prev.map(r => {
+    const authorName = user?.name ? `${user.name} (HR Ops)` : 'HR Operations';
+    const newComment = await hrService.addComment(id, text, authorName, true);
+    setRequests(prev =>
+      prev.map(r => {
         if (r.id === id || (r.id && id && r.id.toLowerCase() === id.toLowerCase())) {
           const currentComments = Array.isArray(r.comments) ? r.comments : [];
           if (!currentComments.some(c => c.id === newComment.id)) {
@@ -265,10 +271,8 @@ function HROperationsPortal() {
           }
         }
         return r;
-      });
-      try { localStorage.setItem('hr_admin_requests', JSON.stringify(next)); } catch {}
-      return next;
-    });
+      })
+    );
     return newComment;
   };
 

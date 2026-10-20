@@ -64,6 +64,8 @@ export interface RequestItem {
   subject?: string;
   assignedTo?: string;
   assignedToId?: string;
+  assignedHr?: string | { id: string; name: string };
+  assignedHrId?: string;
   employeeId?: string;
   categoryDisplay?: string;
   department?: string;

@@ -19,6 +19,10 @@ const tabTitles: Record<AdminTab, { title: string; subtitle: string }> = {
     title: 'Enterprise User Management',
     subtitle: 'Manage directory accounts, roles, access levels, and deactivations'
   },
+  assignments: {
+    title: 'Employee-to-HR Specialist Assignments',
+    subtitle: 'Manage dedicated HR assignments, role access control, and reassignment audit trails'
+  },
   roles: {
     title: 'Role & Permission Boundaries',
     subtitle: 'Define granular permissions across ADMIN, HR_LEAD, HR_SPECIALIST, and EMPLOYEE'
